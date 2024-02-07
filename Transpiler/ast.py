@@ -95,3 +95,59 @@ class QuantifierNode(ExpressionNode):
         self.quantifier = quantifier
         self.variables = variables
         self.condition = condition
+
+def construct_ast(tokens):
+    # Initialize variables to store information during parsing
+    current_module = None
+    current_variables = None
+    current_init = None
+    current_next = []
+    current_invariant = None
+    current_goal = None
+    
+    # Define lists to store nodes
+    modules = []
+    variables = []
+    init = []
+    next_nodes = []
+    invariants = []
+    goals = []
+
+    # Iterate over tokens
+    for token_type, token_value in tokens:
+        if token_type == 'EXTENDS':
+            # Create a ModuleNode
+            current_module = ModuleNode(name=token_value.strip())
+        elif token_type == 'VARIABLE':
+            # Create VariableDeclarationNodes
+            current_variables = [VariableDeclarationNode(name.strip(), None) for name in token_value.split(',')]
+        elif token_type == 'INIT':
+            # Create an InitNode
+            current_init = InitNode(expressions=[])
+        elif token_type == 'NEXT':
+            # Create a NextNode
+            current_next.append(NextNode(expressions=[]))
+        elif token_type == 'INVARIANT':
+            # Create an InvariantNode
+            current_invariant = InvariantNode(expression=None)
+        elif token_type == 'GOAL':
+            # Create a GoalNode
+            current_goal = GoalNode(expression=None)
+        elif token_type == 'COMMENT':
+            # Skip comments
+            continue
+        else:
+            # Handle expressions
+            pass
+
+    # Combine nodes into ModuleNode
+    if current_module:
+        current_module.variables = current_variables
+        current_module.init = current_init
+        current_module.next = current_next
+        current_module.invariant = current_invariant
+        current_module.goal = current_goal
+        modules.append(current_module)
+
+    # Return constructed AST
+    return modules 
