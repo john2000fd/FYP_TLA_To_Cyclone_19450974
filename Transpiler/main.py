@@ -28,6 +28,6 @@ CHECK Goal
 tokens = tokenization.tokenize(tla_code)
 
 # Construct AST from tokens
-#ast_tree = ast.construct_ast(tokens)
+ast_tree = ast.construct_ast(tokens)
 
 # Perform further processing on the AST as needed
