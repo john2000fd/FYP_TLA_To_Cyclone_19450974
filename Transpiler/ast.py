@@ -136,9 +136,22 @@ def construct_ast(tokens):
         elif token_type == 'COMMENT':
             # Skip comments
             continue
-        else:
-            # Handle expressions
+
+        elif token_type in ['BOOLEAN_LITERAL', 'NUMBER_LITERAL', 'INTEGER_LITERAL', 'IDENTIFIER']:
+            # Handle literals and identifiers
+            # Example: Identifiers can be part of variables, expressions, etc.
             pass
+        elif token_type in ['AND', 'ARROW', 'EQUALS', 'ASTERISK', 'LPAREN', 'RPAREN', 'SEMICOLON']:
+            # Handle operators and punctuation
+            # Example: Operators can be part of expressions, quantifiers, etc.
+            pass
+        elif token_type == 'EXPRESSION':
+            # Handle expressions
+            # Example: Expressions can be part of Init, Next, Invariant, Goal, etc.
+            pass
+        else:
+            # Handle unknown or unexpected tokens
+            raise SyntaxError(f"Unexpected token type: {token_type}")
 
     # Combine nodes into ModuleNode
     if current_module:

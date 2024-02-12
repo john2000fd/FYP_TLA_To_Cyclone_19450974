@@ -1,5 +1,6 @@
 import tokenization
 import ast
+#import tla_to_cyclone
 
 # Read TLA+ code from file or input
 tla_code = """
@@ -29,5 +30,8 @@ tokens = tokenization.tokenize(tla_code)
 
 # Construct AST from tokens
 ast_tree = ast.construct_ast(tokens)
+
+# Translate AST to Cyclone code
+#cyclone_code = tla_to_cyclone.translate_ast(ast_tree)
 
 # Perform further processing on the AST as needed
