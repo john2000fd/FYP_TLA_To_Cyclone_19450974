@@ -165,21 +165,22 @@ def construct_ast(tokens):
             # Skip comments
             continue
 
-        elif token_type in ['BOOLEAN_LITERAL', 'NUMBER_LITERAL', 'INTEGER_LITERAL', 'IDENTIFIER']:
-            # Handle literals and identifiers
-            # Example: Identifiers can be part of variables, expressions, etc.
-            pass
+        elif token_type in ['BOOLEAN_LITERAL', 'NUMBER_LITERAL', 'INTEGER_LITERAL']:
+            # Handle literals
+            literal_value = parse_literal(token_value)
+            expression_node = LiteralNode(value=literal_value)
+        elif token_type == 'IDENTIFIER':
+            # Handle identifiers
+            identifier_name = token_value
+            expression_node = IdentifierNode(name=identifier_name)
         elif token_type in ['AND', 'ARROW', 'EQUALS', 'ASTERISK', 'LPAREN', 'RPAREN', 'SEMICOLON']:
-            # Handle operators and punctuation
-            # Example: Operators can be part of expressions, quantifiers, etc.
-            pass
+           # Handle operators and punctuation
+           operator_value = token_value
+           expression_node = OperatorNode(value=operator_value)
         elif token_type == 'EXPRESSION':
-            # Handle expressions
-            # Example: Expressions can be part of Init, Next, Invariant, Goal, etc.
-            pass
-        else:
-            # Handle unknown or unexpected tokens
-            raise SyntaxError(f"Unexpected token type: {token_type}")
+           # Handle expressions
+           expression_str = token_value
+           expression_node = parse_expression(expression_str)
 
     # Combine nodes into ModuleNode
     if current_module:
