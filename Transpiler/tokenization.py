@@ -1,6 +1,6 @@
 import re
 
-# Define regular expressions for token types
+# Define regular expressions for token types that we will use 
 TOKEN_REGEX = [
     (r'\bEXTENDS\b.*(?:\n|$)', 'EXTENDS'),
     (r'\bVARIABLE\b.*(?:\n|$)', 'VARIABLE'),
@@ -8,10 +8,10 @@ TOKEN_REGEX = [
     (r'\bNext\b.*(?:\n|$)', 'NEXT'),
     (r'\bInvariant\b.*(?:\n|$)', 'INVARIANT'),
     (r'\bGoal\b.*(?:\n|$)', 'GOAL'),
-    (r'\bGraph\b.*(?:\n|$)', 'GRAPH'),  # New: Tokenize graph declarations
-    (r'\bNode\b.*(?:\n|$)', 'NODE'),    # New: Tokenize node declarations
-    (r'\bEdge\b.*(?:\n|$)', 'EDGE'),    # New: Tokenize edge declarations
-    (r'\bLabel\b.*(?:\n|$)', 'LABEL'),  # New: Tokenize edge label declarations
+    (r'\bGraph\b.*(?:\n|$)', 'GRAPH'),  
+    (r'\bNode\b.*(?:\n|$)', 'NODE'),    
+    (r'\bEdge\b.*(?:\n|$)', 'EDGE'),    
+    (r'\bLabel\b.*(?:\n|$)', 'LABEL'),  
     (r'//.*(?:\n|$)', 'COMMENT'),
     (r'\btrue\b|\bfalse\b', 'BOOLEAN_LITERAL'),
     (r'\b(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)\b', 'NUMBER_LITERAL'),  # Floating point number

@@ -100,6 +100,23 @@ class OperatorNode(ExpressionNode):
     def __init__(self, value):
         self.value = value
 
+
+class GraphNode:
+    def __init__(self, name):
+        self.name = name
+
+
+class GraphEdge:
+    def __init__(self, source, target):
+        self.source = source
+        self.target = target
+
+
+class GraphEdgeLabel:
+    def __init__(self, label, edge):
+        self.label = label
+        self.edge = edge                
+
 class Operator:
     # Define constants for different operator types
     AND = '/\\'
