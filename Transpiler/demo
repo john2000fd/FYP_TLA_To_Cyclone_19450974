@@ -1,0 +1,25 @@
+('EXTENDS', "EXTENDS Naturals\n\nVARIABLE count\n\nInit == (* Initial values *)\n        /\\ count = 0\n\nNext == (* State transition function *)\n        /\\ count' = count + 1\n\nSpec == Init /\\ [][Next]_count\n\nInvariant == (* Invariant property *)\n             [](count >= 0)\n\nGoal == (* System properties to check *)\n        /\\ count <= 10\n\nCHECK Goal\n")
+
+
+
+"""
+EXTENDS Naturals
+
+VARIABLE count
+
+Init == (* Initial values *)
+        /\ count = 0
+
+Next == (* State transition function *)
+        /\ count' = count + 1
+
+Spec == Init /\ [][Next]_count
+
+Invariant == (* Invariant property *)
+             [](count >= 0)
+
+Goal == (* System properties to check *)
+        /\ count <= 10
+
+CHECK Goal
+"""

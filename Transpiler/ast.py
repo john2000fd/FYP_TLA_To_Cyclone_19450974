@@ -119,10 +119,17 @@ def parse_literal(literal_value):
     else:
         return int(literal_value)
 
-def parse_expression(expression_str):
-    # Parse the expression string and construct AST nodes
-    # This function should handle complex expressions and recursively call itself as needed
-    pass  # Placeholder, implement according to your needs        
+def parse_expression(expression_str):               #TO-DO##########################
+    
+    # Handle expressions
+    expression_str = token_value
+    expression_node = parse_expression(expression_str)
+    # Handle graph-related expressions here
+
+
+    # Placeholder for expression parsing logic
+    # You would need to implement this function to parse TLA+ expressions
+    pass
 
 def construct_ast(tokens):
     # Initialize variables to store information during parsing
@@ -165,6 +172,16 @@ def construct_ast(tokens):
             # Skip comments
             continue
 
+
+
+        elif token_type == 'GRAPH_NODE':                       #TO-DO############################
+            # Handle graph node declaration
+            pass
+        elif token_type == 'GRAPH_EDGE':
+            # Handle graph edge specification
+            pass
+
+
         elif token_type in ['BOOLEAN_LITERAL', 'NUMBER_LITERAL', 'INTEGER_LITERAL']:
             # Handle literals
             literal_value = parse_literal(token_value)
@@ -192,4 +209,4 @@ def construct_ast(tokens):
         modules.append(current_module)
 
     # Return constructed AST
-    return modules 
+    return modules

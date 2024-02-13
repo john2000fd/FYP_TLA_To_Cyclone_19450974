@@ -8,6 +8,10 @@ TOKEN_REGEX = [
     (r'\bNext\b.*(?:\n|$)', 'NEXT'),
     (r'\bInvariant\b.*(?:\n|$)', 'INVARIANT'),
     (r'\bGoal\b.*(?:\n|$)', 'GOAL'),
+    (r'\bGraph\b.*(?:\n|$)', 'GRAPH'),  # New: Tokenize graph declarations
+    (r'\bNode\b.*(?:\n|$)', 'NODE'),    # New: Tokenize node declarations
+    (r'\bEdge\b.*(?:\n|$)', 'EDGE'),    # New: Tokenize edge declarations
+    (r'\bLabel\b.*(?:\n|$)', 'LABEL'),  # New: Tokenize edge label declarations
     (r'//.*(?:\n|$)', 'COMMENT'),
     (r'\btrue\b|\bfalse\b', 'BOOLEAN_LITERAL'),
     (r'\b(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)\b', 'NUMBER_LITERAL'),  # Floating point number
@@ -48,7 +52,19 @@ def tokenize(code):
 
 # Example TLA+ code
 tla_code = """
+
 EXTENDS Naturals
+
+GRAPH
+  NODE node1
+  NODE node2
+  NODE node3
+
+  EDGE node1 -> node2
+  EDGE node2 -> node3
+
+  LABEL "label1" ON node1 -> node2
+  LABEL "label2" ON node2 -> node3
 
 VARIABLE count
 
