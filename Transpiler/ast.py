@@ -1,5 +1,5 @@
 class ModuleNode:
-    def __init__(self, name, extends=None, variables=None, init=None, next=None, invariant=None, goal=None):
+    def __init__(self, name, extends=None, variables=None, init=None, next=None, invariant=None, goal=None, graph_nodes=None, graph_edges=None, graph_edge_labels=None):
         self.name = name
         self.extends = extends
         self.variables = variables or []
@@ -7,6 +7,9 @@ class ModuleNode:
         self.next = next or []
         self.invariant = invariant
         self.goal = goal
+        self.graph_nodes = graph_nodes or []
+        self.graph_edges = graph_edges or []
+        self.graph_edge_labels = graph_edge_labels or [] 
 
 class VariableDeclarationNode:
     def __init__(self, name, type):
@@ -101,15 +104,28 @@ class OperatorNode(ExpressionNode):
         self.value = value
 
 
+class GraphAttributeNode:
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
+
 class GraphNode:
     def __init__(self, name):
         self.name = name
+        self.attributes = attributes or []
 
 
 class GraphEdge:
     def __init__(self, source, target):
         self.source = source
         self.target = target
+        self.attributes = attributes or []
+
+
+class GraphConstraintNode:
+    def __init__(self, condition):
+        self.condition = condition        
 
 
 class GraphEdgeLabel:
@@ -156,6 +172,9 @@ def construct_ast(tokens):
     current_next = []
     current_invariant = None
     current_goal = None
+    current_graph_nodes = []
+    current_graph_edges = []
+    current_graph_edge_labels = []
     
     # Define lists to store nodes
     modules = []
@@ -188,42 +207,43 @@ def construct_ast(tokens):
         elif token_type == 'COMMENT':
             # Skip comments
             continue
-
-
-
-        elif token_type == 'GRAPH_NODE':                       #TO-DO############################
-            # Handle graph node declaration
-            pass
+        elif token_type == 'GRAPH_NODE':
+            # Create a GraphNode
+            graph_node = GraphNode(name=token_value.strip())
+            current_graph_nodes.append(graph_node)
         elif token_type == 'GRAPH_EDGE':
-            # Handle graph edge specification
-            pass
-
-
-        elif token_type in ['BOOLEAN_LITERAL', 'NUMBER_LITERAL', 'INTEGER_LITERAL']:
-            # Handle literals
-            literal_value = parse_literal(token_value)
-            expression_node = LiteralNode(value=literal_value)
-        elif token_type == 'IDENTIFIER':
-            # Handle identifiers
-            identifier_name = token_value
-            expression_node = IdentifierNode(name=identifier_name)
-        elif token_type in ['AND', 'ARROW', 'EQUALS', 'ASTERISK', 'LPAREN', 'RPAREN', 'SEMICOLON']:
-           # Handle operators and punctuation
-           operator_value = token_value
-           expression_node = OperatorNode(value=operator_value)
-        elif token_type == 'EXPRESSION':
-           # Handle expressions
-           expression_str = token_value
-           expression_node = parse_expression(expression_str)
-
-    # Combine nodes into ModuleNode
-    if current_module:
-        current_module.variables = current_variables
-        current_module.init = current_init
-        current_module.next = current_next
-        current_module.invariant = current_invariant
-        current_module.goal = current_goal
-        modules.append(current_module)
+            # Create a GraphEdge
+            source, target = token_value.split('->')
+            graph_edge = GraphEdge(source=source.strip(), target=target.strip())
+            current_graph_edges.append(graph_edge)
+        elif token_type == 'GRAPH_EDGE_LABEL':
+            # Create a GraphEdgeLabel
+            label, edge = token_value.split(' ON ')
+            edge = edge.split('->')
+            graph_edge_label = GraphEdgeLabel(label=label.strip(), edge=GraphEdge(source=edge[0].strip(), target=edge[1].strip()))
+            current_graph_edge_labels.append(graph_edge_label)
+        elif token_type == 'MODULE_END':
+            # End of module, combine nodes into ModuleNode
+            if current_module:
+                current_module.variables = current_variables
+                current_module.init = current_init
+                current_module.next = current_next
+                current_module.invariant = current_invariant
+                current_module.goal = current_goal
+                current_module.graph_nodes = current_graph_nodes
+                current_module.graph_edges = current_graph_edges
+                current_module.graph_edge_labels = current_graph_edge_labels
+                modules.append(current_module)
+                # Reset variables for the next module
+                current_module = None
+                current_variables = None
+                current_init = None
+                current_next = []
+                current_invariant = None
+                current_goal = None
+                current_graph_nodes = []
+                current_graph_edges = []
+                current_graph_edge_labels = []
 
     # Return constructed AST
     return modules
