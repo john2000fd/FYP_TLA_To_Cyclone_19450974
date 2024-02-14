@@ -1,10 +1,22 @@
 import tokenization
-import ast
+import ast_for_tla
 #import tla_to_cyclone
 
 # Read TLA+ code from file or input
 tla_code = """
+
 EXTENDS Naturals
+
+GRAPH
+  NODE node1
+  NODE node2
+  NODE node3
+
+  EDGE node1 -> node2
+  EDGE node2 -> node3
+
+  LABEL "label1" ON node1 -> node2
+  LABEL "label2" ON node2 -> node3
 
 VARIABLE count
 
@@ -26,10 +38,10 @@ CHECK Goal
 """
 
 # Tokenize TLA+ code
-tokens = tokenization.tokenize(tla_code)
+tokens = tokenization.tokenize_tla_code(tla_code)
 
 # Construct AST from tokens
-ast_tree = ast.construct_ast(tokens)
+ast_tree = ast_for_tla.construct_ast(tokens)
 
 # Translate AST to Cyclone code
 #cyclone_code = tla_to_cyclone.translate_ast(ast_tree)

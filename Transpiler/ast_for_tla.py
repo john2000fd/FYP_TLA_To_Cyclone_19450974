@@ -186,44 +186,56 @@ def construct_ast(tokens):
 
     # Iterate over tokens
     for token_type, token_value in tokens:
+        #print(f"Token Type: {token_type}, Token Value: {token_value}")
         if token_type == 'EXTENDS':
+            print("Creating ModuleNode with name:", token_value.strip())                 #print statements are added to see construction process
             # Create a ModuleNode
             current_module = ModuleNode(name=token_value.strip())
         elif token_type == 'VARIABLE':
             # Create VariableDeclarationNodes
+            print("Creating VariableDeclarationNodes with names:", [name.strip() for name in token_value.split(',')])
             current_variables = [VariableDeclarationNode(name.strip(), None) for name in token_value.split(',')]
         elif token_type == 'INIT':
             # Create an InitNode
+            print("Creating InitNode") 
             current_init = InitNode(expressions=[])
         elif token_type == 'NEXT':
             # Create a NextNode
+            print("Creating Nextnode")
             current_next.append(NextNode(expressions=[]))
         elif token_type == 'INVARIANT':
             # Create an InvariantNode
+            print("Creating InvariantNode")
             current_invariant = InvariantNode(expression=None)
         elif token_type == 'GOAL':
             # Create a GoalNode
+            print("Creating GoalNode")
             current_goal = GoalNode(expression=None)
         elif token_type == 'COMMENT':
             # Skip comments
+            print("Skipping comment")
             continue
         elif token_type == 'GRAPH_NODE':
             # Create a GraphNode
+            print("Creating GraphNode with name:", token_value.strip())
             graph_node = GraphNode(name=token_value.strip())
             current_graph_nodes.append(graph_node)
         elif token_type == 'GRAPH_EDGE':
             # Create a GraphEdge
             source, target = token_value.split('->')
+            print("Creating GraphEdge from", source.strip(), "to", target.strip())
             graph_edge = GraphEdge(source=source.strip(), target=target.strip())
             current_graph_edges.append(graph_edge)
         elif token_type == 'GRAPH_EDGE_LABEL':
             # Create a GraphEdgeLabel
             label, edge = token_value.split(' ON ')
             edge = edge.split('->')
+            print("Creating GraphEdgeLabel with label:", label.strip(), "on edge from", edge[0].strip(), "to", edge[1].strip())
             graph_edge_label = GraphEdgeLabel(label=label.strip(), edge=GraphEdge(source=edge[0].strip(), target=edge[1].strip()))
             current_graph_edge_labels.append(graph_edge_label)
         elif token_type == 'MODULE_END':
             # End of module, combine nodes into ModuleNode
+            print("End of module, combining nodes into ModuleNode")
             if current_module:
                 current_module.variables = current_variables
                 current_module.init = current_init

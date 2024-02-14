@@ -28,7 +28,7 @@ TOKEN_REGEX = [
 ]
 
 # Define a function to tokenize input code
-def tokenize(code):
+def tokenize_tla_code(code):
     tokens = []
     code_pos = 0
     
@@ -86,6 +86,6 @@ CHECK Goal
 """
 
 # Tokenize the TLA+ code
-tokens = tokenize(tla_code)
+tokens = tokenize_tla_code(tla_code)
 for token in tokens:
     print("This is the output: " , token)

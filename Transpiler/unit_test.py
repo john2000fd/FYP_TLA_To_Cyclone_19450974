@@ -56,7 +56,7 @@ class TestASTIntegration(unittest.TestCase):
         ]
 
         # Tokenize the TLA+ code
-        tokens = tokenize.tokenize(tla_code)
+        tokens = list(tokenization.tokenize_tla_code(tla_code))
 
         # Ensure that tokens is a list of tokens
         self.assertIsInstance(tokens, list)
