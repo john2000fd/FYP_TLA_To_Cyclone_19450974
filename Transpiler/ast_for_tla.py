@@ -1,3 +1,6 @@
+import re
+
+
 class ModuleNode:
     def __init__(self, name, extends=None, variables=None, init=None, next=None, invariant=None, goal=None, graph_nodes=None, graph_edges=None, graph_edge_labels=None):
         self.name = name
@@ -154,15 +157,33 @@ def parse_literal(literal_value):
 
 def parse_expression(expression_str):               #TO-DO##########################
     
-    # Handle expressions
-    expression_str = token_value
-    expression_node = parse_expression(expression_str)
-    # Handle graph-related expressions here
+     # Remove leading and trailing whitespace
+    expression_str = expression_str.strip()
 
+    # Check if the expression is an identifier
+    if re.match(r'^[A-Za-z_][A-Za-z0-9_]*$', expression_str):
+        return IdentifierNode(name=expression_str)
 
-    # Placeholder for expression parsing logic
-    # You would need to implement this function to parse TLA+ expressions
-    pass
+    # Check if the expression is a literal (integer, float, boolean)
+    if re.match(r'^[0-9]+(?:\.[0-9]*)?$', expression_str):
+        return LiteralNode(value=int(expression_str))
+    elif re.match(r'^[0-9]*\.[0-9]+$', expression_str):
+        return LiteralNode(value=float(expression_str))
+    elif expression_str in ['true', 'false']:
+        return LiteralNode(value=(expression_str == 'true'))
+
+    # Check if the expression is a binary expression
+    for operator in ['+', '-', '*', '/', '==', '<', '>', '>=', '<=']:
+        left, operator, right = expression_str.partition(operator)
+        if operator:
+            return BinaryExpressionNode(
+                left=parse_expression(left),
+                operator=operator.strip(),
+                right=parse_expression(right)
+            )
+
+    # If none of the above, raise an error
+    raise ValueError(f"Unable to parse expression: {expression_str}")
 
 def construct_ast(tokens):
     # Initialize variables to store information during parsing
