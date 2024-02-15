@@ -139,6 +139,7 @@ class GraphEdgeLabel:
 class Operator:
     # Define constants for different operator types
     AND = '/\\'
+    OR = '\/'
     ARROW = '->'
     EQUALS = '=='
     ASTERISK = '*'
