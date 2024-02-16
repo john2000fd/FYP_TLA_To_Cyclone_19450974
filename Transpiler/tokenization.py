@@ -40,6 +40,7 @@ def tokenize_tla_code(code):
             match = regex.match(code, code_pos)
             if match:
                 if token_type:
+                    print(f"This is the token being made: {token_type}")
                     tokens.append((token_type, match.group(0)))
                 break
         
@@ -87,5 +88,5 @@ CHECK Goal
 
 # Tokenize the TLA+ code
 tokens = tokenize_tla_code(tla_code)
-for token in tokens:
-    print("This is the output: " , token)
+#for token in tokens:
+    #print("This is the output: " , token)

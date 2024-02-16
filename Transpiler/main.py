@@ -3,7 +3,7 @@ import ast_for_tla
 #import tla_to_cyclone
 
 # Read TLA+ code from file or input
-tla_code = """
+tla_code_1 = """
 
 EXTENDS Naturals
 
@@ -37,11 +37,46 @@ Goal == (* System properties to check *)
 CHECK Goal
 """
 
+tla_code_2 = """
+EXTENDS Naturals
+
+GRAPH
+  NODE a
+  NODE b
+  NODE c
+  NODE d
+
+  EDGE a -> b
+  EDGE a -> c
+  EDGE b -> d
+  EDGE c -> d
+
+VARIABLE visited
+
+Init == (* Initial values *)
+        /\ visited = {}
+
+Next == (* State transition function *)
+        /\ visited' = visited \cup {d}
+
+Spec == Init /\ [][Next]_visited
+
+Invariant == (* Invariant property *)
+             visited # {}
+
+Goal == (* System properties to check *)
+        /\ Cardinality(visited) = 1
+
+CHECK Goal
+"""
+
 # Tokenize TLA+ code
-tokens = tokenization.tokenize_tla_code(tla_code)
+tokens = tokenization.tokenize_tla_code(tla_code_1)
+tokens1 = tokenization.tokenize_tla_code(tla_code_2)
 
 # Construct AST from tokens
 ast_tree = ast_for_tla.construct_ast(tokens)
+ast_tree_1 =ast_for_tla.construct_ast(tokens1)
 
 # Translate AST to Cyclone code
 #cyclone_code = tla_to_cyclone.translate_ast(ast_tree)

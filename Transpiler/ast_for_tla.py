@@ -2,7 +2,7 @@ import re   # REGEX module needed for regex pattern matching
 
 
 # This ModuleNode is the beginning and root node of the entire Abstract Syntax Tree for TLA Graph-Based specifications
-# This holds all of the information that we need for 
+# This holds all of the information that we need 
 class ModuleParentNode:  
     def __init__(self, name, extends=None, variables=None, init=None, next=None, invariant=None, goal=None, graph_nodes=None, graph_edges=None, graph_edge_labels=None):
         self.name = name
@@ -210,7 +210,7 @@ def construct_ast(tokens):
 
     # Iterate over tokens
     for token_type, token_value in tokens:
-        #print(f"Token Type: {token_type}, Token Value: {token_value}")
+        print(f"Token Type being processed currently: {token_type}, Token Value: {token_value}")
         if token_type == 'EXTENDS':
             print("Creating ModuleNode with name:", token_value.strip())                 #print statements are added to see construction process
             # Create a ModuleNode
