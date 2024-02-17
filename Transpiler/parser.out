@@ -1,0 +1,92 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    BACK_SLASH
+    CHECK
+    COMMENT
+    EXTENDS
+    FORWARD_SLASH
+    GOAL
+    GREATER_THAN
+    INIT
+    INVARIANT
+    LEFT_BRACE
+    LEFT_PAREN
+    LEFT_SQR_BRACKET
+    LESS_THAN
+    MINUS
+    NEXT
+    NUMBER_LITERAL
+    PLUS
+    RIGHT_BRACE
+    RIGHT_PAREN
+    RIGHT_SQR_BRACKET
+    SINGLE_QUOTE
+    SPEC
+    STAR
+    STRING_LITERAL
+
+Grammar
+
+Rule 0     S' -> statement
+Rule 1     statement -> assignment_statement
+Rule 2     statement -> expression_statement
+Rule 3     statement -> graph_statement
+Rule 4     statement -> node_statement
+Rule 5     statement -> edge_statement
+Rule 6     statement -> variable_statement
+Rule 7     assignment_statement -> IDENTIFIER EQUALS expression SEMICOLON
+Rule 8     expression_statement -> expression SEMICOLON
+Rule 9     graph_statement -> GRAPH IDENTIFIER SEMICOLON
+Rule 10    node_statement -> NODE IDENTIFIER SEMICOLON
+Rule 11    edge_statement -> EDGE IDENTIFIER ARROW IDENTIFIER SEMICOLON
+Rule 12    variable_statement -> VARIABLE IDENTIFIER SEMICOLON
+
+Terminals, with rules where they appear
+
+ARROW                : 11
+BACK_SLASH           : 
+CHECK                : 
+COMMENT              : 
+EDGE                 : 11
+EQUALS               : 7
+EXTENDS              : 
+FORWARD_SLASH        : 
+GOAL                 : 
+GRAPH                : 9
+GREATER_THAN         : 
+IDENTIFIER           : 7 9 10 11 11 12
+INIT                 : 
+INVARIANT            : 
+LEFT_BRACE           : 
+LEFT_PAREN           : 
+LEFT_SQR_BRACKET     : 
+LESS_THAN            : 
+MINUS                : 
+NEXT                 : 
+NODE                 : 10
+NUMBER_LITERAL       : 
+PLUS                 : 
+RIGHT_BRACE          : 
+RIGHT_PAREN          : 
+RIGHT_SQR_BRACKET    : 
+SEMICOLON            : 7 8 9 10 11 12
+SINGLE_QUOTE         : 
+SPEC                 : 
+STAR                 : 
+STRING_LITERAL       : 
+VARIABLE             : 12
+error                : 
+
+Nonterminals, with rules where they appear
+
+assignment_statement : 1
+edge_statement       : 5
+expression           : 7 8
+expression_statement : 2
+graph_statement      : 3
+node_statement       : 4
+statement            : 0
+variable_statement   : 6
+

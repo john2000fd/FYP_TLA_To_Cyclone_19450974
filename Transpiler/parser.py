@@ -1,63 +1,65 @@
 import ply.yacc as yacc
+from tokenizer import tokens
 
-# Define parser rules
 def p_statement(p):
     '''
-    statement : IDENTIFIER '=' expression ';'
+    statement : assignment_statement
+              | expression_statement
+              | graph_statement
+              | node_statement
+              | edge_statement
+              | variable_statement
     '''
-    # Perform assignment action
+    p[0] = p[1]
+
+def p_assignment_statement(p):
+    '''
+    assignment_statement : IDENTIFIER EQUALS expression SEMICOLON
+    '''
     p[0] = ('assignment', p[1], p[3])
 
-def p_expression(p):
+def p_expression_statement(p):
     '''
-    expression : expression '+' term
-               | expression '-' term
-               | term
+    expression_statement : expression SEMICOLON
     '''
-    if len(p) == 2:
-        p[0] = p[1]
-    elif p[2] == '+':
-        # Perform addition action
-        p[0] = ('addition', p[1], p[3])
-    elif p[2] == '-':
-        # Perform subtraction action
-        p[0] = ('subtraction', p[1], p[3])
+    p[0] = ('expression', p[1])
 
-def p_term(p):
+def p_graph_statement(p):
     '''
-    term : term '*' factor
-         | term '/' factor
-         | factor
+    graph_statement : GRAPH IDENTIFIER SEMICOLON
     '''
-    if len(p) == 2:
-        p[0] = p[1]
-    elif p[2] == '*':
-        # Perform multiplication action
-        p[0] = ('multiplication', p[1], p[3])
-    elif p[2] == '/':
-        # Perform division action
-        p[0] = ('division', p[1], p[3])
+    p[0] = ('graph', p[2])
 
-def p_factor(p):
+def p_node_statement(p):
     '''
-    factor : NUMBER
-           | IDENTIFIER
-           | '(' expression ')'
+    node_statement : NODE IDENTIFIER SEMICOLON
     '''
-    if len(p) == 2:
-        if isinstance(p[1], int):
-            # Number literal
-            p[0] = ('number', p[1])
-        else:
-            # Identifier
-            p[0] = ('identifier', p[1])
-    elif p[1] == '(':
-        # Parenthesized expression
-        p[0] = p[2]
+    p[0] = ('node', p[2])
 
-# Error rule for syntax errors
+def p_edge_statement(p):
+    '''
+    edge_statement : EDGE IDENTIFIER ARROW IDENTIFIER SEMICOLON
+    '''
+    p[0] = ('edge', p[2], p[4])
+
+def p_variable_statement(p):
+    '''
+    variable_statement : VARIABLE IDENTIFIER SEMICOLON
+    '''
+    p[0] = ('variable', p[2])
+
 def p_error(p):
-    print("Syntax error:", p)
+    print("Syntax error in input!")
 
-# Build the parser
 parser = yacc.yacc()
+
+# Test parsing
+data = '''
+GRAPH G;
+NODE a;
+NODE b;
+EDGE a -> b;
+VARIABLE count;
+'''
+result = parser.parse(data)
+print(result)
