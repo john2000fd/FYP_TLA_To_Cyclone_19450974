@@ -1,8 +1,10 @@
 import re
+import ply.lex as lex
+import ply.yacc as yacc
 
 # Define regular expressions for token types that we will use 
 TOKEN_REGEX = [
-    (r'\bEXTENDS\b.*(?:\n|$)', 'EXTENDS'),
+    (r'\bEXTENDS\b\s+(\w+)', 'EXTENDS'),
     (r'\bVARIABLE\b.*(?:\n|$)', 'VARIABLE'),
     (r'\bInit\b.*(?:\n|$)', 'INIT'),
     (r'\bNext\b.*(?:\n|$)', 'NEXT'),
@@ -12,6 +14,7 @@ TOKEN_REGEX = [
     (r'\bNode\b.*(?:\n|$)', 'NODE'),    
     (r'\bEdge\b.*(?:\n|$)', 'EDGE'),    
     (r'\bLabel\b.*(?:\n|$)', 'LABEL'),  
+    (r'"[^"]+"\s+ON\s+\w+\s*->\s*\w+', 'GRAPH_EDGE_LABEL'),  # Updated regex for LABEL
     (r'//.*(?:\n|$)', 'COMMENT'),
     (r'\btrue\b|\bfalse\b', 'BOOLEAN_LITERAL'),
     (r'\b(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)\b', 'NUMBER_LITERAL'),  # Floating point number
