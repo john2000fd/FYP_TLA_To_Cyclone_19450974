@@ -58,7 +58,9 @@ data = '''
 GRAPH G;
 NODE a;
 NODE b;
+NODE c;
 EDGE a -> b;
+EDGE b -> c;
 VARIABLE count;
 '''
 result = parser.parse(data)
