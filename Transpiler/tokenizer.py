@@ -6,6 +6,7 @@ import ply.yacc as yacc
 # Define token classes
 tokens = (
     'EXTENDS',
+    'MODULE',
     'GRAPH',
     'NODE',
     'EDGE',
@@ -43,6 +44,7 @@ tokens = (
 # Define tokenization rules, prefix "t_" before the string name indicates that it is a token
 t_EXTENDS = r'EXTENDS'
 t_GRAPH = r'GRAPH'
+t_MODULE = r'MODULE'
 t_NODE = r'NODE'
 t_EDGE = r'EDGE'
 t_VARIABLE = r'VARIABLE'

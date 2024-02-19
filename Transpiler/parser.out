@@ -15,10 +15,8 @@ Unused terminals:
     LEFT_PAREN
     LEFT_SQR_BRACKET
     LESS_THAN
-    MINUS
     NEXT
     NUMBER_LITERAL
-    PLUS
     RIGHT_BRACE
     RIGHT_PAREN
     RIGHT_SQR_BRACKET
@@ -29,64 +27,87 @@ Unused terminals:
 
 Grammar
 
-Rule 0     S' -> statement
-Rule 1     statement -> assignment_statement
-Rule 2     statement -> expression_statement
-Rule 3     statement -> graph_statement
-Rule 4     statement -> node_statement
-Rule 5     statement -> edge_statement
-Rule 6     statement -> variable_statement
-Rule 7     assignment_statement -> IDENTIFIER EQUALS expression SEMICOLON
-Rule 8     expression_statement -> expression SEMICOLON
-Rule 9     graph_statement -> GRAPH IDENTIFIER SEMICOLON
-Rule 10    node_statement -> NODE IDENTIFIER SEMICOLON
-Rule 11    edge_statement -> EDGE IDENTIFIER ARROW IDENTIFIER SEMICOLON
-Rule 12    variable_statement -> VARIABLE IDENTIFIER SEMICOLON
+Rule 0     S' -> module
+Rule 1     module -> MODULE IDENTIFIER SEMICOLON body
+Rule 2     body -> statements
+Rule 3     statements -> statements statement
+Rule 4     statements -> statement
+Rule 5     statement -> assignment_statement
+Rule 6     statement -> expression_statement
+Rule 7     statement -> graph_statement
+Rule 8     statement -> node_statement
+Rule 9     statement -> edge_statement
+Rule 10    statement -> variable_statement
+Rule 11    assignment_statement -> IDENTIFIER EQUALS expression SEMICOLON
+Rule 12    expression_statement -> expression SEMICOLON
+Rule 13    graph_statement -> GRAPH IDENTIFIER SEMICOLON
+Rule 14    node_statement -> NODE IDENTIFIER SEMICOLON
+Rule 15    edge_statement -> EDGE IDENTIFIER ARROW IDENTIFIER SEMICOLON
+Rule 16    variable_statement -> VARIABLE IDENTIFIER SEMICOLON
+Rule 17    expression -> expression PLUS expression
+Rule 18    expression -> expression MINUS expression
+Rule 19    expression -> expression TIMES expression
+Rule 20    expression -> expression DIVIDE expression
+Rule 21    expression -> MINUS expression
+Rule 22    expression -> LPAREN expression RPAREN
+Rule 23    expression -> identifier
+Rule 24    expression -> NUMBER
+Rule 25    identifier -> IDENTIFIER
 
 Terminals, with rules where they appear
 
-ARROW                : 11
+ARROW                : 15
 BACK_SLASH           : 
 CHECK                : 
 COMMENT              : 
-EDGE                 : 11
-EQUALS               : 7
+EDGE                 : 15
+EQUALS               : 11
 EXTENDS              : 
 FORWARD_SLASH        : 
 GOAL                 : 
-GRAPH                : 9
+GRAPH                : 13
 GREATER_THAN         : 
-IDENTIFIER           : 7 9 10 11 11 12
+IDENTIFIER           : 1 11 13 14 15 15 16 25
 INIT                 : 
 INVARIANT            : 
 LEFT_BRACE           : 
 LEFT_PAREN           : 
 LEFT_SQR_BRACKET     : 
 LESS_THAN            : 
-MINUS                : 
+MINUS                : 18 21
+MODULE               : 1
 NEXT                 : 
-NODE                 : 10
+NODE                 : 14
 NUMBER_LITERAL       : 
-PLUS                 : 
+PLUS                 : 17
 RIGHT_BRACE          : 
 RIGHT_PAREN          : 
 RIGHT_SQR_BRACKET    : 
-SEMICOLON            : 7 8 9 10 11 12
+SEMICOLON            : 1 11 12 13 14 15 16
 SINGLE_QUOTE         : 
 SPEC                 : 
 STAR                 : 
 STRING_LITERAL       : 
-VARIABLE             : 12
+VARIABLE             : 16
 error                : 
 
 Nonterminals, with rules where they appear
 
-assignment_statement : 1
-edge_statement       : 5
-expression           : 7 8
-expression_statement : 2
-graph_statement      : 3
-node_statement       : 4
-statement            : 0
-variable_statement   : 6
+DIVIDE               : 20
+LPAREN               : 22
+NUMBER               : 24
+RPAREN               : 22
+TIMES                : 19
+assignment_statement : 5
+body                 : 1
+edge_statement       : 9
+expression           : 11 12 17 17 18 18 19 19 20 20 21 22
+expression_statement : 6
+graph_statement      : 7
+identifier           : 23
+module               : 0
+node_statement       : 8
+statement            : 3 4
+statements           : 2 3
+variable_statement   : 10
 
