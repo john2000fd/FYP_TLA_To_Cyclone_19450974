@@ -3,14 +3,16 @@ import ply.lex as lex
 import ply.yacc as yacc
 
 
-# Define token classes
+# Define token classes for our tokenizer
 tokens = (
     'EXTENDS',
     'MODULE',
+    'MODULE_NAME',
     'GRAPH',
     'NODE',
     'EDGE',
     'VARIABLE',
+    'VARIABLE_NAME',
     'INIT',
     'NEXT',
     'SPEC',
@@ -38,22 +40,32 @@ tokens = (
     'SINGLE_QUOTE',
     'PLUS',
     'MINUS',
+    'DIVIDE',
+    'END_OF_FILE',
 
 )
 
+
+# Define reserved words dictionary  
+reserved = {
+    'EXTENDS': 'EXTENDS',
+    'MODULE': 'MODULE',
+    'MODULE_NAME': 'MODULE_NAME',
+    'GRAPH': 'GRAPH',
+    'NODE': 'NODE',
+    'EDGE': 'EDGE',
+    'VARIABLE': 'VARIABLE',
+    'VARIABLE_NAME': 'VARIABLE_NAME',
+    'Init': 'INIT',
+    'Next': 'NEXT',
+    'Spec': 'SPEC',
+    'Invariant': 'INVARIANT',
+    'Goal': 'GOAL',
+    'CHECK': 'CHECK',
+}
+
+
 # Define tokenization rules, prefix "t_" before the string name indicates that it is a token
-t_EXTENDS = r'EXTENDS'
-t_GRAPH = r'GRAPH'
-t_MODULE = r'MODULE'
-t_NODE = r'NODE'
-t_EDGE = r'EDGE'
-t_VARIABLE = r'VARIABLE'
-t_INIT = r'Init'
-t_NEXT = r'Next'
-t_SPEC = r'Spec'
-t_INVARIANT = r'Invariant'
-t_GOAL = r'Goal'
-t_CHECK = r'CHECK'
 t_ARROW = r'->'
 t_SEMICOLON = r';'
 t_LEFT_PAREN = r'\('
@@ -71,11 +83,19 @@ t_RIGHT_SQR_BRACKET = r'\]'
 t_SINGLE_QUOTE = r'\''
 t_PLUS = r'\+'
 t_MINUS = r'\-'
+t_DIVIDE = r'div'
+t_END_OF_FILE = r'\================================'
 
 # Define identifiers as the default token
 def t_IDENTIFIER(t):
     r'[A-Za-z_][A-Za-z0-9_]*'
-    t.type = 'IDENTIFIER'
+    t.type = reserved.get(t.value, 'IDENTIFIER')  # Check for reserved words
+    if t.type == 'IDENTIFIER':
+        # Check for specific types of identifiers based on naming conventions or patterns
+        if re.match(r'[A-Z][a-zA-Z0-9_]*', t.value):  # Check if it starts with an uppercase letter
+            t.type = 'MODULE_NAME'
+        elif re.match(r'[a-z][a-zA-Z0-9_]*', t.value):  # Check if it starts with a lowercase letter
+            t.type = 'VARIABLE_NAME'
     return t
 
 # Define a rule for numbers
@@ -113,6 +133,8 @@ def t_error(t):
 lexer = lex.lex()
 
 tla_code = """
+---- MODULE ComplexGraphBasedSpec ----
+
 EXTENDS Naturals;
 
 GRAPH
@@ -137,6 +159,8 @@ Goal == (* System properties to check *)
         /\ count <= 10
 
 CHECK Goal
+
+================================
 """
 
 # Test the lexer

@@ -4,7 +4,7 @@ from tokenizer import tokens
 # Define precedence and associativity
 precedence = (
     ('left', 'PLUS', 'MINUS'),
-    ('left', 'TIMES', 'DIVIDE'),
+    ('left', 'STAR', 'DIVIDE'),
     ('right', 'UMINUS'),
 )
 

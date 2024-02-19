@@ -5,6 +5,7 @@ Unused terminals:
     BACK_SLASH
     CHECK
     COMMENT
+    END_OF_FILE
     EXTENDS
     FORWARD_SLASH
     GOAL
@@ -60,7 +61,9 @@ ARROW                : 15
 BACK_SLASH           : 
 CHECK                : 
 COMMENT              : 
+DIVIDE               : 20
 EDGE                 : 15
+END_OF_FILE          : 
 EQUALS               : 11
 EXTENDS              : 
 FORWARD_SLASH        : 
@@ -93,7 +96,6 @@ error                :
 
 Nonterminals, with rules where they appear
 
-DIVIDE               : 20
 LPAREN               : 22
 NUMBER               : 24
 RPAREN               : 22
