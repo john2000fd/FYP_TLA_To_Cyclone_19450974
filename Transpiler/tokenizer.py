@@ -6,6 +6,7 @@ import ply.yacc as yacc
 # Define token classes for our tokenizer
 tokens = (
     'EXTENDS',
+    'MODULE_WRAPPER',
     'MODULE',
     'MODULE_NAME',
     'GRAPH',
@@ -67,6 +68,7 @@ reserved = {
 
 # Define tokenization rules, prefix "t_" before the string name indicates that it is a token
 t_ARROW = r'->'
+t_MODULE_WRAPPER = r'\----'
 t_SEMICOLON = r';'
 t_LEFT_PAREN = r'\('
 t_RIGHT_PAREN = r'\)'
@@ -89,13 +91,12 @@ t_END_OF_FILE = r'\================================'
 # Define identifiers as the default token
 def t_IDENTIFIER(t):
     r'[A-Za-z_][A-Za-z0-9_]*'
-    t.type = reserved.get(t.value, 'IDENTIFIER')  # Check for reserved words
-    if t.type == 'IDENTIFIER':
-        # Check for specific types of identifiers based on naming conventions or patterns
-        if re.match(r'[A-Z][a-zA-Z0-9_]*', t.value):  # Check if it starts with an uppercase letter
-            t.type = 'MODULE_NAME'
-        elif re.match(r'[a-z][a-zA-Z0-9_]*', t.value):  # Check if it starts with a lowercase letter
-            t.type = 'VARIABLE_NAME'
+    if re.match(r'----(\s+([A-Za-z]+\s+)+)----', t.value):  # Check if it matches the MODULE name pattern
+        t.type = 'MODULE_NAME'
+    elif re.match(r'[a-z][a-zA-Z0-9_]*', t.value):  # Check if it matches the pattern for variable names
+        t.type = reserved.get(t.value, 'VARIABLE_NAME')
+    else:
+        t.type = reserved.get(t.value, 'IDENTIFIER')  # Check for reserved words
     return t
 
 # Define a rule for numbers
