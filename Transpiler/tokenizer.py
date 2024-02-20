@@ -88,16 +88,23 @@ t_MINUS = r'\-'
 t_DIVIDE = r'div'
 t_END_OF_FILE = r'\================================'
 
+
+
+def t_MODULE_NAME(t):
+    r'\b[A-Z][a-z]+(?:[A-Z][a-z]+)+\b'
+    t.type = reserved.get(t.value, 'MODULE_NAME')
+    return t
+
+
 # Define identifiers as the default token
 def t_IDENTIFIER(t):
     r'[A-Za-z_][A-Za-z0-9_]*'
-    if re.match(r'----(\s+([A-Za-z]+\s+)+)----', t.value):  # Check if it matches the MODULE name pattern
-        t.type = 'MODULE_NAME'
-    elif re.match(r'[a-z][a-zA-Z0-9_]*', t.value):  # Check if it matches the pattern for variable names
+    if re.match(r'[a-z][a-zA-Z0-9_]*', t.value):  # Check if it matches the pattern for variable names
         t.type = reserved.get(t.value, 'VARIABLE_NAME')
     else:
         t.type = reserved.get(t.value, 'IDENTIFIER')  # Check for reserved words
     return t
+
 
 # Define a rule for numbers
 def t_NUMBER_LITERAL(t):
