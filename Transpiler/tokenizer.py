@@ -198,3 +198,4 @@ lexer.input(tla_code)
 # Print tokens
 for token in lexer:
     print(token)
+    print()
