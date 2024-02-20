@@ -52,6 +52,7 @@ reserved = {
     'EXTENDS': 'EXTENDS',
     'MODULE': 'MODULE',
     'MODULE_NAME': 'MODULE_NAME',
+    'COMMENT': 'COMMENT',
     'GRAPH': 'GRAPH',
     'NODE': 'NODE',
     'EDGE': 'EDGE',
@@ -87,13 +88,26 @@ t_PLUS = r'\+'
 t_MINUS = r'\-'
 t_DIVIDE = r'div'
 t_END_OF_FILE = r'\================================'
+#t_COMMENT =  r'\([^)]*\)'
 
 
 
-def t_MODULE_NAME(t):
-    r'\b[A-Z][a-z]+(?:[A-Z][a-z]+)+\b'
-    t.type = reserved.get(t.value, 'MODULE_NAME')
+def t_MODULE_NAME_SINGLE(t):  #regex to identify a module name that is a single word beginning with a capital letter
+    r'\b[A-Z][a-z]+\b'
+
+    if re.match( r'\b[A-Z][a-z]+\b', t.value):
+       t.type = reserved.get(t.value, 'MODULE_NAME')   
+        
     return t
+
+
+def t_MODULE_NAME_MULTIPLE(t):    #regex to identify a module name that has multiple words beginning with a capital letter
+    r'\b[A-Z][a-z]+(?:[A-Z][a-z]+)+\b'
+
+    if re.match(r'\b[A-Z][a-z]+(?:[A-Z][a-z]+)+\b', t.value):
+        t.type = reserved.get(t.value, 'MODULE_NAME')   
+
+    return t    
 
 
 # Define identifiers as the default token
@@ -127,9 +141,16 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 # Define a rule for comments
-def t_COMMENT(t):
-    r'//.*'
-    pass
+def t_MULTILINE_COMMENT(t):
+    r'\([^)]*\)'
+    t.type = reserved.get(t.value, 'COMMENT')
+    return t
+
+
+def t_SINGLELINE_COMMENT(t):
+    r'-- [A-Za-z]+'
+    t.type = reserved.get(t.value, 'COMMENT')
+    return t
 
 
 # Define error handling rule
@@ -141,7 +162,7 @@ def t_error(t):
 lexer = lex.lex()
 
 tla_code = """
----- MODULE ComplexGraphBasedSpec ----
+---- MODULE ComplexHello ----
 
 EXTENDS Naturals;
 
@@ -151,7 +172,7 @@ GRAPH
   EDGE a -> b;
   
 VARIABLE count;
-
+-- comment
 Init == (* Initial values *)
         /\ count = 0
 
