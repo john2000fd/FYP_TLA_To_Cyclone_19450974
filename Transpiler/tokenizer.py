@@ -1,6 +1,6 @@
 import re
 import ply.lex as lex
-import ply.yacc as yacc
+
 
 
 # Define token classes for our tokenizer
@@ -89,36 +89,33 @@ t_PLUS = r'\+'
 t_MINUS = r'\-'
 t_DIVIDE = r'div'
 t_UNDERSCORE = r'\_'
-t_END_OF_FILE = r'\================================'
+#t_END_OF_FILE = r'\================================'
 #t_COMMENT =  r'\([^)]*\)'
 
 
 
-def t_MODULE_NAME_SINGLE(t):  #regex to identify a module name that is a single word beginning with a capital letter
-    r'\b[A-Z][a-z]+\b'
+#def t_MODULE_NAME_SINGLE(t):  #regex to identify a module name that is a single word beginning with a capital letter
+    #r'\b[A-Z][a-z]+\b'
 
-    if re.match( r'\b[A-Z][a-z]+\b', t.value):
-       t.type = reserved.get(t.value, 'MODULE_NAME')   
+    #if re.match( r'\b[A-Z][a-z]+\b', t.value):
+       #t.type = reserved.get(t.value, 'MODULE_NAME')   
         
-    return t
+    #return t
 
 
-def t_MODULE_NAME_MULTIPLE(t):    #regex to identify a module name that has multiple words beginning with a capital letter
-    r'\b[A-Z][a-z]+(?:[A-Z][a-z]+)+\b'
+#def t_MODULE_NAME_MULTIPLE(t):    #regex to identify a module name that has multiple words beginning with a capital letter
+    #r'\b[A-Z][a-z]+(?:[A-Z][a-z]+)+\b'
 
-    if re.match(r'\b[A-Z][a-z]+(?:[A-Z][a-z]+)+\b', t.value):
-        t.type = reserved.get(t.value, 'MODULE_NAME')   
+    #if re.match(r'\b[A-Z][a-z]+(?:[A-Z][a-z]+)+\b', t.value):
+        #t.type = reserved.get(t.value, 'MODULE_NAME')   
 
-    return t    
+    #return t    
 
 
-# Define identifiers as the default token
+# Define identifiers as the default token, this handles part of the code such as module name, variable name etc
 def t_IDENTIFIER(t):
     r'[A-Za-z_][A-Za-z0-9_]*'
-    if re.match(r'[a-z][a-zA-Z0-9_]*', t.value):  # Check if it matches the pattern for variable names
-        t.type = reserved.get(t.value, 'VARIABLE_NAME')
-    else:
-        t.type = reserved.get(t.value, 'IDENTIFIER')  # Check for reserved words
+    t.type = reserved.get(t.value, 'IDENTIFIER')  # Default to IDENTIFIER, could be a module name or variable name
     return t
 
 
@@ -142,34 +139,26 @@ def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-# Define a rule for comments
+# we can skip comments as they are not needed for tokeniziation
 def t_MULTILINE_COMMENT(t):
     r'\(\*([^*]*)\*\)'
-    t.type = reserved.get(t.value, 'COMMENT')
-    return t
+    pass
 
 
-def t_SINGLELINE_COMMENT_SPACE(t):
+def t_SINGLELINE_COMMENT_SPACE(t): 
     r'--\s[A-Za-z]+'
+    pass
     
-    if re.match (r'--\s[A-Za-z]+', t.value):
-        t.type = reserved.get(t.value, 'COMMENT')
-    else:
-        print("error")
-    
-    return t
 
 def t_SINGLINE_COMMENT_NO_SPACE(t):
     r'--[A-Za-z]+'
-    
-    if re.match (r'--[A-Za-z]+', t.value):
-        t.type = reserved.get(t.value, 'COMMENT')
-    else:
-        print("error")
-    
-    return t
+    pass
 
+def t_END_OF_FILE(t):   # we also don't need the end of file for our tokenization
+    r'\================================'
+    pass
 
+    
 # Define error handling rule
 def t_error(t):
     print(f"Illegal character '{t.value[0]}'")
