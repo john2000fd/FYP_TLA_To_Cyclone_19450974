@@ -42,6 +42,7 @@ tokens = (
     'PLUS',
     'MINUS',
     'DIVIDE',
+    'UNDERSCORE',
     'END_OF_FILE',
 
 )
@@ -87,6 +88,7 @@ t_SINGLE_QUOTE = r'\''
 t_PLUS = r'\+'
 t_MINUS = r'\-'
 t_DIVIDE = r'div'
+t_UNDERSCORE = r'\_'
 t_END_OF_FILE = r'\================================'
 #t_COMMENT =  r'\([^)]*\)'
 
@@ -142,24 +144,39 @@ def t_newline(t):
 
 # Define a rule for comments
 def t_MULTILINE_COMMENT(t):
-    r'\([^)]*\)'
+    r'\(\*([^*]*)\*\)'
     t.type = reserved.get(t.value, 'COMMENT')
     return t
 
 
-def t_SINGLELINE_COMMENT(t):
-    r'-- [A-Za-z]+'
-    t.type = reserved.get(t.value, 'COMMENT')
+def t_SINGLELINE_COMMENT_SPACE(t):
+    r'--\s[A-Za-z]+'
+    
+    if re.match (r'--\s[A-Za-z]+', t.value):
+        t.type = reserved.get(t.value, 'COMMENT')
+    else:
+        print("error")
+    
+    return t
+
+def t_SINGLINE_COMMENT_NO_SPACE(t):
+    r'--[A-Za-z]+'
+    
+    if re.match (r'--[A-Za-z]+', t.value):
+        t.type = reserved.get(t.value, 'COMMENT')
+    else:
+        print("error")
+    
     return t
 
 
 # Define error handling rule
 def t_error(t):
     print(f"Illegal character '{t.value[0]}'")
-    t.lexer.skip(1)
+    t.tokenizer.skip(1)
 
 # Build the lexer
-lexer = lex.lex()
+tokenizer= lex.lex()
 
 tla_code = """
 ---- MODULE ComplexHello ----
@@ -172,7 +189,7 @@ GRAPH
   EDGE a -> b;
   
 VARIABLE count;
--- comment
+--comment
 Init == (* Initial values *)
         /\ count = 0
 
@@ -193,9 +210,9 @@ CHECK Goal
 """
 
 # Test the lexer
-lexer.input(tla_code)
+tokenizer.input(tla_code)
 
 # Print tokens
-for token in lexer:
+for token in tokenizer:
     print(token)
     print()
