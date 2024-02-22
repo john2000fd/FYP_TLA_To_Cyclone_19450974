@@ -14,6 +14,7 @@ tokens = (
     'EDGE',
     'VARIABLE',
     'VARIABLE_NAME',
+    'CONSTANTS',
     'INIT',
     'NEXT',
     'SPEC',
@@ -41,6 +42,7 @@ tokens = (
     'SINGLE_QUOTE',
     'PLUS',
     'MINUS',
+    'COMMA',
     'DIVIDE',
     'UNDERSCORE',
     'END_OF_FILE',
@@ -59,6 +61,7 @@ reserved = {
     'EDGE': 'EDGE',
     'VARIABLE': 'VARIABLE',
     'VARIABLE_NAME': 'VARIABLE_NAME',
+    'CONSTANTS' : 'CONSTANTS',
     'Init': 'INIT',
     'Next': 'NEXT',
     'Spec': 'SPEC',
@@ -88,6 +91,7 @@ t_SINGLE_QUOTE = r'\''
 t_PLUS = r'\+'
 t_MINUS = r'\-'
 t_DIVIDE = r'div'
+t_COMMA = r'\,'
 t_UNDERSCORE = r'\_'
 #t_END_OF_FILE = r'\================================'
 #t_COMMENT =  r'\([^)]*\)'
@@ -115,7 +119,7 @@ t_UNDERSCORE = r'\_'
 # Define identifiers as the default token, this handles part of the code such as module name, variable name etc
 def t_IDENTIFIER(t):
     r'[A-Za-z_][A-Za-z0-9_]*'
-    t.type = reserved.get(t.value, 'IDENTIFIER')  # Default to IDENTIFIER, could be a module name or variable name
+    t.type = reserved.get(t.value, 'IDENTIFIER')  # Default to IDENTIFIER, could be a module name or variable name etc
     return t
 
 
@@ -146,12 +150,12 @@ def t_MULTILINE_COMMENT(t):
 
 
 def t_SINGLELINE_COMMENT_SPACE(t): 
-    r'--\s[A-Za-z]+'
+    r'\\[*]\s.*'
     pass
     
 
 def t_SINGLINE_COMMENT_NO_SPACE(t):
-    r'--[A-Za-z]+'
+    r'\\[*].*'
     pass
 
 def t_END_OF_FILE(t):   # we also don't need the end of file for our tokenization
@@ -170,30 +174,35 @@ tokenizer= lex.lex()
 tla_code = """
 ---- MODULE ComplexHello ----
 
-EXTENDS Naturals;
+EXTENDS Naturals
 
-GRAPH
-  NODE a
-  NODE b
-  EDGE a -> b;
-  
-VARIABLE count;
---comment
-Init == (* Initial values *)
-        /\ count = 0
+(* Graph structure represented as constants for transpilation purposes *)
+CONSTANTS Nodes, Edges
 
-Next == (* State transition function *)
-        /\ count' = count + 1
+(* State variable *)
+VARIABLE count
 
+(* Definitions to simulate graph concepts, assuming they are handled by your transpiler *)
+IsEdge(u, v) == <<u, v>> \in Edges \/ <<v, u>> \in Edges
+
+(* Initial state *)
+Init == 
+    /\ count = 0
+    /\ Nodes = {"a", "b"}    \* Graph nodes
+    /\ Edges = {<<"a", "b">>}    \* Graph edges, indicating a directed edge from 'a' to 'b'
+
+(* State transition *)
+Next == 
+    /\ count' = count + 1
+
+(* Specification combines initial state and state transitions *)
 Spec == Init /\ [][Next]_count
 
-Invariant == (* Invariant property *)
-             [](count >= 0)
+(* Invariant to ensure 'count' remains non-negative *)
+Invariant == count >= 0
 
-Goal == (* System properties to check *)
-        /\ count <= 10
-
-CHECK Goal
+(* Property to limit 'count' to 10, demonstrating goal definition *)
+PropertyGoal == count <= 10
 
 ================================
 """

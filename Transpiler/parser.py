@@ -1,105 +1,65 @@
 import ply.yacc as yacc
 from tokenizer import tokens
+from tokenizer import tla_code
+# Placeholder for storing parsed module information
+parsed_data = {}
 
-# Define precedence and associativity
-precedence = (
-    ('left', 'PLUS', 'MINUS'),
-    ('left', 'STAR', 'DIVIDE'),
-    ('right', 'UMINUS'),
-)
-
-# Grammar rules
-
+# Parsing rule for a module
 def p_module(p):
-    '''module : MODULE IDENTIFIER SEMICOLON body'''
-    # Code to handle module declaration
+    'module : MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER body'
+    parsed_data['module_name'] = p[3]
+    parsed_data['body'] = p[5]
 
+# Parsing rule for the body of the module, which could include various statements
 def p_body(p):
-    '''body : statements'''
-    # Code to handle module body
+    '''body : body statement
+            | statement'''
+    if len(p) == 3:
+        p[0] = p[1] + [p[2]]
+    else:
+        p[0] = [p[1]]
 
-def p_statements(p):
-    '''statements : statements statement
-                  | statement'''
-    # Code to handle multiple statements
-
+# Parsing rule for different types of statements (simplified for demonstration)
 def p_statement(p):
-    '''
-    statement : assignment_statement
-              | expression_statement
-              | graph_statement
-              | node_statement
-              | edge_statement
-              | variable_statement
-    '''
-    # Code to handle different types of statements
+    '''statement : constants_declaration
+                 | variable_declaration
+                 | init_statement
+                 | next_statement'''
+    p[0] = p[1]
 
-def p_assignment_statement(p):
-    '''
-    assignment_statement : IDENTIFIER EQUALS expression SEMICOLON
-    '''
-    # Code to handle assignment statements
+def p_constants_declaration(p):
+    'constants_declaration : CONSTANTS IDENTIFIER COMMA IDENTIFIER'
+    p[0] = ('constants', p[2], p[4])
 
-def p_expression_statement(p):
-    '''
-    expression_statement : expression SEMICOLON
-    '''
-    # Code to handle expression statements
+def p_variable_declaration(p):
+    'variable_declaration : VARIABLE IDENTIFIER'
+    p[0] = ('variable', p[2])
 
-def p_graph_statement(p):
-    '''
-    graph_statement : GRAPH IDENTIFIER SEMICOLON
-    '''
-    # Code to handle graph statements
+def p_init_statement(p):
+    'init_statement : INIT EQUALS expression'
+    p[0] = ('init', p[3])
 
-def p_node_statement(p):
-    '''
-    node_statement : NODE IDENTIFIER SEMICOLON
-    '''
-    # Code to handle node statements
+def p_next_statement(p):
+    'next_statement : NEXT EQUALS expression'
+    p[0] = ('next', p[3])
 
-def p_edge_statement(p):
-    '''
-    edge_statement : EDGE IDENTIFIER ARROW IDENTIFIER SEMICOLON
-    '''
-    # Code to handle edge statements
-
-def p_variable_statement(p):
-    '''
-    variable_statement : VARIABLE IDENTIFIER SEMICOLON
-    '''
-    # Code to handle variable statements
-
+# Simplified rule for expression, to be expanded
 def p_expression(p):
-    '''expression : expression PLUS expression
-                  | expression MINUS expression
-                  | expression TIMES expression
-                  | expression DIVIDE expression
-                  | MINUS expression %prec UMINUS
-                  | LPAREN expression RPAREN
-                  | identifier
-                  | NUMBER'''
-    # Code to handle expressions
+    '''expression : IDENTIFIER
+                  | NUMBER_LITERAL'''
+    p[0] = p[1]
 
-def p_identifier(p):
-    '''identifier : IDENTIFIER'''
-    # Code to handle identifiers
-
-# Error rule for syntax errors
+# Error handling rule for syntax errors
 def p_error(p):
-    print("Syntax error in input!")
+    if p:
+        print(f"Syntax error at '{p.value}'")
+    else:
+        print("Syntax error at EOF")
 
 # Build the parser
 parser = yacc.yacc()
 
-# Test the parser with some input
-data = '''
-MODULE MyModule;
-VARIABLE x;
-x = 10 + 20;
-GRAPH G;
-NODE n;
-EDGE n -> n;
-'''
-result = parser.parse(data)
+
+result = parser.parse(tla_code)
 print(result)
+print(parsed_data)
