@@ -1,53 +1,142 @@
 import ply.yacc as yacc
 from tokenizer import tokens
 from tokenizer import tla_code
+
+
 # Placeholder for storing parsed module information
 parsed_data = {}
 
-# Parsing rule for a module
-def p_module(p):
-    'module : MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER body'
-    parsed_data['module_name'] = p[3]
-    parsed_data['body'] = p[5]
 
-# Parsing rule for the body of the module, which could include various statements
+class ASTNode:     #AST classes 
+    pass
+
+class ModuleNode(ASTNode):
+    def __init__(self, name, extends, declarations):
+        self.name = name
+        self.extends = extends
+        self.declarations = declarations
+
+
+class ExtendsNode(ASTNode):
+    def __init__(self, extended_module):
+        self.extended_module = extended_module
+
+class ConstantsNode(ASTNode):
+    def __init__(self, constants):
+        self.constants = constants  # List of constant names
+
+class VariablesNode(ASTNode):
+    def __init__(self, variables):
+        self.variables = variables  # List of variable names
+
+class AssignmentNode(ASTNode):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+class BinaryOperationNode(ASTNode):
+    def __init__(self, left, operator, right):
+        self.left = left
+        self.operator = operator
+        self.right = right
+
+class IdentifierNode(ASTNode):
+    def __init__(self, name):
+        self.name = name
+
+class LiteralNode(ASTNode):
+    def __init__(self, value):
+        self.value = value
+
+
+
+# Parsing the module with optional extends and body (declarations, assignments, etc.)
+def p_module(p):
+    '''module : MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER extends declarations
+              | MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER declarations'''
+    if len(p) == 7:
+        p[0] = ModuleNode(name=p[3], extends=p[5], declarations=p[6])
+    else:
+        p[0] = ModuleNode(name=p[3], extends=None, declarations=p[5])
+
+
+def p_extends(p):
+    '''extends : EXTENDS IDENTIFIER
+               | empty'''
+    p[0] = ExtendsNode(extended_module=p[2]) if p[1] else None
+
 def p_body(p):
-    '''body : body statement
-            | statement'''
+    '''body : declarations
+            | empty'''
+    p[0] = p[1]
+
+
+# Define rules for `statement`, `variable_declaration`, `constants_declaration`, etc.
+
+def p_statement(p):
+    '''statement : constants_declaration
+                 | variables_declaration
+                 | assignment_statement
+                 | empty'''
+    p[0] = p[1]
+
+
+def p_declarations(p):
+    '''declarations : declarations declaration
+                    | declaration'''
     if len(p) == 3:
-        p[0] = p[1] + [p[2]]
+        p[1].append(p[2])
+        p[0] = p[1]
     else:
         p[0] = [p[1]]
 
-# Parsing rule for different types of statements (simplified for demonstration)
-def p_statement(p):
-    '''statement : constants_declaration
-                 | variable_declaration
-                 | init_statement
-                 | next_statement'''
+
+def p_declaration(p):
+    '''declaration : constants_declaration
+                   | variables_declaration
+                   | assignment_statement'''
     p[0] = p[1]
 
 def p_constants_declaration(p):
-    'constants_declaration : CONSTANTS IDENTIFIER COMMA IDENTIFIER'
-    p[0] = ('constants', p[2], p[4])
+    'constants_declaration : CONSTANTS IDENTIFIER_LIST'
+    p[0] = ConstantsNode(p[2])
 
-def p_variable_declaration(p):
-    'variable_declaration : VARIABLE IDENTIFIER'
-    p[0] = ('variable', p[2])
 
-def p_init_statement(p):
-    'init_statement : INIT EQUALS expression'
-    p[0] = ('init', p[3])
+def p_variables_declaration(p):
+    'variables_declaration : VARIABLE IDENTIFIER_LIST'
+    p[0] = VariablesNode(p[2])
 
-def p_next_statement(p):
-    'next_statement : NEXT EQUALS expression'
-    p[0] = ('next', p[3])
 
-# Simplified rule for expression, to be expanded
+def p_identifier_list(p):
+    """
+    IDENTIFIER_LIST : IDENTIFIER_LIST COMMA IDENTIFIER
+                    | IDENTIFIER
+    """
+    if len(p) == 4:
+        p[0] = p[1] + [p[3]]
+    else:
+        p[0] = [p[1]]        
+
+
+def p_assignment_statement(p):
+    'assignment_statement : IDENTIFIER EQUALS expression'
+    p[0] = AssignmentNode(IdentifierNode(p[1]), p[3])
+
+
 def p_expression(p):
-    '''expression : IDENTIFIER
+    '''expression : expression PLUS expression
+                  | expression MINUS expression
+                  | IDENTIFIER
                   | NUMBER_LITERAL'''
-    p[0] = p[1]
+    if len(p) == 4:
+        p[0] = BinaryOperationNode(p[1], p[2], p[3])
+    else:
+        p[0] = IdentifierNode(p[1]) if p.slice[1].type == "IDENTIFIER" else LiteralNode(p[1])
+
+
+def p_empty(p):
+    'empty :'
+    pass
 
 # Error handling rule for syntax errors
 def p_error(p):
