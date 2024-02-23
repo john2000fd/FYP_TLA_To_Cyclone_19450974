@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'ARROW BACK_SLASH CHECK COMMA COMMENT CONSTANTS DIVIDE EDGE END_OF_FILE EQUALS EXTENDS FORWARD_SLASH GOAL GRAPH GREATER_THAN IDENTIFIER INIT INVARIANT LEFT_BRACE LEFT_PAREN LEFT_SQR_BRACKET LESS_THAN MINUS MODULE MODULE_NAME MODULE_WRAPPER NEXT NODE NUMBER_LITERAL PLUS RIGHT_BRACE RIGHT_PAREN RIGHT_SQR_BRACKET SEMICOLON SINGLE_QUOTE SPEC STAR STRING_LITERAL UNDERSCORE VARIABLE VARIABLE_NAMEmodule : MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER extends body\n              | MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER body\n    extends : EXTENDS IDENTIFIER_LIST\n    body : declarations\n            | emptystatement : constants_declaration\n                 | variables_declaration\n                 | assignment_statement\n                 | emptydeclarations : declarations declaration\n                    | declarationdeclaration : constants_declaration\n                   | variables_declaration\n                   | assignment_statementconstants_declaration : CONSTANTS IDENTIFIER_LISTvariables_declaration : VARIABLE IDENTIFIER_LIST\n    IDENTIFIER_LIST : IDENTIFIER_LIST COMMA IDENTIFIER\n                    | IDENTIFIER\n    assignment_statement : IDENTIFIER EQUALS expressionexpression : expression PLUS expression\n                  | expression MINUS expression\n                  | IDENTIFIER\n                  | NUMBER_LITERALempty :'
+_lr_signature = 'ARROW BACK_SLASH CHECK COMMA COMMENT CONSTANTS DIVIDE EDGE END_OF_FILE EQUALS EXTENDS FORWARD_SLASH GOAL GRAPH GREATER_THAN IDENTIFIER INIT INVARIANT LEFT_BRACE LEFT_PAREN LEFT_SQR_BRACKET LESS_THAN MINUS MODULE MODULE_NAME MODULE_WRAPPER NEXT NODE NUMBER_LITERAL PLUS RIGHT_BRACE RIGHT_PAREN RIGHT_SQR_BRACKET SEMICOLON SINGLE_QUOTE SPEC STAR STRING_LITERAL UNDERSCORE VARIABLE VARIABLE_NAMEmodule : MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER extends declarations\n              | MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER declarationsextends : EXTENDS IDENTIFIER\n               | emptydeclarations : declarations declaration\n                    | declarationdeclaration : constants_declaration\n                   | variables_declaration\n                   | assignment_statementconstants_declaration : CONSTANTS IDENTIFIER_LISTvariables_declaration : VARIABLE IDENTIFIER_LIST\n    IDENTIFIER_LIST : IDENTIFIER_LIST COMMA IDENTIFIER\n                    | IDENTIFIER\n    assignment_statement : IDENTIFIER EQUALS expressionexpression : expression PLUS expression\n                  | expression MINUS expression\n                  | expression STAR expression\n                  | expression DIVIDE expression\n                  | IDENTIFIER\n                  | NUMBER_LITERAL\n                  | STRING_LITERALempty :'
     
-_lr_action_items = {'MODULE_WRAPPER':([0,4,],[2,5,]),'$end':([1,5,7,8,10,11,12,13,14,15,19,20,21,22,23,24,25,26,27,31,32,33,],[0,-24,-24,-2,-4,-5,-11,-12,-13,-14,-1,-3,-18,-10,-15,-16,-22,-19,-23,-17,-20,-21,]),'MODULE':([2,],[3,]),'IDENTIFIER':([3,5,7,9,10,12,13,14,15,16,17,18,20,21,22,23,24,25,26,27,28,29,30,31,32,33,],[4,6,6,21,6,-11,-12,-13,-14,21,21,25,-3,-18,-10,-15,-16,-22,-19,-23,31,25,25,-17,-20,-21,]),'EXTENDS':([5,],[9,]),'CONSTANTS':([5,7,10,12,13,14,15,20,21,22,23,24,25,26,27,31,32,33,],[16,16,16,-11,-12,-13,-14,-3,-18,-10,-15,-16,-22,-19,-23,-17,-20,-21,]),'VARIABLE':([5,7,10,12,13,14,15,20,21,22,23,24,25,26,27,31,32,33,],[17,17,17,-11,-12,-13,-14,-3,-18,-10,-15,-16,-22,-19,-23,-17,-20,-21,]),'EQUALS':([6,],[18,]),'NUMBER_LITERAL':([18,29,30,],[27,27,27,]),'COMMA':([20,21,23,24,31,],[28,-18,28,28,-17,]),'PLUS':([25,26,27,32,33,],[-22,29,-23,29,29,]),'MINUS':([25,26,27,32,33,],[-22,30,-23,30,30,]),}
+_lr_action_items = {'MODULE_WRAPPER':([0,4,],[2,5,]),'$end':([1,8,11,12,13,14,18,19,21,22,23,24,25,26,27,33,34,35,36,37,],[0,-2,-6,-7,-8,-9,-1,-5,-10,-13,-11,-19,-14,-20,-21,-12,-15,-16,-17,-18,]),'MODULE':([2,],[3,]),'IDENTIFIER':([3,5,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,],[4,6,6,6,20,-4,-6,-7,-8,-9,22,22,24,6,-5,-3,-10,-13,-11,-19,-14,-20,-21,33,24,24,24,24,-12,-15,-16,-17,-18,]),'EXTENDS':([5,],[9,]),'CONSTANTS':([5,7,8,10,11,12,13,14,18,19,20,21,22,23,24,25,26,27,33,34,35,36,37,],[15,15,15,-4,-6,-7,-8,-9,15,-5,-3,-10,-13,-11,-19,-14,-20,-21,-12,-15,-16,-17,-18,]),'VARIABLE':([5,7,8,10,11,12,13,14,18,19,20,21,22,23,24,25,26,27,33,34,35,36,37,],[16,16,16,-4,-6,-7,-8,-9,16,-5,-3,-10,-13,-11,-19,-14,-20,-21,-12,-15,-16,-17,-18,]),'EQUALS':([6,],[17,]),'NUMBER_LITERAL':([17,29,30,31,32,],[26,26,26,26,26,]),'STRING_LITERAL':([17,29,30,31,32,],[27,27,27,27,27,]),'COMMA':([21,22,23,33,],[28,-13,28,-12,]),'PLUS':([24,25,26,27,34,35,36,37,],[-19,29,-20,-21,29,29,29,29,]),'MINUS':([24,25,26,27,34,35,36,37,],[-19,30,-20,-21,30,30,30,30,]),'STAR':([24,25,26,27,34,35,36,37,],[-19,31,-20,-21,31,31,31,31,]),'DIVIDE':([24,25,26,27,34,35,36,37,],[-19,32,-20,-21,32,32,32,32,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'module':([0,],[1,]),'extends':([5,],[7,]),'body':([5,7,],[8,19,]),'declarations':([5,7,],[10,10,]),'empty':([5,7,],[11,11,]),'declaration':([5,7,10,],[12,12,22,]),'constants_declaration':([5,7,10,],[13,13,13,]),'variables_declaration':([5,7,10,],[14,14,14,]),'assignment_statement':([5,7,10,],[15,15,15,]),'IDENTIFIER_LIST':([9,16,17,],[20,23,24,]),'expression':([18,29,30,],[26,32,33,]),}
+_lr_goto_items = {'module':([0,],[1,]),'extends':([5,],[7,]),'declarations':([5,7,],[8,18,]),'empty':([5,],[10,]),'declaration':([5,7,8,18,],[11,11,19,19,]),'constants_declaration':([5,7,8,18,],[12,12,12,12,]),'variables_declaration':([5,7,8,18,],[13,13,13,13,]),'assignment_statement':([5,7,8,18,],[14,14,14,14,]),'IDENTIFIER_LIST':([15,16,],[21,23,]),'expression':([17,29,30,31,32,],[25,34,35,36,37,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,28 +27,26 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> module","S'",1,None,None,None),
-  ('module -> MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER extends body','module',6,'p_module','parser.py',55),
-  ('module -> MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER body','module',5,'p_module','parser.py',56),
-  ('extends -> EXTENDS IDENTIFIER_LIST','extends',2,'p_extends','parser.py',66),
-  ('body -> declarations','body',1,'p_body','parser.py',73),
-  ('body -> empty','body',1,'p_body','parser.py',74),
-  ('statement -> constants_declaration','statement',1,'p_statement','parser.py',81),
-  ('statement -> variables_declaration','statement',1,'p_statement','parser.py',82),
-  ('statement -> assignment_statement','statement',1,'p_statement','parser.py',83),
-  ('statement -> empty','statement',1,'p_statement','parser.py',84),
-  ('declarations -> declarations declaration','declarations',2,'p_declarations','parser.py',89),
-  ('declarations -> declaration','declarations',1,'p_declarations','parser.py',90),
-  ('declaration -> constants_declaration','declaration',1,'p_declaration','parser.py',99),
-  ('declaration -> variables_declaration','declaration',1,'p_declaration','parser.py',100),
-  ('declaration -> assignment_statement','declaration',1,'p_declaration','parser.py',101),
-  ('constants_declaration -> CONSTANTS IDENTIFIER_LIST','constants_declaration',2,'p_constants_declaration','parser.py',105),
-  ('variables_declaration -> VARIABLE IDENTIFIER_LIST','variables_declaration',2,'p_variables_declaration','parser.py',110),
-  ('IDENTIFIER_LIST -> IDENTIFIER_LIST COMMA IDENTIFIER','IDENTIFIER_LIST',3,'p_identifier_list','parser.py',116),
-  ('IDENTIFIER_LIST -> IDENTIFIER','IDENTIFIER_LIST',1,'p_identifier_list','parser.py',117),
-  ('assignment_statement -> IDENTIFIER EQUALS expression','assignment_statement',3,'p_assignment_statement','parser.py',126),
-  ('expression -> expression PLUS expression','expression',3,'p_expression','parser.py',131),
-  ('expression -> expression MINUS expression','expression',3,'p_expression','parser.py',132),
-  ('expression -> IDENTIFIER','expression',1,'p_expression','parser.py',133),
-  ('expression -> NUMBER_LITERAL','expression',1,'p_expression','parser.py',134),
-  ('empty -> <empty>','empty',0,'p_empty','parser.py',142),
+  ('module -> MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER extends declarations','module',6,'p_module','parser.py',55),
+  ('module -> MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER declarations','module',5,'p_module','parser.py',56),
+  ('extends -> EXTENDS IDENTIFIER','extends',2,'p_extends','parser.py',64),
+  ('extends -> empty','extends',1,'p_extends','parser.py',65),
+  ('declarations -> declarations declaration','declarations',2,'p_declarations','parser.py',72),
+  ('declarations -> declaration','declarations',1,'p_declarations','parser.py',73),
+  ('declaration -> constants_declaration','declaration',1,'p_declaration','parser.py',82),
+  ('declaration -> variables_declaration','declaration',1,'p_declaration','parser.py',83),
+  ('declaration -> assignment_statement','declaration',1,'p_declaration','parser.py',84),
+  ('constants_declaration -> CONSTANTS IDENTIFIER_LIST','constants_declaration',2,'p_constants_declaration','parser.py',88),
+  ('variables_declaration -> VARIABLE IDENTIFIER_LIST','variables_declaration',2,'p_variables_declaration','parser.py',93),
+  ('IDENTIFIER_LIST -> IDENTIFIER_LIST COMMA IDENTIFIER','IDENTIFIER_LIST',3,'p_identifier_list','parser.py',99),
+  ('IDENTIFIER_LIST -> IDENTIFIER','IDENTIFIER_LIST',1,'p_identifier_list','parser.py',100),
+  ('assignment_statement -> IDENTIFIER EQUALS expression','assignment_statement',3,'p_assignment_statement','parser.py',109),
+  ('expression -> expression PLUS expression','expression',3,'p_expression','parser.py',114),
+  ('expression -> expression MINUS expression','expression',3,'p_expression','parser.py',115),
+  ('expression -> expression STAR expression','expression',3,'p_expression','parser.py',116),
+  ('expression -> expression DIVIDE expression','expression',3,'p_expression','parser.py',117),
+  ('expression -> IDENTIFIER','expression',1,'p_expression','parser.py',118),
+  ('expression -> NUMBER_LITERAL','expression',1,'p_expression','parser.py',119),
+  ('expression -> STRING_LITERAL','expression',1,'p_expression','parser.py',120),
+  ('empty -> <empty>','empty',0,'p_empty','parser.py',130),
 ]

@@ -6,6 +6,11 @@ from tokenizer import tla_code
 # Placeholder for storing parsed module information
 parsed_data = {}
 
+precedence = (
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'STAR', 'DIVIDE'),
+    ('nonassoc', 'LEFT_PAREN', 'RIGHT_PAREN'),  # Ensure proper grouping
+)
 
 class ASTNode:     #AST classes 
     pass
@@ -65,21 +70,8 @@ def p_extends(p):
                | empty'''
     p[0] = ExtendsNode(extended_module=p[2]) if p[1] else None
 
-def p_body(p):
-    '''body : declarations
-            | empty'''
-    p[0] = p[1]
-
 
 # Define rules for `statement`, `variable_declaration`, `constants_declaration`, etc.
-
-def p_statement(p):
-    '''statement : constants_declaration
-                 | variables_declaration
-                 | assignment_statement
-                 | empty'''
-    p[0] = p[1]
-
 
 def p_declarations(p):
     '''declarations : declarations declaration
@@ -105,17 +97,7 @@ def p_constants_declaration(p):
 def p_variables_declaration(p):
     'variables_declaration : VARIABLE IDENTIFIER_LIST'
     p[0] = VariablesNode(p[2])
-
-
-def p_identifier_list(p):
-    """
-    IDENTIFIER_LIST : IDENTIFIER_LIST COMMA IDENTIFIER
-                    | IDENTIFIER
-    """
-    if len(p) == 4:
-        p[0] = p[1] + [p[3]]
-    else:
-        p[0] = [p[1]]        
+ 
 
 
 def p_assignment_statement(p):
@@ -126,13 +108,57 @@ def p_assignment_statement(p):
 def p_expression(p):
     '''expression : expression PLUS expression
                   | expression MINUS expression
+                  | expression STAR expression
+                  | expression DIVIDE expression
                   | IDENTIFIER
-                  | NUMBER_LITERAL'''
+                  | NUMBER_LITERAL
+                  | STRING_LITERAL'''
     if len(p) == 4:
         p[0] = BinaryOperationNode(p[1], p[2], p[3])
+    elif p.slice[1].type == "IDENTIFIER":
+        p[0] = IdentifierNode(p[1])
     else:
-        p[0] = IdentifierNode(p[1]) if p.slice[1].type == "IDENTIFIER" else LiteralNode(p[1])
+        p[0] = LiteralNode(p[1])
 
+
+def p_expression_binary_operation(p):
+    '''expression : expression PLUS expression
+                  | expression MINUS expression
+                  | expression STAR expression
+                  | expression DIVIDE expression'''
+    p[0] = BinaryOperationNode(left=p[1], operator=p[2], right=p[3])
+
+def p_expression_group(p):
+    'expression : LEFT_PAREN expression RIGHT_PAREN'
+    p[0] = p[2]  # No new node needed, just use the expression's node
+
+
+def p_expression_identifier(p):
+    'expression : IDENTIFIER'
+    p[0] = IdentifierNode(name=p[1])
+
+def p_expression_literal(p):
+    '''expression : NUMBER_LITERAL
+                  | STRING_LITERAL'''
+    p[0] = LiteralNode(value=p[1])
+
+
+def p_variables_declaration_list(p):
+    'variables_declaration : VARIABLE IDENTIFIER_LIST'
+    p[0] = VariablesNode(variables=p[2])
+
+def p_constants_declaration_list(p):
+    'constants_declaration : CONSTANTS IDENTIFIER_LIST'
+    p[0] = ConstantsNode(constants=p[2])
+
+def p_identifier_list(p):
+    '''IDENTIFIER_LIST : IDENTIFIER_LIST COMMA IDENTIFIER
+                       | IDENTIFIER'''
+    if len(p) == 4:
+        p[1].append(p[3])
+        p[0] = p[1]
+    else:
+        p[0] = [p[1]]
 
 def p_empty(p):
     'empty :'
