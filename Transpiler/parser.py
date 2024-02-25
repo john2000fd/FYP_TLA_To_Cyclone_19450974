@@ -7,11 +7,27 @@ from tokenizer import tla_code
 parsed_data = {}
 
 precedence = (
-    ('left', 'PLUS', 'MINUS'),
-    ('left', 'STAR', 'DIVIDE'),
-    ('nonassoc', 'LEFT_PAREN', 'RIGHT_PAREN'),  # Ensure proper grouping
+    ('left', 'OR'),  # Logical OR
+    ('left', 'AND'),  # Logical AND
+    ('nonassoc', 'EQUALS', 'NOT_EQUALS'),  # Equality and inequality
+    ('nonassoc', 'LESS_THAN', 'LESS_THAN_EQ', 'GREATER_THAN', 'GREATER_THAN_EQ'),  # Relational operators
+    ('left', 'PLUS', 'MINUS'),  # Addition and subtraction
+    ('left', 'STAR', 'DIVIDE', 'MOD'),  # Multiplication, division, modulo
+    ('right', 'EXP'),  # Exponentiation
+    ('right', 'UMINUS'),  # Unary minus operator
+    ('nonassoc', 'LEFT_PAREN', 'RIGHT_PAREN'),  # Parentheses for grouping
 )
 
+
+
+
+
+
+
+
+
+
+#THESE ARE OUR NODES FOR THE AST
 class ASTNode:     #AST classes 
     pass
 
@@ -23,9 +39,8 @@ class ModuleNode(ASTNode):
 
 
 class ExtendsNode(ASTNode):
-    def __init__(self, extended_module):
-        self.extended_module = extended_module
-
+    def __init__(self, extended_modules):
+        self.extended_modules = extended_modules
 class ConstantsNode(ASTNode):
     def __init__(self, constants):
         self.constants = constants  # List of constant names
@@ -110,6 +125,15 @@ class SpecNode(ASTNode):
         self.property_goal = property_goal  # Optional property goal node
 
 
+
+
+
+
+
+
+
+#FUNCTIONS FOR PARSING
+
 # Parsing the module with optional extends and body (declarations, assignments, etc.)
 def p_module(p):
     '''module : MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER extends declarations
@@ -121,9 +145,8 @@ def p_module(p):
 
 
 def p_extends(p):
-    '''extends : EXTENDS IDENTIFIER
-               | empty'''
-    p[0] = ExtendsNode(extended_module=p[2]) if p[1] else None
+    '''extends : EXTENDS identifier_list'''
+    p[0] = ExtendsNode(p[2])
 
 
 # Define rules for `statement`, `variable_declaration`, `constants_declaration`, etc.
@@ -210,49 +233,30 @@ def p_expression(p):
                   | NUMBER_LITERAL
                   | STRING_LITERAL'''
     if len(p) == 4:
+        # Handles binary operations
         p[0] = BinaryOperationNode(p[1], p[2], p[3])
     elif p.slice[1].type == "IDENTIFIER":
+        # Handles identifiers
         p[0] = IdentifierNode(p[1])
     else:
+        # Handles literals (numbers and strings)
         p[0] = LiteralNode(p[1])
 
 
-def p_expression_binary_operation(p):
-    '''expression : expression PLUS expression
-                  | expression MINUS expression
-                  | expression STAR expression
-                  | expression DIVIDE expression'''
-    p[0] = BinaryOperationNode(left=p[1], operator=p[2], right=p[3])
 
+#Grouping expressions
 def p_expression_group(p):
     'expression : LEFT_PAREN expression RIGHT_PAREN'
-    p[0] = p[2]  # No new node needed, just use the expression's node
+    p[0] = p[2]  # Grouped expression, no node needed
 
 
-def p_expression_identifier(p):
-    'expression : IDENTIFIER'
-    p[0] = IdentifierNode(name=p[1])
 
-def p_expression_literal(p):
-    '''expression : NUMBER_LITERAL
-                  | STRING_LITERAL'''
-    p[0] = LiteralNode(value=p[1])
-
-
-def p_variables_declaration_list(p):
-    'variables_declaration : VARIABLE IDENTIFIER_LIST'
-    p[0] = VariablesNode(variables=p[2])
-
-def p_constants_declaration_list(p):
-    'constants_declaration : CONSTANTS IDENTIFIER_LIST'
-    p[0] = ConstantsNode(constants=p[2])
 
 def p_identifier_list(p):
-    '''IDENTIFIER_LIST : IDENTIFIER_LIST COMMA IDENTIFIER
+    '''identifier_list : identifier_list COMMA IDENTIFIER
                        | IDENTIFIER'''
     if len(p) == 4:
-        p[1].append(p[3])
-        p[0] = p[1]
+        p[0] = p[1] + [p[3]]
     else:
         p[0] = [p[1]]
 
@@ -273,6 +277,13 @@ def p_error(p):
         print(f"Syntax error at '{p.value}'")
     else:
         print("Syntax error at EOF")
+
+
+
+
+
+
+
 
 # Build the parser
 parser = yacc.yacc()

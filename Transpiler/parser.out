@@ -2,27 +2,21 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    ARROW
+    AND
     BACK_SLASH
     CHECK
-    COMMENT
-    EDGE
-    END_OF_FILE
+    COLON
+    EQUAL
     FORWARD_SLASH
-    GOAL
-    GRAPH
     GREATER_THAN
-    INIT
-    INVARIANT
     LEFT_BRACE
-    LEFT_PAREN
     LEFT_SQR_BRACKET
     LESS_THAN
     MODULE_NAME
+    MODULUS
     NEXT
-    NODE
+    OR
     RIGHT_BRACE
-    RIGHT_PAREN
     RIGHT_SQR_BRACKET
     SEMICOLON
     SINGLE_QUOTE
@@ -44,58 +38,72 @@ Rule 8     declaration -> variables_declaration
 Rule 9     declaration -> assignment_statement
 Rule 10    constants_declaration -> CONSTANTS IDENTIFIER_LIST
 Rule 11    variables_declaration -> VARIABLE IDENTIFIER_LIST
-Rule 12    IDENTIFIER_LIST -> IDENTIFIER_LIST COMMA IDENTIFIER
-Rule 13    IDENTIFIER_LIST -> IDENTIFIER
-Rule 14    assignment_statement -> IDENTIFIER EQUALS expression
-Rule 15    expression -> expression PLUS expression
-Rule 16    expression -> expression MINUS expression
-Rule 17    expression -> expression STAR expression
-Rule 18    expression -> expression DIVIDE expression
-Rule 19    expression -> IDENTIFIER
-Rule 20    expression -> NUMBER_LITERAL
-Rule 21    expression -> STRING_LITERAL
-Rule 22    empty -> <empty>
+Rule 12    graph_declaration -> GRAPH IDENTIFIER graph_body
+Rule 13    graph_body -> graph_body graph_statement
+Rule 14    graph_body -> graph_statement
+Rule 15    graph_statement -> node_declaration
+Rule 16    graph_statement -> edge_declaration
+Rule 17    node_declaration -> NODE IDENTIFIER
+Rule 18    edge_declaration -> EDGE IDENTIFIER ARROW IDENTIFIER
+Rule 19    invariant_declaration -> INVARIANT expression
+Rule 20    property_goal_declaration -> GOAL expression
+Rule 21    assignment_statement -> IDENTIFIER EQUALS expression
+Rule 22    expression -> expression PLUS expression
+Rule 23    expression -> expression MINUS expression
+Rule 24    expression -> expression STAR expression
+Rule 25    expression -> expression DIVIDE expression
+Rule 26    expression -> IDENTIFIER
+Rule 27    expression -> NUMBER_LITERAL
+Rule 28    expression -> STRING_LITERAL
+Rule 29    expression -> LEFT_PAREN expression RIGHT_PAREN
+Rule 30    IDENTIFIER_LIST -> IDENTIFIER_LIST COMMA IDENTIFIER
+Rule 31    IDENTIFIER_LIST -> IDENTIFIER
+Rule 32    init_declaration -> INIT EQUALS expression
+Rule 33    empty -> <empty>
 
 Terminals, with rules where they appear
 
-ARROW                : 
+AND                  : 
+ARROW                : 18
 BACK_SLASH           : 
 CHECK                : 
-COMMA                : 12
-COMMENT              : 
+COLON                : 
+COMMA                : 30
 CONSTANTS            : 10
-DIVIDE               : 18
-EDGE                 : 
-END_OF_FILE          : 
-EQUALS               : 14
+DIVIDE               : 25
+EDGE                 : 18
+EQUAL                : 
+EQUALS               : 21 32
 EXTENDS              : 3
 FORWARD_SLASH        : 
-GOAL                 : 
-GRAPH                : 
+GOAL                 : 20
+GRAPH                : 12
 GREATER_THAN         : 
-IDENTIFIER           : 1 2 3 12 13 14 19
-INIT                 : 
-INVARIANT            : 
+IDENTIFIER           : 1 2 3 12 17 18 18 21 26 30 31
+INIT                 : 32
+INVARIANT            : 19
 LEFT_BRACE           : 
-LEFT_PAREN           : 
+LEFT_PAREN           : 29
 LEFT_SQR_BRACKET     : 
 LESS_THAN            : 
-MINUS                : 16
+MINUS                : 23
 MODULE               : 1 2
 MODULE_NAME          : 
 MODULE_WRAPPER       : 1 1 2 2
+MODULUS              : 
 NEXT                 : 
-NODE                 : 
-NUMBER_LITERAL       : 20
-PLUS                 : 15
+NODE                 : 17
+NUMBER_LITERAL       : 27
+OR                   : 
+PLUS                 : 22
 RIGHT_BRACE          : 
-RIGHT_PAREN          : 
+RIGHT_PAREN          : 29
 RIGHT_SQR_BRACKET    : 
 SEMICOLON            : 
 SINGLE_QUOTE         : 
 SPEC                 : 
-STAR                 : 17
-STRING_LITERAL       : 21
+STAR                 : 24
+STRING_LITERAL       : 28
 UNDERSCORE           : 
 VARIABLE             : 11
 VARIABLE_NAME        : 
@@ -103,585 +111,22 @@ error                :
 
 Nonterminals, with rules where they appear
 
-IDENTIFIER_LIST      : 10 11 12
+IDENTIFIER_LIST      : 10 11 30
 assignment_statement : 9
 constants_declaration : 7
 declaration          : 5 6
 declarations         : 1 2 5
+edge_declaration     : 16
 empty                : 4
-expression           : 14 15 15 16 16 17 17 18 18
+expression           : 19 20 21 22 22 23 23 24 24 25 25 29 32
 extends              : 1
+graph_body           : 12 13
+graph_declaration    : 
+graph_statement      : 13 14
+init_declaration     : 
+invariant_declaration : 
 module               : 0
+node_declaration     : 15
+property_goal_declaration : 
 variables_declaration : 8
 
-Parsing method: LALR
-
-state 0
-
-    (0) S' -> . module
-    (1) module -> . MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER extends declarations
-    (2) module -> . MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER declarations
-
-    MODULE_WRAPPER  shift and go to state 2
-
-    module                         shift and go to state 1
-
-state 1
-
-    (0) S' -> module .
-
-
-
-state 2
-
-    (1) module -> MODULE_WRAPPER . MODULE IDENTIFIER MODULE_WRAPPER extends declarations
-    (2) module -> MODULE_WRAPPER . MODULE IDENTIFIER MODULE_WRAPPER declarations
-
-    MODULE          shift and go to state 3
-
-
-state 3
-
-    (1) module -> MODULE_WRAPPER MODULE . IDENTIFIER MODULE_WRAPPER extends declarations
-    (2) module -> MODULE_WRAPPER MODULE . IDENTIFIER MODULE_WRAPPER declarations
-
-    IDENTIFIER      shift and go to state 4
-
-
-state 4
-
-    (1) module -> MODULE_WRAPPER MODULE IDENTIFIER . MODULE_WRAPPER extends declarations
-    (2) module -> MODULE_WRAPPER MODULE IDENTIFIER . MODULE_WRAPPER declarations
-
-    MODULE_WRAPPER  shift and go to state 5
-
-
-state 5
-
-    (1) module -> MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER . extends declarations
-    (2) module -> MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER . declarations
-    (3) extends -> . EXTENDS IDENTIFIER
-    (4) extends -> . empty
-    (5) declarations -> . declarations declaration
-    (6) declarations -> . declaration
-    (22) empty -> .
-    (7) declaration -> . constants_declaration
-    (8) declaration -> . variables_declaration
-    (9) declaration -> . assignment_statement
-    (10) constants_declaration -> . CONSTANTS IDENTIFIER_LIST
-    (11) variables_declaration -> . VARIABLE IDENTIFIER_LIST
-    (14) assignment_statement -> . IDENTIFIER EQUALS expression
-
-  ! shift/reduce conflict for CONSTANTS resolved as shift
-  ! shift/reduce conflict for VARIABLE resolved as shift
-  ! shift/reduce conflict for IDENTIFIER resolved as shift
-    EXTENDS         shift and go to state 9
-    CONSTANTS       shift and go to state 15
-    VARIABLE        shift and go to state 16
-    IDENTIFIER      shift and go to state 6
-
-  ! CONSTANTS       [ reduce using rule 22 (empty -> .) ]
-  ! VARIABLE        [ reduce using rule 22 (empty -> .) ]
-  ! IDENTIFIER      [ reduce using rule 22 (empty -> .) ]
-
-    extends                        shift and go to state 7
-    declarations                   shift and go to state 8
-    empty                          shift and go to state 10
-    declaration                    shift and go to state 11
-    constants_declaration          shift and go to state 12
-    variables_declaration          shift and go to state 13
-    assignment_statement           shift and go to state 14
-
-state 6
-
-    (14) assignment_statement -> IDENTIFIER . EQUALS expression
-
-    EQUALS          shift and go to state 17
-
-
-state 7
-
-    (1) module -> MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER extends . declarations
-    (5) declarations -> . declarations declaration
-    (6) declarations -> . declaration
-    (7) declaration -> . constants_declaration
-    (8) declaration -> . variables_declaration
-    (9) declaration -> . assignment_statement
-    (10) constants_declaration -> . CONSTANTS IDENTIFIER_LIST
-    (11) variables_declaration -> . VARIABLE IDENTIFIER_LIST
-    (14) assignment_statement -> . IDENTIFIER EQUALS expression
-
-    CONSTANTS       shift and go to state 15
-    VARIABLE        shift and go to state 16
-    IDENTIFIER      shift and go to state 6
-
-    declarations                   shift and go to state 18
-    declaration                    shift and go to state 11
-    constants_declaration          shift and go to state 12
-    variables_declaration          shift and go to state 13
-    assignment_statement           shift and go to state 14
-
-state 8
-
-    (2) module -> MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER declarations .
-    (5) declarations -> declarations . declaration
-    (7) declaration -> . constants_declaration
-    (8) declaration -> . variables_declaration
-    (9) declaration -> . assignment_statement
-    (10) constants_declaration -> . CONSTANTS IDENTIFIER_LIST
-    (11) variables_declaration -> . VARIABLE IDENTIFIER_LIST
-    (14) assignment_statement -> . IDENTIFIER EQUALS expression
-
-    $end            reduce using rule 2 (module -> MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER declarations .)
-    CONSTANTS       shift and go to state 15
-    VARIABLE        shift and go to state 16
-    IDENTIFIER      shift and go to state 6
-
-    declaration                    shift and go to state 19
-    constants_declaration          shift and go to state 12
-    variables_declaration          shift and go to state 13
-    assignment_statement           shift and go to state 14
-
-state 9
-
-    (3) extends -> EXTENDS . IDENTIFIER
-
-    IDENTIFIER      shift and go to state 20
-
-
-state 10
-
-    (4) extends -> empty .
-
-    CONSTANTS       reduce using rule 4 (extends -> empty .)
-    VARIABLE        reduce using rule 4 (extends -> empty .)
-    IDENTIFIER      reduce using rule 4 (extends -> empty .)
-
-
-state 11
-
-    (6) declarations -> declaration .
-
-    CONSTANTS       reduce using rule 6 (declarations -> declaration .)
-    VARIABLE        reduce using rule 6 (declarations -> declaration .)
-    IDENTIFIER      reduce using rule 6 (declarations -> declaration .)
-    $end            reduce using rule 6 (declarations -> declaration .)
-
-
-state 12
-
-    (7) declaration -> constants_declaration .
-
-    CONSTANTS       reduce using rule 7 (declaration -> constants_declaration .)
-    VARIABLE        reduce using rule 7 (declaration -> constants_declaration .)
-    IDENTIFIER      reduce using rule 7 (declaration -> constants_declaration .)
-    $end            reduce using rule 7 (declaration -> constants_declaration .)
-
-
-state 13
-
-    (8) declaration -> variables_declaration .
-
-    CONSTANTS       reduce using rule 8 (declaration -> variables_declaration .)
-    VARIABLE        reduce using rule 8 (declaration -> variables_declaration .)
-    IDENTIFIER      reduce using rule 8 (declaration -> variables_declaration .)
-    $end            reduce using rule 8 (declaration -> variables_declaration .)
-
-
-state 14
-
-    (9) declaration -> assignment_statement .
-
-    CONSTANTS       reduce using rule 9 (declaration -> assignment_statement .)
-    VARIABLE        reduce using rule 9 (declaration -> assignment_statement .)
-    IDENTIFIER      reduce using rule 9 (declaration -> assignment_statement .)
-    $end            reduce using rule 9 (declaration -> assignment_statement .)
-
-
-state 15
-
-    (10) constants_declaration -> CONSTANTS . IDENTIFIER_LIST
-    (12) IDENTIFIER_LIST -> . IDENTIFIER_LIST COMMA IDENTIFIER
-    (13) IDENTIFIER_LIST -> . IDENTIFIER
-
-    IDENTIFIER      shift and go to state 22
-
-    IDENTIFIER_LIST                shift and go to state 21
-
-state 16
-
-    (11) variables_declaration -> VARIABLE . IDENTIFIER_LIST
-    (12) IDENTIFIER_LIST -> . IDENTIFIER_LIST COMMA IDENTIFIER
-    (13) IDENTIFIER_LIST -> . IDENTIFIER
-
-    IDENTIFIER      shift and go to state 22
-
-    IDENTIFIER_LIST                shift and go to state 23
-
-state 17
-
-    (14) assignment_statement -> IDENTIFIER EQUALS . expression
-    (15) expression -> . expression PLUS expression
-    (16) expression -> . expression MINUS expression
-    (17) expression -> . expression STAR expression
-    (18) expression -> . expression DIVIDE expression
-    (19) expression -> . IDENTIFIER
-    (20) expression -> . NUMBER_LITERAL
-    (21) expression -> . STRING_LITERAL
-
-    IDENTIFIER      shift and go to state 24
-    NUMBER_LITERAL  shift and go to state 26
-    STRING_LITERAL  shift and go to state 27
-
-    expression                     shift and go to state 25
-
-state 18
-
-    (1) module -> MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER extends declarations .
-    (5) declarations -> declarations . declaration
-    (7) declaration -> . constants_declaration
-    (8) declaration -> . variables_declaration
-    (9) declaration -> . assignment_statement
-    (10) constants_declaration -> . CONSTANTS IDENTIFIER_LIST
-    (11) variables_declaration -> . VARIABLE IDENTIFIER_LIST
-    (14) assignment_statement -> . IDENTIFIER EQUALS expression
-
-    $end            reduce using rule 1 (module -> MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER extends declarations .)
-    CONSTANTS       shift and go to state 15
-    VARIABLE        shift and go to state 16
-    IDENTIFIER      shift and go to state 6
-
-    declaration                    shift and go to state 19
-    constants_declaration          shift and go to state 12
-    variables_declaration          shift and go to state 13
-    assignment_statement           shift and go to state 14
-
-state 19
-
-    (5) declarations -> declarations declaration .
-
-    CONSTANTS       reduce using rule 5 (declarations -> declarations declaration .)
-    VARIABLE        reduce using rule 5 (declarations -> declarations declaration .)
-    IDENTIFIER      reduce using rule 5 (declarations -> declarations declaration .)
-    $end            reduce using rule 5 (declarations -> declarations declaration .)
-
-
-state 20
-
-    (3) extends -> EXTENDS IDENTIFIER .
-
-    CONSTANTS       reduce using rule 3 (extends -> EXTENDS IDENTIFIER .)
-    VARIABLE        reduce using rule 3 (extends -> EXTENDS IDENTIFIER .)
-    IDENTIFIER      reduce using rule 3 (extends -> EXTENDS IDENTIFIER .)
-
-
-state 21
-
-    (10) constants_declaration -> CONSTANTS IDENTIFIER_LIST .
-    (12) IDENTIFIER_LIST -> IDENTIFIER_LIST . COMMA IDENTIFIER
-
-    CONSTANTS       reduce using rule 10 (constants_declaration -> CONSTANTS IDENTIFIER_LIST .)
-    VARIABLE        reduce using rule 10 (constants_declaration -> CONSTANTS IDENTIFIER_LIST .)
-    IDENTIFIER      reduce using rule 10 (constants_declaration -> CONSTANTS IDENTIFIER_LIST .)
-    $end            reduce using rule 10 (constants_declaration -> CONSTANTS IDENTIFIER_LIST .)
-    COMMA           shift and go to state 28
-
-
-state 22
-
-    (13) IDENTIFIER_LIST -> IDENTIFIER .
-
-    COMMA           reduce using rule 13 (IDENTIFIER_LIST -> IDENTIFIER .)
-    CONSTANTS       reduce using rule 13 (IDENTIFIER_LIST -> IDENTIFIER .)
-    VARIABLE        reduce using rule 13 (IDENTIFIER_LIST -> IDENTIFIER .)
-    IDENTIFIER      reduce using rule 13 (IDENTIFIER_LIST -> IDENTIFIER .)
-    $end            reduce using rule 13 (IDENTIFIER_LIST -> IDENTIFIER .)
-
-
-state 23
-
-    (11) variables_declaration -> VARIABLE IDENTIFIER_LIST .
-    (12) IDENTIFIER_LIST -> IDENTIFIER_LIST . COMMA IDENTIFIER
-
-    CONSTANTS       reduce using rule 11 (variables_declaration -> VARIABLE IDENTIFIER_LIST .)
-    VARIABLE        reduce using rule 11 (variables_declaration -> VARIABLE IDENTIFIER_LIST .)
-    IDENTIFIER      reduce using rule 11 (variables_declaration -> VARIABLE IDENTIFIER_LIST .)
-    $end            reduce using rule 11 (variables_declaration -> VARIABLE IDENTIFIER_LIST .)
-    COMMA           shift and go to state 28
-
-
-state 24
-
-    (19) expression -> IDENTIFIER .
-
-    PLUS            reduce using rule 19 (expression -> IDENTIFIER .)
-    MINUS           reduce using rule 19 (expression -> IDENTIFIER .)
-    STAR            reduce using rule 19 (expression -> IDENTIFIER .)
-    DIVIDE          reduce using rule 19 (expression -> IDENTIFIER .)
-    CONSTANTS       reduce using rule 19 (expression -> IDENTIFIER .)
-    VARIABLE        reduce using rule 19 (expression -> IDENTIFIER .)
-    IDENTIFIER      reduce using rule 19 (expression -> IDENTIFIER .)
-    $end            reduce using rule 19 (expression -> IDENTIFIER .)
-
-
-state 25
-
-    (14) assignment_statement -> IDENTIFIER EQUALS expression .
-    (15) expression -> expression . PLUS expression
-    (16) expression -> expression . MINUS expression
-    (17) expression -> expression . STAR expression
-    (18) expression -> expression . DIVIDE expression
-
-    CONSTANTS       reduce using rule 14 (assignment_statement -> IDENTIFIER EQUALS expression .)
-    VARIABLE        reduce using rule 14 (assignment_statement -> IDENTIFIER EQUALS expression .)
-    IDENTIFIER      reduce using rule 14 (assignment_statement -> IDENTIFIER EQUALS expression .)
-    $end            reduce using rule 14 (assignment_statement -> IDENTIFIER EQUALS expression .)
-    PLUS            shift and go to state 29
-    MINUS           shift and go to state 30
-    STAR            shift and go to state 31
-    DIVIDE          shift and go to state 32
-
-
-state 26
-
-    (20) expression -> NUMBER_LITERAL .
-
-    PLUS            reduce using rule 20 (expression -> NUMBER_LITERAL .)
-    MINUS           reduce using rule 20 (expression -> NUMBER_LITERAL .)
-    STAR            reduce using rule 20 (expression -> NUMBER_LITERAL .)
-    DIVIDE          reduce using rule 20 (expression -> NUMBER_LITERAL .)
-    CONSTANTS       reduce using rule 20 (expression -> NUMBER_LITERAL .)
-    VARIABLE        reduce using rule 20 (expression -> NUMBER_LITERAL .)
-    IDENTIFIER      reduce using rule 20 (expression -> NUMBER_LITERAL .)
-    $end            reduce using rule 20 (expression -> NUMBER_LITERAL .)
-
-
-state 27
-
-    (21) expression -> STRING_LITERAL .
-
-    PLUS            reduce using rule 21 (expression -> STRING_LITERAL .)
-    MINUS           reduce using rule 21 (expression -> STRING_LITERAL .)
-    STAR            reduce using rule 21 (expression -> STRING_LITERAL .)
-    DIVIDE          reduce using rule 21 (expression -> STRING_LITERAL .)
-    CONSTANTS       reduce using rule 21 (expression -> STRING_LITERAL .)
-    VARIABLE        reduce using rule 21 (expression -> STRING_LITERAL .)
-    IDENTIFIER      reduce using rule 21 (expression -> STRING_LITERAL .)
-    $end            reduce using rule 21 (expression -> STRING_LITERAL .)
-
-
-state 28
-
-    (12) IDENTIFIER_LIST -> IDENTIFIER_LIST COMMA . IDENTIFIER
-
-    IDENTIFIER      shift and go to state 33
-
-
-state 29
-
-    (15) expression -> expression PLUS . expression
-    (15) expression -> . expression PLUS expression
-    (16) expression -> . expression MINUS expression
-    (17) expression -> . expression STAR expression
-    (18) expression -> . expression DIVIDE expression
-    (19) expression -> . IDENTIFIER
-    (20) expression -> . NUMBER_LITERAL
-    (21) expression -> . STRING_LITERAL
-
-    IDENTIFIER      shift and go to state 24
-    NUMBER_LITERAL  shift and go to state 26
-    STRING_LITERAL  shift and go to state 27
-
-    expression                     shift and go to state 34
-
-state 30
-
-    (16) expression -> expression MINUS . expression
-    (15) expression -> . expression PLUS expression
-    (16) expression -> . expression MINUS expression
-    (17) expression -> . expression STAR expression
-    (18) expression -> . expression DIVIDE expression
-    (19) expression -> . IDENTIFIER
-    (20) expression -> . NUMBER_LITERAL
-    (21) expression -> . STRING_LITERAL
-
-    IDENTIFIER      shift and go to state 24
-    NUMBER_LITERAL  shift and go to state 26
-    STRING_LITERAL  shift and go to state 27
-
-    expression                     shift and go to state 35
-
-state 31
-
-    (17) expression -> expression STAR . expression
-    (15) expression -> . expression PLUS expression
-    (16) expression -> . expression MINUS expression
-    (17) expression -> . expression STAR expression
-    (18) expression -> . expression DIVIDE expression
-    (19) expression -> . IDENTIFIER
-    (20) expression -> . NUMBER_LITERAL
-    (21) expression -> . STRING_LITERAL
-
-    IDENTIFIER      shift and go to state 24
-    NUMBER_LITERAL  shift and go to state 26
-    STRING_LITERAL  shift and go to state 27
-
-    expression                     shift and go to state 36
-
-state 32
-
-    (18) expression -> expression DIVIDE . expression
-    (15) expression -> . expression PLUS expression
-    (16) expression -> . expression MINUS expression
-    (17) expression -> . expression STAR expression
-    (18) expression -> . expression DIVIDE expression
-    (19) expression -> . IDENTIFIER
-    (20) expression -> . NUMBER_LITERAL
-    (21) expression -> . STRING_LITERAL
-
-    IDENTIFIER      shift and go to state 24
-    NUMBER_LITERAL  shift and go to state 26
-    STRING_LITERAL  shift and go to state 27
-
-    expression                     shift and go to state 37
-
-state 33
-
-    (12) IDENTIFIER_LIST -> IDENTIFIER_LIST COMMA IDENTIFIER .
-
-    COMMA           reduce using rule 12 (IDENTIFIER_LIST -> IDENTIFIER_LIST COMMA IDENTIFIER .)
-    CONSTANTS       reduce using rule 12 (IDENTIFIER_LIST -> IDENTIFIER_LIST COMMA IDENTIFIER .)
-    VARIABLE        reduce using rule 12 (IDENTIFIER_LIST -> IDENTIFIER_LIST COMMA IDENTIFIER .)
-    IDENTIFIER      reduce using rule 12 (IDENTIFIER_LIST -> IDENTIFIER_LIST COMMA IDENTIFIER .)
-    $end            reduce using rule 12 (IDENTIFIER_LIST -> IDENTIFIER_LIST COMMA IDENTIFIER .)
-
-
-state 34
-
-    (15) expression -> expression PLUS expression .
-    (15) expression -> expression . PLUS expression
-    (16) expression -> expression . MINUS expression
-    (17) expression -> expression . STAR expression
-    (18) expression -> expression . DIVIDE expression
-
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for STAR resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-    CONSTANTS       reduce using rule 15 (expression -> expression PLUS expression .)
-    VARIABLE        reduce using rule 15 (expression -> expression PLUS expression .)
-    IDENTIFIER      reduce using rule 15 (expression -> expression PLUS expression .)
-    $end            reduce using rule 15 (expression -> expression PLUS expression .)
-    PLUS            shift and go to state 29
-    MINUS           shift and go to state 30
-    STAR            shift and go to state 31
-    DIVIDE          shift and go to state 32
-
-  ! PLUS            [ reduce using rule 15 (expression -> expression PLUS expression .) ]
-  ! MINUS           [ reduce using rule 15 (expression -> expression PLUS expression .) ]
-  ! STAR            [ reduce using rule 15 (expression -> expression PLUS expression .) ]
-  ! DIVIDE          [ reduce using rule 15 (expression -> expression PLUS expression .) ]
-
-
-state 35
-
-    (16) expression -> expression MINUS expression .
-    (15) expression -> expression . PLUS expression
-    (16) expression -> expression . MINUS expression
-    (17) expression -> expression . STAR expression
-    (18) expression -> expression . DIVIDE expression
-
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for STAR resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-    CONSTANTS       reduce using rule 16 (expression -> expression MINUS expression .)
-    VARIABLE        reduce using rule 16 (expression -> expression MINUS expression .)
-    IDENTIFIER      reduce using rule 16 (expression -> expression MINUS expression .)
-    $end            reduce using rule 16 (expression -> expression MINUS expression .)
-    PLUS            shift and go to state 29
-    MINUS           shift and go to state 30
-    STAR            shift and go to state 31
-    DIVIDE          shift and go to state 32
-
-  ! PLUS            [ reduce using rule 16 (expression -> expression MINUS expression .) ]
-  ! MINUS           [ reduce using rule 16 (expression -> expression MINUS expression .) ]
-  ! STAR            [ reduce using rule 16 (expression -> expression MINUS expression .) ]
-  ! DIVIDE          [ reduce using rule 16 (expression -> expression MINUS expression .) ]
-
-
-state 36
-
-    (17) expression -> expression STAR expression .
-    (15) expression -> expression . PLUS expression
-    (16) expression -> expression . MINUS expression
-    (17) expression -> expression . STAR expression
-    (18) expression -> expression . DIVIDE expression
-
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for STAR resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-    CONSTANTS       reduce using rule 17 (expression -> expression STAR expression .)
-    VARIABLE        reduce using rule 17 (expression -> expression STAR expression .)
-    IDENTIFIER      reduce using rule 17 (expression -> expression STAR expression .)
-    $end            reduce using rule 17 (expression -> expression STAR expression .)
-    PLUS            shift and go to state 29
-    MINUS           shift and go to state 30
-    STAR            shift and go to state 31
-    DIVIDE          shift and go to state 32
-
-  ! PLUS            [ reduce using rule 17 (expression -> expression STAR expression .) ]
-  ! MINUS           [ reduce using rule 17 (expression -> expression STAR expression .) ]
-  ! STAR            [ reduce using rule 17 (expression -> expression STAR expression .) ]
-  ! DIVIDE          [ reduce using rule 17 (expression -> expression STAR expression .) ]
-
-
-state 37
-
-    (18) expression -> expression DIVIDE expression .
-    (15) expression -> expression . PLUS expression
-    (16) expression -> expression . MINUS expression
-    (17) expression -> expression . STAR expression
-    (18) expression -> expression . DIVIDE expression
-
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for STAR resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-    CONSTANTS       reduce using rule 18 (expression -> expression DIVIDE expression .)
-    VARIABLE        reduce using rule 18 (expression -> expression DIVIDE expression .)
-    IDENTIFIER      reduce using rule 18 (expression -> expression DIVIDE expression .)
-    $end            reduce using rule 18 (expression -> expression DIVIDE expression .)
-    PLUS            shift and go to state 29
-    MINUS           shift and go to state 30
-    STAR            shift and go to state 31
-    DIVIDE          shift and go to state 32
-
-  ! PLUS            [ reduce using rule 18 (expression -> expression DIVIDE expression .) ]
-  ! MINUS           [ reduce using rule 18 (expression -> expression DIVIDE expression .) ]
-  ! STAR            [ reduce using rule 18 (expression -> expression DIVIDE expression .) ]
-  ! DIVIDE          [ reduce using rule 18 (expression -> expression DIVIDE expression .) ]
-
-WARNING: 
-WARNING: Conflicts:
-WARNING: 
-WARNING: shift/reduce conflict for CONSTANTS in state 5 resolved as shift
-WARNING: shift/reduce conflict for VARIABLE in state 5 resolved as shift
-WARNING: shift/reduce conflict for IDENTIFIER in state 5 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 34 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 34 resolved as shift
-WARNING: shift/reduce conflict for STAR in state 34 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 34 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 35 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 35 resolved as shift
-WARNING: shift/reduce conflict for STAR in state 35 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 35 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 36 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 36 resolved as shift
-WARNING: shift/reduce conflict for STAR in state 36 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 36 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 37 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 37 resolved as shift
-WARNING: shift/reduce conflict for STAR in state 37 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 37 resolved as shift

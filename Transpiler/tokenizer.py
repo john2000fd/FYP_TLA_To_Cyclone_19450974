@@ -30,8 +30,8 @@ tokens = (
     'RIGHT_PAREN',
     'LEFT_BRACE',
     'RIGHT_BRACE',
-    'COMMENT',
-    'EQUALS',
+    #'COMMENT',
+    'EQUAL',
     'STAR',
     'BACK_SLASH',
     'FORWARD_SLASH',
@@ -45,7 +45,13 @@ tokens = (
     'COMMA',
     'DIVIDE',
     'UNDERSCORE',
-    'END_OF_FILE',
+    'AND',
+    'OR',
+    'COLON',
+    'MODULUS',
+    'EQUALS',
+
+    #'END_OF_FILE',
 
 )
 
@@ -55,7 +61,7 @@ reserved = {
     'EXTENDS': 'EXTENDS',
     'MODULE': 'MODULE',
     'MODULE_NAME': 'MODULE_NAME',
-    'COMMENT': 'COMMENT',
+    #'COMMENT': 'COMMENT',
     'GRAPH': 'GRAPH',
     'NODE': 'NODE',
     'EDGE': 'EDGE',
@@ -79,7 +85,7 @@ t_LEFT_PAREN = r'\('
 t_RIGHT_PAREN = r'\)'
 t_LEFT_BRACE = r'\{'
 t_RIGHT_BRACE = r'\}'
-t_EQUALS = r'\='
+t_EQUAL = r'\='
 t_STAR = r'\*'
 t_BACK_SLASH = r'\\'
 t_FORWARD_SLASH = r'\/'
@@ -93,27 +99,18 @@ t_MINUS = r'\-'
 t_DIVIDE = r'div'
 t_COMMA = r'\,'
 t_UNDERSCORE = r'\_'
+t_AND = r'/\\'  # Correct way to handle AND (logical conjunction)
+t_OR = r'\\/'   # Correct way to handle OR (logical disjunction)
+t_COLON = r'\:'
+t_MODULUS = r'\%'
+t_EQUALS = r'\=='
+
 #t_END_OF_FILE = r'\================================'
 #t_COMMENT =  r'\([^)]*\)'
 
 
 
-#def t_MODULE_NAME_SINGLE(t):  #regex to identify a module name that is a single word beginning with a capital letter
-    #r'\b[A-Z][a-z]+\b'
 
-    #if re.match( r'\b[A-Z][a-z]+\b', t.value):
-       #t.type = reserved.get(t.value, 'MODULE_NAME')   
-        
-    #return t
-
-
-#def t_MODULE_NAME_MULTIPLE(t):    #regex to identify a module name that has multiple words beginning with a capital letter
-    #r'\b[A-Z][a-z]+(?:[A-Z][a-z]+)+\b'
-
-    #if re.match(r'\b[A-Z][a-z]+(?:[A-Z][a-z]+)+\b', t.value):
-        #t.type = reserved.get(t.value, 'MODULE_NAME')   
-
-    #return t    
 
 
 # Define identifiers as the default token, this handles part of the code such as module name, variable name etc
@@ -169,40 +166,44 @@ def t_error(t):
     t.tokenizer.skip(1)
 
 # Build the lexer
-tokenizer= lex.lex()
+tokenizer = lex.lex()
 
 tla_code = """
----- MODULE ComplexHello ----
+---- MODULE Modulo4GraphCounter ----
 
-EXTENDS Naturals
+EXTENDS Integers
 
-(* Graph structure represented as constants for transpilation purposes *)
+(* State variables *)
+VARIABLES counter, currentEdge
+
+(* Set of nodes and static edges in the graph *)
 CONSTANTS Nodes, Edges
 
-(* State variable *)
-VARIABLE count
-
-(* Definitions to simulate graph concepts, assuming they are handled by your transpiler *)
-IsEdge(u, v) == <<u, v>> \in Edges \/ <<v, u>> \in Edges
-
-(* Initial state *)
+(* Initial state: counter starts at 0, and no edge is selected initially *)
 Init == 
-    /\ count = 0
-    /\ Nodes = {"a", "b"}    \* Graph nodes
-    /\ Edges = {<<"a", "b">>}    \* Graph edges, indicating a directed edge from 'a' to 'b'
+    /\ counter = 0
+    /\ currentEdge = NULL
 
-(* State transition *)
+(* Transition function for the counter, cycling through 0 to 3 *)
+IncrementCounter == 
+    counter' = (counter + 1) % 4
+
+(* Update the current edge based on the counter value.
+   Assuming Edges are ordered in some fashion for selection. *)
+UpdateCurrentEdge == 
+    LET edgeSelection == CHOOSE e \in Edges: TRUE IN
+    /\ currentEdge' = edgeSelection
+
+(* Combined next state relation *)
 Next == 
-    /\ count' = count + 1
+    /\ IncrementCounter
+    /\ UpdateCurrentEdge
 
 (* Specification combines initial state and state transitions *)
-Spec == Init /\ [][Next]_count
+Spec == Init /\ [][Next]_<<counter, currentEdge>>
 
-(* Invariant to ensure 'count' remains non-negative *)
-Invariant == count >= 0
-
-(* Property to limit 'count' to 10, demonstrating goal definition *)
-PropertyGoal == count <= 10
+(* Invariant to ensure the counter cycles correctly *)
+Invariant == counter >= 0 /\ counter < 4
 
 ================================
 """

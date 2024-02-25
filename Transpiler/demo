@@ -23,3 +23,71 @@ Goal == (* System properties to check *)
 
 CHECK Goal
 """
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+---- MODULE ComplexHello ----
+
+EXTENDS Naturals
+
+(* Graph structure represented as constants for transpilation purposes *)
+CONSTANTS Nodes, Edges
+
+(* State variable *)
+VARIABLE count
+
+(* Definitions to simulate graph concepts, assuming they are handled by your transpiler *)
+IsEdge(u, v) == <<u, v>> \in Edges \/ <<v, u>> \in Edges
+
+(* Initial state *)
+Init == 
+    /\ count = 0
+    /\ Nodes = {"a", "b"}    \* Graph nodes
+    /\ Edges = {<<"a", "b">>}    \* Graph edges, indicating a directed edge from 'a' to 'b'
+
+(* State transition *)
+Next == 
+    /\ count' = count + 1
+
+(* Specification combines initial state and state transitions *)
+Spec == Init /\ [][Next]_count
+
+(* Invariant to ensure 'count' remains non-negative *)
+Invariant == count >= 0
+
+(* Property to limit 'count' to 10, demonstrating goal definition *)
+PropertyGoal == count <= 10
+
+================================
+'''
