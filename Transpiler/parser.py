@@ -12,7 +12,7 @@ precedence = (
     ('nonassoc', 'EQUALS', 'NOT_EQUALS'),  # Equality and inequality
     ('nonassoc', 'LESS_THAN', 'LESS_THAN_EQ', 'GREATER_THAN', 'GREATER_THAN_EQ'),  # Relational operators
     ('left', 'PLUS', 'MINUS'),  # Addition and subtraction
-    ('left', 'STAR', 'DIVIDE', 'MOD'),  # Multiplication, division, modulo
+    ('left', 'STAR', 'DIVIDE', 'MODULUS'),  # Multiplication, division, modulo
     ('right', 'EXP'),  # Exponentiation
     ('right', 'UMINUS'),  # Unary minus operator
     ('nonassoc', 'LEFT_PAREN', 'RIGHT_PAREN'),  # Parentheses for grouping
@@ -41,6 +41,8 @@ class ModuleNode(ASTNode):
 class ExtendsNode(ASTNode):
     def __init__(self, extended_modules):
         self.extended_modules = extended_modules
+
+
 class ConstantsNode(ASTNode):
     def __init__(self, constants):
         self.constants = constants  # List of constant names
@@ -149,6 +151,16 @@ def p_extends(p):
     p[0] = ExtendsNode(p[2])
 
 
+
+def p_identifier_list(p):
+    '''identifier_list : identifier_list COMMA IDENTIFIER
+                       | IDENTIFIER'''
+    if len(p) == 4:
+        p[0] = p[1] + [p[3]]
+    else:
+        p[0] = [p[1]]
+
+
 # Define rules for `statement`, `variable_declaration`, `constants_declaration`, etc.
 
 def p_declarations(p):
@@ -168,12 +180,12 @@ def p_declaration(p):
     p[0] = p[1]
 
 def p_constants_declaration(p):
-    'constants_declaration : CONSTANTS IDENTIFIER_LIST'
+    'constants_declaration : CONSTANTS identifier_list'
     p[0] = ConstantsNode(p[2])
 
 
 def p_variables_declaration(p):
-    'variables_declaration : VARIABLE IDENTIFIER_LIST'
+    'variables_declaration : VARIABLE identifier_list'
     p[0] = VariablesNode(p[2])
  
 
@@ -252,13 +264,7 @@ def p_expression_group(p):
 
 
 
-def p_identifier_list(p):
-    '''identifier_list : identifier_list COMMA IDENTIFIER
-                       | IDENTIFIER'''
-    if len(p) == 4:
-        p[0] = p[1] + [p[3]]
-    else:
-        p[0] = [p[1]]
+
 
 
 def p_init_declaration(p):

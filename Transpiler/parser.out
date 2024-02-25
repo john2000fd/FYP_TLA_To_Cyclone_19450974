@@ -29,104 +29,103 @@ Grammar
 Rule 0     S' -> module
 Rule 1     module -> MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER extends declarations
 Rule 2     module -> MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER declarations
-Rule 3     extends -> EXTENDS IDENTIFIER
-Rule 4     extends -> empty
-Rule 5     declarations -> declarations declaration
-Rule 6     declarations -> declaration
-Rule 7     declaration -> constants_declaration
-Rule 8     declaration -> variables_declaration
-Rule 9     declaration -> assignment_statement
-Rule 10    constants_declaration -> CONSTANTS IDENTIFIER_LIST
-Rule 11    variables_declaration -> VARIABLE IDENTIFIER_LIST
-Rule 12    graph_declaration -> GRAPH IDENTIFIER graph_body
-Rule 13    graph_body -> graph_body graph_statement
-Rule 14    graph_body -> graph_statement
-Rule 15    graph_statement -> node_declaration
-Rule 16    graph_statement -> edge_declaration
-Rule 17    node_declaration -> NODE IDENTIFIER
-Rule 18    edge_declaration -> EDGE IDENTIFIER ARROW IDENTIFIER
-Rule 19    invariant_declaration -> INVARIANT expression
-Rule 20    property_goal_declaration -> GOAL expression
-Rule 21    assignment_statement -> IDENTIFIER EQUALS expression
-Rule 22    expression -> expression PLUS expression
-Rule 23    expression -> expression MINUS expression
-Rule 24    expression -> expression STAR expression
-Rule 25    expression -> expression DIVIDE expression
-Rule 26    expression -> IDENTIFIER
-Rule 27    expression -> NUMBER_LITERAL
-Rule 28    expression -> STRING_LITERAL
-Rule 29    expression -> LEFT_PAREN expression RIGHT_PAREN
-Rule 30    IDENTIFIER_LIST -> IDENTIFIER_LIST COMMA IDENTIFIER
-Rule 31    IDENTIFIER_LIST -> IDENTIFIER
-Rule 32    init_declaration -> INIT EQUALS expression
-Rule 33    empty -> <empty>
+Rule 3     extends -> EXTENDS identifier_list
+Rule 4     identifier_list -> identifier_list COMMA IDENTIFIER
+Rule 5     identifier_list -> IDENTIFIER
+Rule 6     declarations -> declarations declaration
+Rule 7     declarations -> declaration
+Rule 8     declaration -> constants_declaration
+Rule 9     declaration -> variables_declaration
+Rule 10    declaration -> assignment_statement
+Rule 11    constants_declaration -> CONSTANTS identifier_list
+Rule 12    variables_declaration -> VARIABLE identifier_list
+Rule 13    graph_declaration -> GRAPH IDENTIFIER graph_body
+Rule 14    graph_body -> graph_body graph_statement
+Rule 15    graph_body -> graph_statement
+Rule 16    graph_statement -> node_declaration
+Rule 17    graph_statement -> edge_declaration
+Rule 18    node_declaration -> NODE IDENTIFIER
+Rule 19    edge_declaration -> EDGE IDENTIFIER ARROW IDENTIFIER
+Rule 20    invariant_declaration -> INVARIANT expression
+Rule 21    property_goal_declaration -> GOAL expression
+Rule 22    assignment_statement -> IDENTIFIER EQUALS expression
+Rule 23    expression -> expression PLUS expression
+Rule 24    expression -> expression MINUS expression
+Rule 25    expression -> expression STAR expression
+Rule 26    expression -> expression DIVIDE expression
+Rule 27    expression -> IDENTIFIER
+Rule 28    expression -> NUMBER_LITERAL
+Rule 29    expression -> STRING_LITERAL
+Rule 30    expression -> LEFT_PAREN expression RIGHT_PAREN
+Rule 31    init_declaration -> INIT EQUALS expression
+Rule 32    empty -> <empty>
 
 Terminals, with rules where they appear
 
 AND                  : 
-ARROW                : 18
+ARROW                : 19
 BACK_SLASH           : 
 CHECK                : 
 COLON                : 
-COMMA                : 30
-CONSTANTS            : 10
-DIVIDE               : 25
-EDGE                 : 18
+COMMA                : 4
+CONSTANTS            : 11
+DIVIDE               : 26
+EDGE                 : 19
 EQUAL                : 
-EQUALS               : 21 32
+EQUALS               : 22 31
 EXTENDS              : 3
 FORWARD_SLASH        : 
-GOAL                 : 20
-GRAPH                : 12
+GOAL                 : 21
+GRAPH                : 13
 GREATER_THAN         : 
-IDENTIFIER           : 1 2 3 12 17 18 18 21 26 30 31
-INIT                 : 32
-INVARIANT            : 19
+IDENTIFIER           : 1 2 4 5 13 18 19 19 22 27
+INIT                 : 31
+INVARIANT            : 20
 LEFT_BRACE           : 
-LEFT_PAREN           : 29
+LEFT_PAREN           : 30
 LEFT_SQR_BRACKET     : 
 LESS_THAN            : 
-MINUS                : 23
+MINUS                : 24
 MODULE               : 1 2
 MODULE_NAME          : 
 MODULE_WRAPPER       : 1 1 2 2
 MODULUS              : 
 NEXT                 : 
-NODE                 : 17
-NUMBER_LITERAL       : 27
+NODE                 : 18
+NUMBER_LITERAL       : 28
 OR                   : 
-PLUS                 : 22
+PLUS                 : 23
 RIGHT_BRACE          : 
-RIGHT_PAREN          : 29
+RIGHT_PAREN          : 30
 RIGHT_SQR_BRACKET    : 
 SEMICOLON            : 
 SINGLE_QUOTE         : 
 SPEC                 : 
-STAR                 : 24
-STRING_LITERAL       : 28
+STAR                 : 25
+STRING_LITERAL       : 29
 UNDERSCORE           : 
-VARIABLE             : 11
+VARIABLE             : 12
 VARIABLE_NAME        : 
 error                : 
 
 Nonterminals, with rules where they appear
 
-IDENTIFIER_LIST      : 10 11 30
-assignment_statement : 9
-constants_declaration : 7
-declaration          : 5 6
-declarations         : 1 2 5
-edge_declaration     : 16
-empty                : 4
-expression           : 19 20 21 22 22 23 23 24 24 25 25 29 32
+assignment_statement : 10
+constants_declaration : 8
+declaration          : 6 7
+declarations         : 1 2 6
+edge_declaration     : 17
+empty                : 
+expression           : 20 21 22 23 23 24 24 25 25 26 26 30 31
 extends              : 1
-graph_body           : 12 13
+graph_body           : 13 14
 graph_declaration    : 
-graph_statement      : 13 14
+graph_statement      : 14 15
+identifier_list      : 3 4 11 12
 init_declaration     : 
 invariant_declaration : 
 module               : 0
-node_declaration     : 15
+node_declaration     : 16
 property_goal_declaration : 
-variables_declaration : 8
+variables_declaration : 9
 
