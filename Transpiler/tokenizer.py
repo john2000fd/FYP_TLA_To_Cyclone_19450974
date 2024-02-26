@@ -1,4 +1,4 @@
-import re
+#import re
 import ply.lex as lex
 
 
@@ -31,7 +31,7 @@ tokens = (
     'LEFT_BRACE',
     'RIGHT_BRACE',
     #'COMMENT',
-    'EQUAL',
+    'EQUALS_ASSIGNMENT',
     'STAR',
     'BACK_SLASH',
     'FORWARD_SLASH',
@@ -49,7 +49,11 @@ tokens = (
     'OR',
     'COLON',
     'MODULUS',
-    'EQUALS',
+    'EQUALS_DEFINITIONS',
+    'GREATER_OR_EQ',
+    'LESS_OR_EQ',
+    'NOT_EQUALS'
+
 
     #'END_OF_FILE',
 
@@ -60,7 +64,7 @@ tokens = (
 reserved = {
     'EXTENDS': 'EXTENDS',
     'MODULE': 'MODULE',
-    'MODULE_NAME': 'MODULE_NAME',
+    #'MODULE_NAME': 'MODULE_NAME',
     #'COMMENT': 'COMMENT',
     'GRAPH': 'GRAPH',
     'NODE': 'NODE',
@@ -85,7 +89,7 @@ t_LEFT_PAREN = r'\('
 t_RIGHT_PAREN = r'\)'
 t_LEFT_BRACE = r'\{'
 t_RIGHT_BRACE = r'\}'
-t_EQUAL = r'\='
+t_EQUALS_ASSIGNMENT = r'\='
 t_STAR = r'\*'
 t_BACK_SLASH = r'\\'
 t_FORWARD_SLASH = r'\/'
@@ -103,7 +107,10 @@ t_AND = r'/\\'  # Correct way to handle AND (logical conjunction)
 t_OR = r'\\/'   # Correct way to handle OR (logical disjunction)
 t_COLON = r'\:'
 t_MODULUS = r'\%'
-t_EQUALS = r'\=='
+t_EQUALS_DEFINITIONS = r'\=='
+t_GREATER_OR_EQ = r'\>='
+t_LESS_OR_EQ = r'\<='
+t_NOT_EQUALS = r'\#'
 
 #t_END_OF_FILE = r'\================================'
 #t_COMMENT =  r'\([^)]*\)'
@@ -168,7 +175,10 @@ def t_error(t):
 # Build the lexer
 tokenizer = lex.lex()
 
-tla_code = """
+
+
+#Example TLA Code to test with
+tla_code = """                           
 ---- MODULE Modulo4GraphCounter ----
 
 EXTENDS Integers

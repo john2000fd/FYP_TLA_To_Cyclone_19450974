@@ -6,15 +6,17 @@ Unused terminals:
     BACK_SLASH
     CHECK
     COLON
-    EQUAL
     FORWARD_SLASH
+    GREATER_OR_EQ
     GREATER_THAN
     LEFT_BRACE
     LEFT_SQR_BRACKET
+    LESS_OR_EQ
     LESS_THAN
     MODULE_NAME
     MODULUS
     NEXT
+    NOT_EQUALS
     OR
     RIGHT_BRACE
     RIGHT_SQR_BRACKET
@@ -48,7 +50,7 @@ Rule 18    node_declaration -> NODE IDENTIFIER
 Rule 19    edge_declaration -> EDGE IDENTIFIER ARROW IDENTIFIER
 Rule 20    invariant_declaration -> INVARIANT expression
 Rule 21    property_goal_declaration -> GOAL expression
-Rule 22    assignment_statement -> IDENTIFIER EQUALS expression
+Rule 22    assignment_statement -> IDENTIFIER EQUALS_ASSIGNMENT expression
 Rule 23    expression -> expression PLUS expression
 Rule 24    expression -> expression MINUS expression
 Rule 25    expression -> expression STAR expression
@@ -57,7 +59,7 @@ Rule 27    expression -> IDENTIFIER
 Rule 28    expression -> NUMBER_LITERAL
 Rule 29    expression -> STRING_LITERAL
 Rule 30    expression -> LEFT_PAREN expression RIGHT_PAREN
-Rule 31    init_declaration -> INIT EQUALS expression
+Rule 31    init_declaration -> INIT EQUALS_DEFINITIONS expression
 Rule 32    empty -> <empty>
 
 Terminals, with rules where they appear
@@ -71,12 +73,13 @@ COMMA                : 4
 CONSTANTS            : 11
 DIVIDE               : 26
 EDGE                 : 19
-EQUAL                : 
-EQUALS               : 22 31
+EQUALS_ASSIGNMENT    : 22
+EQUALS_DEFINITIONS   : 31
 EXTENDS              : 3
 FORWARD_SLASH        : 
 GOAL                 : 21
 GRAPH                : 13
+GREATER_OR_EQ        : 
 GREATER_THAN         : 
 IDENTIFIER           : 1 2 4 5 13 18 19 19 22 27
 INIT                 : 31
@@ -84,6 +87,7 @@ INVARIANT            : 20
 LEFT_BRACE           : 
 LEFT_PAREN           : 30
 LEFT_SQR_BRACKET     : 
+LESS_OR_EQ           : 
 LESS_THAN            : 
 MINUS                : 24
 MODULE               : 1 2
@@ -92,6 +96,7 @@ MODULE_WRAPPER       : 1 1 2 2
 MODULUS              : 
 NEXT                 : 
 NODE                 : 18
+NOT_EQUALS           : 
 NUMBER_LITERAL       : 28
 OR                   : 
 PLUS                 : 23

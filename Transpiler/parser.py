@@ -9,12 +9,12 @@ parsed_data = {}
 precedence = (
     ('left', 'OR'),  # Logical OR
     ('left', 'AND'),  # Logical AND
-    ('nonassoc', 'EQUALS', 'NOT_EQUALS'),  # Equality and inequality
-    ('nonassoc', 'LESS_THAN', 'LESS_THAN_EQ', 'GREATER_THAN', 'GREATER_THAN_EQ'),  # Relational operators
+    ('nonassoc', 'EQUALS_ASSIGNMENT', 'NOT_EQUALS'),  # Equality and inequality
+    ('nonassoc', 'LESS_THAN', 'LESS_OR_EQ', 'GREATER_THAN', 'GREATER_OR_EQ'),  # Relational operators
     ('left', 'PLUS', 'MINUS'),  # Addition and subtraction
-    ('left', 'STAR', 'DIVIDE', 'MOD'),  # Multiplication, division, modulo
-    ('right', 'EXP'),  # Exponentiation
-    ('right', 'UMINUS'),  # Unary minus operator
+    ('left', 'STAR', 'DIVIDE', 'MODULUS'),  # Multiplication, division, modulo
+    #('right', 'EXP'),  # Exponentiation
+    #('right', 'UMINUS'),  # Unary minus operator
     ('nonassoc', 'LEFT_PAREN', 'RIGHT_PAREN'),  # Parentheses for grouping
 )
 
@@ -232,7 +232,7 @@ def p_property_goal_declaration(p):
 
 
 def p_assignment_statement(p):
-    'assignment_statement : IDENTIFIER EQUALS expression'
+    'assignment_statement : IDENTIFIER EQUALS_ASSIGNMENT expression'
     p[0] = AssignmentNode(IdentifierNode(p[1]), p[3])
 
 
@@ -268,7 +268,7 @@ def p_expression_group(p):
 
 
 def p_init_declaration(p):
-    'init_declaration : INIT EQUALS expression'
+    'init_declaration : INIT EQUALS_DEFINITIONS expression'
     p[0] = InitNode(p[3])
 
 
@@ -280,7 +280,7 @@ def p_empty(p):
 # Error handling rule for syntax errors
 def p_error(p):
     if p:
-        print(f"Syntax error at '{p.value}'")
+        print(f"Syntax error at token '{p.type}', value: '{p.value}', line: {p.lineno}, position: {p.lexpos}")
     else:
         print("Syntax error at EOF")
 
