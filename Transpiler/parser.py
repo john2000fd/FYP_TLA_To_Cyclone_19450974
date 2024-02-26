@@ -12,7 +12,7 @@ precedence = (
     ('nonassoc', 'EQUALS', 'NOT_EQUALS'),  # Equality and inequality
     ('nonassoc', 'LESS_THAN', 'LESS_THAN_EQ', 'GREATER_THAN', 'GREATER_THAN_EQ'),  # Relational operators
     ('left', 'PLUS', 'MINUS'),  # Addition and subtraction
-    ('left', 'STAR', 'DIVIDE', 'MODULUS'),  # Multiplication, division, modulo
+    ('left', 'STAR', 'DIVIDE', 'MOD'),  # Multiplication, division, modulo
     ('right', 'EXP'),  # Exponentiation
     ('right', 'UMINUS'),  # Unary minus operator
     ('nonassoc', 'LEFT_PAREN', 'RIGHT_PAREN'),  # Parentheses for grouping
