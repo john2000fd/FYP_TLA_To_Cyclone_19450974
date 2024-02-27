@@ -6,6 +6,7 @@ from tokenizer import tla_code
 # Placeholder for storing parsed module information
 parsed_data = {}
 
+#This precedence table determines the precedence of operators in the parser, this will contain the number of shift/reduce conflicts 
 precedence = (
     ('left', 'OR'),  # Logical OR
     ('left', 'AND'),  # Logical AND
@@ -24,122 +25,12 @@ precedence = (
 
 
 
-
-
-
-#THESE ARE OUR NODES FOR THE AST
-class ASTNode:     #AST classes 
-    pass
-
-class ModuleNode(ASTNode):
-    def __init__(self, name, extends, declarations):
-        self.name = name
-        self.extends = extends
-        self.declarations = declarations
-
-
-class ExtendsNode(ASTNode):
-    def __init__(self, extended_modules):
-        self.extended_modules = extended_modules
-
-
-class ConstantsNode(ASTNode):
-    def __init__(self, constants):
-        self.constants = constants  # List of constant names
-
-class VariablesNode(ASTNode):
-    def __init__(self, variables):
-        self.variables = variables  # List of variable names
-
-
-class InitNode(ASTNode):
-    def __init__(self, conditions):
-        self.conditions = conditions  # List of conditions in the initial state
-
-
-class NextNode(ASTNode):
-    def __init__(self, transitions):
-        self.transitions = transitions  # List of state transitions
-
-class AssignmentNode(ASTNode):
-    def __init__(self, left, right):
-        self.left = left
-        self.right = right
-
-class BinaryOperationNode(ASTNode):
-    def __init__(self, left, operator, right):
-        self.left = left
-        self.operator = operator
-        self.right = right
-
-class IdentifierNode(ASTNode):
-    def __init__(self, name):
-        self.name = name
-
-class LiteralNode(ASTNode):
-    def __init__(self, value):
-        self.value = value
-
-
-class GraphNode(ASTNode):
-    def __init__(self, identifier, body):
-        self.identifier = identifier  # The name of the graph
-        self.body = body  # List of graph statements (node and edge declarations)
-
-    def __repr__(self):
-        return f"Graph({self.identifier}, {self.body})"
-
-class NodeDeclaration(ASTNode):
-    def __init__(self, identifier):
-        self.identifier = identifier  # The name of the node
-
-    def __repr__(self):
-        return f"Node({self.identifier})"
-
-class EdgeDeclaration(ASTNode):
-    def __init__(self, from_node, to_node):
-        self.from_node = from_node  # Identifier of the starting node
-        self.to_node = to_node  # Identifier of the ending node
-
-    def __repr__(self):
-        return f"Edge({self.from_node} -> {self.to_node})"
-
-class InvariantNode(ASTNode):
-    def __init__(self, expression):
-        self.expression = expression  # The expression defining the invariant
-
-    def __repr__(self):
-        return f"Invariant({self.expression})"
-
-class PropertyGoalNode(ASTNode):
-    def __init__(self, expression):
-        self.expression = expression  # The expression defining the property goal
-
-    def __repr__(self):
-        return f"PropertyGoal({self.expression})"
-
-
-class SpecNode(ASTNode):
-    def __init__(self, init, next, invariant=None, property_goal=None):
-        self.init = init  # Initial state node
-        self.next = next  # Next state node
-        self.invariant = invariant  # Optional invariant node
-        self.property_goal = property_goal  # Optional property goal node
-
-
-
-
-
-
-
-
-
 #FUNCTIONS FOR PARSING
 
 # Parsing the module with optional extends and body (declarations, assignments, etc.)
 def p_module(p):
-    '''module : MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER extends declarations
-              | MODULE_WRAPPER MODULE IDENTIFIER MODULE_WRAPPER declarations'''
+    '''module : MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER extends declarations
+              | MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER declarations'''
     if len(p) == 7:
         p[0] = ModuleNode(name=p[3], extends=p[5], declarations=p[6])
     else:
@@ -147,14 +38,14 @@ def p_module(p):
 
 
 def p_extends(p):
-    '''extends : EXTENDS identifier_list'''
+    '''extends : EXTENDS names'''
     p[0] = ExtendsNode(p[2])
 
 
 
-def p_identifier_list(p):
-    '''identifier_list : identifier_list COMMA IDENTIFIER
-                       | IDENTIFIER'''
+def p_names(p):
+    '''names : names COMMA 
+             | NAME'''
     if len(p) == 4:
         p[0] = p[1] + [p[3]]
     else:
@@ -287,6 +178,104 @@ def p_error(p):
 
 
 
+#THESE ARE OUR NODES FOR THE ABSTRACT SYNTAX TREE
+class ASTNode:     #AST classes 
+    pass
+
+class ModuleNode(ASTNode):
+    def __init__(self, name, extends, declarations):
+        self.name = name
+        self.extends = extends
+        self.declarations = declarations
+
+
+class ExtendsNode(ASTNode):
+    def __init__(self, extended_modules):
+        self.extended_modules = extended_modules
+
+
+class ConstantsNode(ASTNode):
+    def __init__(self, constants):
+        self.constants = constants  # List of constant names
+
+class VariablesNode(ASTNode):
+    def __init__(self, variables):
+        self.variables = variables  # List of variable names
+
+
+class InitNode(ASTNode):
+    def __init__(self, conditions):
+        self.conditions = conditions  # List of conditions in the initial state
+
+
+class NextNode(ASTNode):
+    def __init__(self, transitions):
+        self.transitions = transitions  # List of state transitions
+
+class AssignmentNode(ASTNode):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+class BinaryOperationNode(ASTNode):
+    def __init__(self, left, operator, right):
+        self.left = left
+        self.operator = operator
+        self.right = right
+
+class IdentifierNode(ASTNode):
+    def __init__(self, name):
+        self.name = name
+
+class LiteralNode(ASTNode):
+    def __init__(self, value):
+        self.value = value
+
+
+class GraphNode(ASTNode):
+    def __init__(self, identifier, body):
+        self.identifier = identifier  # The name of the graph
+        self.body = body  # List of graph statements (node and edge declarations)
+
+    def __repr__(self):
+        return f"Graph({self.identifier}, {self.body})"
+
+class NodeDeclaration(ASTNode):
+    def __init__(self, identifier):
+        self.identifier = identifier  # The name of the node
+
+    def __repr__(self):
+        return f"Node({self.identifier})"
+
+class EdgeDeclaration(ASTNode):
+    def __init__(self, from_node, to_node):
+        self.from_node = from_node  # Identifier of the starting node
+        self.to_node = to_node  # Identifier of the ending node
+
+    def __repr__(self):
+        return f"Edge({self.from_node} -> {self.to_node})"
+
+class InvariantNode(ASTNode):
+    def __init__(self, expression):
+        self.expression = expression  # The expression defining the invariant
+
+    def __repr__(self):
+        return f"Invariant({self.expression})"
+
+class PropertyGoalNode(ASTNode):
+    def __init__(self, expression):
+        self.expression = expression  # The expression defining the property goal
+
+    def __repr__(self):
+        return f"PropertyGoal({self.expression})"
+
+
+class SpecNode(ASTNode):
+    def __init__(self, init, next, invariant=None, property_goal=None):
+        self.init = init  # Initial state node
+        self.next = next  # Next state node
+        self.invariant = invariant  # Optional invariant node
+        self.property_goal = property_goal  # Optional property goal node
 
 
 

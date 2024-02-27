@@ -3,12 +3,11 @@ import ply.lex as lex
 
 
 
-# Define token classes for our tokenizer
+# Define token names for our tokenizer
 tokens = (
     'EXTENDS',
     'MODULE_WRAPPER',
     'MODULE',
-    'MODULE_NAME',
     'GRAPH',
     'NODE',
     'EDGE',
@@ -21,7 +20,7 @@ tokens = (
     'INVARIANT',
     'GOAL',
     'CHECK',
-    'IDENTIFIER',
+    'ATTRIBUTE',
     'NUMBER_LITERAL',
     'STRING_LITERAL',
     'ARROW',
@@ -52,7 +51,11 @@ tokens = (
     'EQUALS_DEFINITIONS',
     'GREATER_OR_EQ',
     'LESS_OR_EQ',
-    'NOT_EQUALS'
+    'UNCHANGED',
+    'NOT_EQUALS',
+    'DOT',
+    'EXCLAMATION_MARK',
+    'AT'
 
 
     #'END_OF_FILE',
@@ -75,15 +78,15 @@ reserved = {
     'Init': 'INIT',
     'Next': 'NEXT',
     'Spec': 'SPEC',
-    'Invariant': 'INVARIANT',
-    'Goal': 'GOAL',
+    'GOAL': 'GOAL',
     'CHECK': 'CHECK',
+    'UNCHANGED': 'UNCHANGED',
 }
 
 
 # Define tokenization rules, prefix "t_" before the string name indicates that it is a token
 t_ARROW = r'->'
-t_MODULE_WRAPPER = r'\----'
+t_MODULE_WRAPPER = r'\----------------------------'
 t_SEMICOLON = r';'
 t_LEFT_PAREN = r'\('
 t_RIGHT_PAREN = r'\)'
@@ -111,6 +114,9 @@ t_EQUALS_DEFINITIONS = r'\=='
 t_GREATER_OR_EQ = r'\>='
 t_LESS_OR_EQ = r'\<='
 t_NOT_EQUALS = r'\#'
+t_DOT = r'\.'
+t_EXCLAMATION_MARK = r'\!'
+t_AT = r'\@'
 
 #t_END_OF_FILE = r'\================================'
 #t_COMMENT =  r'\([^)]*\)'
@@ -120,10 +126,10 @@ t_NOT_EQUALS = r'\#'
 
 
 
-# Define identifiers as the default token, this handles part of the code such as module name, variable name etc
-def t_IDENTIFIER(t):
+# Define 'Attribute' as the default token, this handles part of the code such as module name, variable name etc
+def t_ATTRIBUTE(t):
     r'[A-Za-z_][A-Za-z0-9_]*'
-    t.type = reserved.get(t.value, 'IDENTIFIER')  # Default to IDENTIFIER, could be a module name or variable name etc
+    t.type = reserved.get(t.value, 'ATTRIBUTE')  # Default to ATTRIBUTE, this could be anything such as a variable name etc
     return t
 
 
@@ -163,7 +169,7 @@ def t_SINGLINE_COMMENT_NO_SPACE(t):
     pass
 
 def t_END_OF_FILE(t):   # we also don't need the end of file for our tokenization
-    r'\================================'
+    r'\============================================================================='
     pass
 
     
@@ -179,43 +185,94 @@ tokenizer = lex.lex()
 
 #Example TLA Code to test with
 tla_code = """                           
----- MODULE Modulo4GraphCounter ----
+---------------------------- MODULE CoffeeCan ----------------------------
 
-EXTENDS Integers
 
-(* State variables *)
-VARIABLES counter, currentEdge
+EXTENDS Naturals
 
-(* Set of nodes and static edges in the graph *)
-CONSTANTS Nodes, Edges
+CONSTANT MaxBeanCount
 
-(* Initial state: counter starts at 0, and no edge is selected initially *)
-Init == 
-    /\ counter = 0
-    /\ currentEdge = NULL
+ASSUME MaxBeanCount \in Nat /\ MaxBeanCount >= 1
 
-(* Transition function for the counter, cycling through 0 to 3 *)
-IncrementCounter == 
-    counter' = (counter + 1) % 4
+VARIABLES can
 
-(* Update the current edge based on the counter value.
-   Assuming Edges are ordered in some fashion for selection. *)
-UpdateCurrentEdge == 
-    LET edgeSelection == CHOOSE e \in Edges: TRUE IN
-    /\ currentEdge' = edgeSelection
+\* The set of all possible cans
+Can == [black : 0..MaxBeanCount, white : 0..MaxBeanCount]
 
-(* Combined next state relation *)
-Next == 
-    /\ IncrementCounter
-    /\ UpdateCurrentEdge
+\* Possible values the can variable can take on
+TypeInvariant == can \in Can
 
-(* Specification combines initial state and state transitions *)
-Spec == Init /\ [][Next]_<<counter, currentEdge>>
+\* Initialize can so it contains between 1 and MaxBeanCount beans
+Init == can \in {c \in Can : c.black + c.white \in 1..MaxBeanCount}
 
-(* Invariant to ensure the counter cycles correctly *)
-Invariant == counter >= 0 /\ counter < 4
+\* Number of beans currently in the can
+BeanCount == can.black + can.white
 
-================================
+\* Pick two black beans; throw both away, put one black bean in
+PickSameColorBlack ==
+    /\ BeanCount > 1
+    /\ can.black >= 2
+    /\ can' = [can EXCEPT !.black = @ - 1]
+
+\* Pick two white beans; throw both away, put one black bean in
+PickSameColorWhite ==
+    /\ BeanCount > 1
+    /\ can.white >= 2
+    /\ can' = [can EXCEPT !.black = @ + 1, !.white = @ - 2]
+
+\* Pick one bean of each color; put white back, throw away black
+PickDifferentColor ==
+    /\ BeanCount > 1
+    /\ can.black >= 1
+    /\ can.white >= 1
+    /\ can' = [can EXCEPT !.black = @ - 1]
+
+\* Termination action to avoid triggering deadlock detection
+Termination ==
+    /\ BeanCount = 1
+    /\ UNCHANGED can
+
+\* Next-state relation: what actions can be taken?
+Next ==
+    \/ PickSameColorWhite
+    \/ PickSameColorBlack
+    \/ PickDifferentColor
+    \/ Termination
+
+\* Action formula: every step decreases the number of beans in the can
+MonotonicDecrease == [][BeanCount' < BeanCount]_can
+
+\* Liveness property: we eventually end up with one bean left
+EventuallyTerminates == <>(ENABLED Termination)
+
+\* Loop invariant: every step preserves white bean count mod 2
+LoopInvariant == [][can.white % 2 = 0 <=> can'.white % 2 = 0]_can
+
+\* Hypothesis: If we start out with an even number of white beans, we end up
+\* with a single black bean. Otherwise, we end up with a single white bean.
+TerminationHypothesis ==
+    IF can.white % 2 = 0
+    THEN <>(can.black = 1 /\ can.white = 0)
+    ELSE <>(can.black = 0 /\ can.white = 1)
+
+\* Start out in a state defined by the Init operator and every step is one
+\* defined by the Next operator. Assume weak fairness so the system can't
+\* stutter indefinitely: we eventually take some beans out of the can.
+Spec ==
+    /\ Init
+    /\ [][Next]_can
+    /\ WF_can(Next)
+
+\* What we want to show: that if our system follows the rules set out by the
+\* Spec operator, then all our properties and assumptions will be satisfied.
+THEOREM Spec =>
+    /\ TypeInvariant
+    /\ MonotonicDecrease
+    /\ EventuallyTerminates
+    /\ LoopInvariant
+    /\ TerminationHypothesis
+
+=============================================================================
 """
 
 # Test the lexer
