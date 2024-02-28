@@ -146,7 +146,7 @@ def t_STRING_LITERAL(t):
     return t
 
 #skip whitespace
-t_ignore = ' \t'
+t_ignore = ' \t'  
 
 # Define how to track line numbers
 def t_newline(t):
