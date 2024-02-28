@@ -42,10 +42,19 @@ def p_extends(p):
     p[0] = ExtendsNode(p[2])
 
 
+def p_constants_declaration(p):
+    'constants_declaration : CONSTANTS names'
+    p[0] = ConstantsNode(p[2])
+
+
+def p_variables_declaration(p):
+    'variables_declaration : VARIABLES names'
+    p[0] = VariablesNode(p[2])
+    
 
 def p_names(p):
-    '''names : names COMMA 
-             | NAME'''
+    '''names : names COMMA ATTRIBUTE
+             | ATTRIBUTE'''
     if len(p) == 4:
         p[0] = p[1] + [p[3]]
     else:
@@ -70,21 +79,14 @@ def p_declaration(p):
                    | assignment_statement'''
     p[0] = p[1]
 
-def p_constants_declaration(p):
-    'constants_declaration : CONSTANTS identifier_list'
-    p[0] = ConstantsNode(p[2])
 
-
-def p_variables_declaration(p):
-    'variables_declaration : VARIABLE identifier_list'
-    p[0] = VariablesNode(p[2])
  
 
-
+'''
 def p_graph_declaration(p):
-    'graph_declaration : GRAPH IDENTIFIER graph_body'
+    'graph_declaration : GRAPH ATTRIBUTE graph_body'
     p[0] = GraphNode(p[2], p[3])
-
+'''
 
 def p_graph_body(p):
     '''graph_body : graph_body graph_statement
@@ -103,12 +105,12 @@ def p_graph_statement(p):
 
 
 def p_node_declaration(p):
-    'node_declaration : NODE IDENTIFIER'
+    'node_declaration : NODE ATTRIBUTE'
     p[0] = NodeDeclaration(p[2])
 
 
 def p_edge_declaration(p):
-    'edge_declaration : EDGE IDENTIFIER ARROW IDENTIFIER'
+    'edge_declaration : EDGE ATTRIBUTE ARROW ATTRIBUTE'
     p[0] = EdgeDeclaration(p[2], p[4])
 
 
@@ -123,7 +125,7 @@ def p_property_goal_declaration(p):
 
 
 def p_assignment_statement(p):
-    'assignment_statement : IDENTIFIER EQUALS_ASSIGNMENT expression'
+    'assignment_statement : ATTRIBUTE EQUALS_ASSIGNMENT expression'
     p[0] = AssignmentNode(IdentifierNode(p[1]), p[3])
 
 
@@ -132,13 +134,13 @@ def p_expression(p):
                   | expression MINUS expression
                   | expression STAR expression
                   | expression DIVIDE expression
-                  | IDENTIFIER
+                  | ATTRIBUTE
                   | NUMBER_LITERAL
                   | STRING_LITERAL'''
     if len(p) == 4:
         # Handles binary operations
         p[0] = BinaryOperationNode(p[1], p[2], p[3])
-    elif p.slice[1].type == "IDENTIFIER":
+    elif p.slice[1].type == "ATTRIBUTE":
         # Handles identifiers
         p[0] = IdentifierNode(p[1])
     else:

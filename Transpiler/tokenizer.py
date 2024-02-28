@@ -11,7 +11,7 @@ tokens = (
     'GRAPH',
     'NODE',
     'EDGE',
-    'VARIABLE',
+    'VARIABLES',
     'VARIABLE_NAME',
     'CONSTANTS',
     'INIT',
@@ -55,7 +55,10 @@ tokens = (
     'NOT_EQUALS',
     'DOT',
     'EXCLAMATION_MARK',
-    'AT'
+    'AT',
+    'ASSUME',
+    'IN_A_SET',
+    'Nat',
 
 
     #'END_OF_FILE',
@@ -72,7 +75,7 @@ reserved = {
     'GRAPH': 'GRAPH',
     'NODE': 'NODE',
     'EDGE': 'EDGE',
-    'VARIABLE': 'VARIABLE',
+    'VARIABLES': 'VARIABLES',
     'VARIABLE_NAME': 'VARIABLE_NAME',
     'CONSTANTS' : 'CONSTANTS',
     'Init': 'INIT',
@@ -81,6 +84,8 @@ reserved = {
     'GOAL': 'GOAL',
     'CHECK': 'CHECK',
     'UNCHANGED': 'UNCHANGED',
+    'ASSUME' : 'ASSUME',
+    'Nat' : 'Nat'
 }
 
 
@@ -117,6 +122,8 @@ t_NOT_EQUALS = r'\#'
 t_DOT = r'\.'
 t_EXCLAMATION_MARK = r'\!'
 t_AT = r'\@'
+t_IN_A_SET = r'\\in'
+
 
 #t_END_OF_FILE = r'\================================'
 #t_COMMENT =  r'\([^)]*\)'
@@ -190,7 +197,7 @@ tla_code = """
 
 EXTENDS Naturals
 
-CONSTANT MaxBeanCount
+CONSTANTS MaxBeanCount
 
 ASSUME MaxBeanCount \in Nat /\ MaxBeanCount >= 1
 
