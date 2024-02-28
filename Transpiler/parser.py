@@ -39,17 +39,10 @@ def p_module(p):
 
 def p_extends(p):
     '''extends : EXTENDS names'''
-    p[0] = ExtendsNode(p[2])
+    p[0] = ExtendsNode(p[2])        
 
 
-def p_constants_declaration(p):
-    'constants_declaration : CONSTANTS names'
-    p[0] = ConstantsNode(p[2])
 
-
-def p_variables_declaration(p):
-    'variables_declaration : VARIABLES names'
-    p[0] = VariablesNode(p[2])
     
 
 def p_names(p):
@@ -80,7 +73,14 @@ def p_declaration(p):
     p[0] = p[1]
 
 
- 
+def p_constants_declaration(p):
+    'constants_declaration : CONSTANTS names'
+    p[0] = ConstantsNode(p[2])
+
+
+def p_variables_declaration(p):
+    'variables_declaration : VARIABLES names'
+    p[0] = VariablesNode(p[2])
 
 '''
 def p_graph_declaration(p):

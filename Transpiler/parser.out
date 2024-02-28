@@ -11,6 +11,7 @@ Unused terminals:
     DOT
     EXCLAMATION_MARK
     FORWARD_SLASH
+    GRAPH
     GREATER_OR_EQ
     GREATER_THAN
     IN_A_SET
@@ -38,112 +39,694 @@ Rule 0     S' -> module
 Rule 1     module -> MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER extends declarations
 Rule 2     module -> MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER declarations
 Rule 3     extends -> EXTENDS names
-Rule 4     constants_declaration -> CONSTANTS names
-Rule 5     variables_declaration -> VARIABLES names
-Rule 6     names -> names COMMA ATTRIBUTE
-Rule 7     names -> ATTRIBUTE
-Rule 8     declarations -> declarations declaration
-Rule 9     declarations -> declaration
-Rule 10    declaration -> constants_declaration
-Rule 11    declaration -> variables_declaration
-Rule 12    declaration -> assignment_statement
-Rule 13    graph_declaration -> GRAPH ATTRIBUTE graph_body
-Rule 14    graph_body -> graph_body graph_statement
-Rule 15    graph_body -> graph_statement
-Rule 16    graph_statement -> node_declaration
-Rule 17    graph_statement -> edge_declaration
-Rule 18    node_declaration -> NODE ATTRIBUTE
-Rule 19    edge_declaration -> EDGE ATTRIBUTE ARROW ATTRIBUTE
-Rule 20    invariant_declaration -> INVARIANT expression
-Rule 21    property_goal_declaration -> GOAL expression
-Rule 22    assignment_statement -> ATTRIBUTE EQUALS_ASSIGNMENT expression
-Rule 23    expression -> expression PLUS expression
-Rule 24    expression -> expression MINUS expression
-Rule 25    expression -> expression STAR expression
-Rule 26    expression -> expression DIVIDE expression
-Rule 27    expression -> IDENTIFIER
-Rule 28    expression -> NUMBER_LITERAL
-Rule 29    expression -> STRING_LITERAL
-Rule 30    expression -> LEFT_PAREN expression RIGHT_PAREN
-Rule 31    init_declaration -> INIT EQUALS_DEFINITIONS expression
-Rule 32    empty -> <empty>
+Rule 4     names -> names COMMA ATTRIBUTE
+Rule 5     names -> ATTRIBUTE
+Rule 6     declarations -> declarations declaration
+Rule 7     declarations -> declaration
+Rule 8     declaration -> constants_declaration
+Rule 9     declaration -> variables_declaration
+Rule 10    declaration -> assignment_statement
+Rule 11    constants_declaration -> CONSTANTS names
+Rule 12    variables_declaration -> VARIABLES names
+Rule 13    graph_body -> graph_body graph_statement
+Rule 14    graph_body -> graph_statement
+Rule 15    graph_statement -> node_declaration
+Rule 16    graph_statement -> edge_declaration
+Rule 17    node_declaration -> NODE ATTRIBUTE
+Rule 18    edge_declaration -> EDGE ATTRIBUTE ARROW ATTRIBUTE
+Rule 19    invariant_declaration -> INVARIANT expression
+Rule 20    property_goal_declaration -> GOAL expression
+Rule 21    assignment_statement -> ATTRIBUTE EQUALS_ASSIGNMENT expression
+Rule 22    expression -> expression PLUS expression
+Rule 23    expression -> expression MINUS expression
+Rule 24    expression -> expression STAR expression
+Rule 25    expression -> expression DIVIDE expression
+Rule 26    expression -> ATTRIBUTE
+Rule 27    expression -> NUMBER_LITERAL
+Rule 28    expression -> STRING_LITERAL
+Rule 29    expression -> LEFT_PAREN expression RIGHT_PAREN
+Rule 30    init_declaration -> INIT EQUALS_DEFINITIONS expression
+Rule 31    empty -> <empty>
 
 Terminals, with rules where they appear
 
 AND                  : 
-ARROW                : 19
+ARROW                : 18
 ASSUME               : 
 AT                   : 
-ATTRIBUTE            : 1 2 6 7 13 18 19 19 22
+ATTRIBUTE            : 1 2 4 5 17 18 18 21 26
 BACK_SLASH           : 
 CHECK                : 
 COLON                : 
-COMMA                : 6
-CONSTANTS            : 4
-DIVIDE               : 26
+COMMA                : 4
+CONSTANTS            : 11
+DIVIDE               : 25
 DOT                  : 
-EDGE                 : 19
-EQUALS_ASSIGNMENT    : 22
-EQUALS_DEFINITIONS   : 31
+EDGE                 : 18
+EQUALS_ASSIGNMENT    : 21
+EQUALS_DEFINITIONS   : 30
 EXCLAMATION_MARK     : 
 EXTENDS              : 3
 FORWARD_SLASH        : 
-GOAL                 : 21
-GRAPH                : 13
+GOAL                 : 20
+GRAPH                : 
 GREATER_OR_EQ        : 
 GREATER_THAN         : 
-INIT                 : 31
-INVARIANT            : 20
+INIT                 : 30
+INVARIANT            : 19
 IN_A_SET             : 
 LEFT_BRACE           : 
-LEFT_PAREN           : 30
+LEFT_PAREN           : 29
 LEFT_SQR_BRACKET     : 
 LESS_OR_EQ           : 
 LESS_THAN            : 
-MINUS                : 24
+MINUS                : 23
 MODULE               : 1 2
 MODULE_WRAPPER       : 1 1 2 2
 MODULUS              : 
 NEXT                 : 
-NODE                 : 18
+NODE                 : 17
 NOT_EQUALS           : 
-NUMBER_LITERAL       : 28
+NUMBER_LITERAL       : 27
 Nat                  : 
 OR                   : 
-PLUS                 : 23
+PLUS                 : 22
 RIGHT_BRACE          : 
-RIGHT_PAREN          : 30
+RIGHT_PAREN          : 29
 RIGHT_SQR_BRACKET    : 
 SEMICOLON            : 
 SINGLE_QUOTE         : 
 SPEC                 : 
-STAR                 : 25
-STRING_LITERAL       : 29
+STAR                 : 24
+STRING_LITERAL       : 28
 UNCHANGED            : 
 UNDERSCORE           : 
-VARIABLES            : 5
+VARIABLES            : 12
 VARIABLE_NAME        : 
 error                : 
 
 Nonterminals, with rules where they appear
 
-IDENTIFIER           : 27
-assignment_statement : 12
-constants_declaration : 10
-declaration          : 8 9
-declarations         : 1 2 8
-edge_declaration     : 17
+assignment_statement : 10
+constants_declaration : 8
+declaration          : 6 7
+declarations         : 1 2 6
+edge_declaration     : 16
 empty                : 
-expression           : 20 21 22 23 23 24 24 25 25 26 26 30 31
+expression           : 19 20 21 22 22 23 23 24 24 25 25 29 30
 extends              : 1
-graph_body           : 13 14
-graph_declaration    : 
-graph_statement      : 14 15
+graph_body           : 13
+graph_statement      : 13 14
 init_declaration     : 
 invariant_declaration : 
 module               : 0
-names                : 3 4 5 6
-node_declaration     : 16
+names                : 3 4 11 12
+node_declaration     : 15
 property_goal_declaration : 
-variables_declaration : 11
+variables_declaration : 9
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . module
+    (1) module -> . MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER extends declarations
+    (2) module -> . MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER declarations
+
+    MODULE_WRAPPER  shift and go to state 2
+
+    module                         shift and go to state 1
+
+state 1
+
+    (0) S' -> module .
+
+
+
+state 2
+
+    (1) module -> MODULE_WRAPPER . MODULE ATTRIBUTE MODULE_WRAPPER extends declarations
+    (2) module -> MODULE_WRAPPER . MODULE ATTRIBUTE MODULE_WRAPPER declarations
+
+    MODULE          shift and go to state 3
+
+
+state 3
+
+    (1) module -> MODULE_WRAPPER MODULE . ATTRIBUTE MODULE_WRAPPER extends declarations
+    (2) module -> MODULE_WRAPPER MODULE . ATTRIBUTE MODULE_WRAPPER declarations
+
+    ATTRIBUTE       shift and go to state 4
+
+
+state 4
+
+    (1) module -> MODULE_WRAPPER MODULE ATTRIBUTE . MODULE_WRAPPER extends declarations
+    (2) module -> MODULE_WRAPPER MODULE ATTRIBUTE . MODULE_WRAPPER declarations
+
+    MODULE_WRAPPER  shift and go to state 5
+
+
+state 5
+
+    (1) module -> MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER . extends declarations
+    (2) module -> MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER . declarations
+    (3) extends -> . EXTENDS names
+    (6) declarations -> . declarations declaration
+    (7) declarations -> . declaration
+    (8) declaration -> . constants_declaration
+    (9) declaration -> . variables_declaration
+    (10) declaration -> . assignment_statement
+    (11) constants_declaration -> . CONSTANTS names
+    (12) variables_declaration -> . VARIABLES names
+    (21) assignment_statement -> . ATTRIBUTE EQUALS_ASSIGNMENT expression
+
+    EXTENDS         shift and go to state 9
+    CONSTANTS       shift and go to state 14
+    VARIABLES       shift and go to state 15
+    ATTRIBUTE       shift and go to state 6
+
+    extends                        shift and go to state 7
+    declarations                   shift and go to state 8
+    declaration                    shift and go to state 10
+    constants_declaration          shift and go to state 11
+    variables_declaration          shift and go to state 12
+    assignment_statement           shift and go to state 13
+
+state 6
+
+    (21) assignment_statement -> ATTRIBUTE . EQUALS_ASSIGNMENT expression
+
+    EQUALS_ASSIGNMENT shift and go to state 16
+
+
+state 7
+
+    (1) module -> MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER extends . declarations
+    (6) declarations -> . declarations declaration
+    (7) declarations -> . declaration
+    (8) declaration -> . constants_declaration
+    (9) declaration -> . variables_declaration
+    (10) declaration -> . assignment_statement
+    (11) constants_declaration -> . CONSTANTS names
+    (12) variables_declaration -> . VARIABLES names
+    (21) assignment_statement -> . ATTRIBUTE EQUALS_ASSIGNMENT expression
+
+    CONSTANTS       shift and go to state 14
+    VARIABLES       shift and go to state 15
+    ATTRIBUTE       shift and go to state 6
+
+    declarations                   shift and go to state 17
+    declaration                    shift and go to state 10
+    constants_declaration          shift and go to state 11
+    variables_declaration          shift and go to state 12
+    assignment_statement           shift and go to state 13
+
+state 8
+
+    (2) module -> MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER declarations .
+    (6) declarations -> declarations . declaration
+    (8) declaration -> . constants_declaration
+    (9) declaration -> . variables_declaration
+    (10) declaration -> . assignment_statement
+    (11) constants_declaration -> . CONSTANTS names
+    (12) variables_declaration -> . VARIABLES names
+    (21) assignment_statement -> . ATTRIBUTE EQUALS_ASSIGNMENT expression
+
+    $end            reduce using rule 2 (module -> MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER declarations .)
+    CONSTANTS       shift and go to state 14
+    VARIABLES       shift and go to state 15
+    ATTRIBUTE       shift and go to state 6
+
+    declaration                    shift and go to state 18
+    constants_declaration          shift and go to state 11
+    variables_declaration          shift and go to state 12
+    assignment_statement           shift and go to state 13
+
+state 9
+
+    (3) extends -> EXTENDS . names
+    (4) names -> . names COMMA ATTRIBUTE
+    (5) names -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 20
+
+    names                          shift and go to state 19
+
+state 10
+
+    (7) declarations -> declaration .
+
+    CONSTANTS       reduce using rule 7 (declarations -> declaration .)
+    VARIABLES       reduce using rule 7 (declarations -> declaration .)
+    ATTRIBUTE       reduce using rule 7 (declarations -> declaration .)
+    $end            reduce using rule 7 (declarations -> declaration .)
+
+
+state 11
+
+    (8) declaration -> constants_declaration .
+
+    CONSTANTS       reduce using rule 8 (declaration -> constants_declaration .)
+    VARIABLES       reduce using rule 8 (declaration -> constants_declaration .)
+    ATTRIBUTE       reduce using rule 8 (declaration -> constants_declaration .)
+    $end            reduce using rule 8 (declaration -> constants_declaration .)
+
+
+state 12
+
+    (9) declaration -> variables_declaration .
+
+    CONSTANTS       reduce using rule 9 (declaration -> variables_declaration .)
+    VARIABLES       reduce using rule 9 (declaration -> variables_declaration .)
+    ATTRIBUTE       reduce using rule 9 (declaration -> variables_declaration .)
+    $end            reduce using rule 9 (declaration -> variables_declaration .)
+
+
+state 13
+
+    (10) declaration -> assignment_statement .
+
+    CONSTANTS       reduce using rule 10 (declaration -> assignment_statement .)
+    VARIABLES       reduce using rule 10 (declaration -> assignment_statement .)
+    ATTRIBUTE       reduce using rule 10 (declaration -> assignment_statement .)
+    $end            reduce using rule 10 (declaration -> assignment_statement .)
+
+
+state 14
+
+    (11) constants_declaration -> CONSTANTS . names
+    (4) names -> . names COMMA ATTRIBUTE
+    (5) names -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 20
+
+    names                          shift and go to state 21
+
+state 15
+
+    (12) variables_declaration -> VARIABLES . names
+    (4) names -> . names COMMA ATTRIBUTE
+    (5) names -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 20
+
+    names                          shift and go to state 22
+
+state 16
+
+    (21) assignment_statement -> ATTRIBUTE EQUALS_ASSIGNMENT . expression
+    (22) expression -> . expression PLUS expression
+    (23) expression -> . expression MINUS expression
+    (24) expression -> . expression STAR expression
+    (25) expression -> . expression DIVIDE expression
+    (26) expression -> . ATTRIBUTE
+    (27) expression -> . NUMBER_LITERAL
+    (28) expression -> . STRING_LITERAL
+    (29) expression -> . LEFT_PAREN expression RIGHT_PAREN
+
+    ATTRIBUTE       shift and go to state 23
+    NUMBER_LITERAL  shift and go to state 25
+    STRING_LITERAL  shift and go to state 26
+    LEFT_PAREN      shift and go to state 27
+
+    expression                     shift and go to state 24
+
+state 17
+
+    (1) module -> MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER extends declarations .
+    (6) declarations -> declarations . declaration
+    (8) declaration -> . constants_declaration
+    (9) declaration -> . variables_declaration
+    (10) declaration -> . assignment_statement
+    (11) constants_declaration -> . CONSTANTS names
+    (12) variables_declaration -> . VARIABLES names
+    (21) assignment_statement -> . ATTRIBUTE EQUALS_ASSIGNMENT expression
+
+    $end            reduce using rule 1 (module -> MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER extends declarations .)
+    CONSTANTS       shift and go to state 14
+    VARIABLES       shift and go to state 15
+    ATTRIBUTE       shift and go to state 6
+
+    declaration                    shift and go to state 18
+    constants_declaration          shift and go to state 11
+    variables_declaration          shift and go to state 12
+    assignment_statement           shift and go to state 13
+
+state 18
+
+    (6) declarations -> declarations declaration .
+
+    CONSTANTS       reduce using rule 6 (declarations -> declarations declaration .)
+    VARIABLES       reduce using rule 6 (declarations -> declarations declaration .)
+    ATTRIBUTE       reduce using rule 6 (declarations -> declarations declaration .)
+    $end            reduce using rule 6 (declarations -> declarations declaration .)
+
+
+state 19
+
+    (3) extends -> EXTENDS names .
+    (4) names -> names . COMMA ATTRIBUTE
+
+    CONSTANTS       reduce using rule 3 (extends -> EXTENDS names .)
+    VARIABLES       reduce using rule 3 (extends -> EXTENDS names .)
+    ATTRIBUTE       reduce using rule 3 (extends -> EXTENDS names .)
+    COMMA           shift and go to state 28
+
+
+state 20
+
+    (5) names -> ATTRIBUTE .
+
+    COMMA           reduce using rule 5 (names -> ATTRIBUTE .)
+    CONSTANTS       reduce using rule 5 (names -> ATTRIBUTE .)
+    VARIABLES       reduce using rule 5 (names -> ATTRIBUTE .)
+    ATTRIBUTE       reduce using rule 5 (names -> ATTRIBUTE .)
+    $end            reduce using rule 5 (names -> ATTRIBUTE .)
+
+
+state 21
+
+    (11) constants_declaration -> CONSTANTS names .
+    (4) names -> names . COMMA ATTRIBUTE
+
+    CONSTANTS       reduce using rule 11 (constants_declaration -> CONSTANTS names .)
+    VARIABLES       reduce using rule 11 (constants_declaration -> CONSTANTS names .)
+    ATTRIBUTE       reduce using rule 11 (constants_declaration -> CONSTANTS names .)
+    $end            reduce using rule 11 (constants_declaration -> CONSTANTS names .)
+    COMMA           shift and go to state 28
+
+
+state 22
+
+    (12) variables_declaration -> VARIABLES names .
+    (4) names -> names . COMMA ATTRIBUTE
+
+    CONSTANTS       reduce using rule 12 (variables_declaration -> VARIABLES names .)
+    VARIABLES       reduce using rule 12 (variables_declaration -> VARIABLES names .)
+    ATTRIBUTE       reduce using rule 12 (variables_declaration -> VARIABLES names .)
+    $end            reduce using rule 12 (variables_declaration -> VARIABLES names .)
+    COMMA           shift and go to state 28
+
+
+state 23
+
+    (26) expression -> ATTRIBUTE .
+
+    PLUS            reduce using rule 26 (expression -> ATTRIBUTE .)
+    MINUS           reduce using rule 26 (expression -> ATTRIBUTE .)
+    STAR            reduce using rule 26 (expression -> ATTRIBUTE .)
+    DIVIDE          reduce using rule 26 (expression -> ATTRIBUTE .)
+    CONSTANTS       reduce using rule 26 (expression -> ATTRIBUTE .)
+    VARIABLES       reduce using rule 26 (expression -> ATTRIBUTE .)
+    ATTRIBUTE       reduce using rule 26 (expression -> ATTRIBUTE .)
+    $end            reduce using rule 26 (expression -> ATTRIBUTE .)
+    RIGHT_PAREN     reduce using rule 26 (expression -> ATTRIBUTE .)
+
+
+state 24
+
+    (21) assignment_statement -> ATTRIBUTE EQUALS_ASSIGNMENT expression .
+    (22) expression -> expression . PLUS expression
+    (23) expression -> expression . MINUS expression
+    (24) expression -> expression . STAR expression
+    (25) expression -> expression . DIVIDE expression
+
+    CONSTANTS       reduce using rule 21 (assignment_statement -> ATTRIBUTE EQUALS_ASSIGNMENT expression .)
+    VARIABLES       reduce using rule 21 (assignment_statement -> ATTRIBUTE EQUALS_ASSIGNMENT expression .)
+    ATTRIBUTE       reduce using rule 21 (assignment_statement -> ATTRIBUTE EQUALS_ASSIGNMENT expression .)
+    $end            reduce using rule 21 (assignment_statement -> ATTRIBUTE EQUALS_ASSIGNMENT expression .)
+    PLUS            shift and go to state 29
+    MINUS           shift and go to state 30
+    STAR            shift and go to state 31
+    DIVIDE          shift and go to state 32
+
+
+state 25
+
+    (27) expression -> NUMBER_LITERAL .
+
+    PLUS            reduce using rule 27 (expression -> NUMBER_LITERAL .)
+    MINUS           reduce using rule 27 (expression -> NUMBER_LITERAL .)
+    STAR            reduce using rule 27 (expression -> NUMBER_LITERAL .)
+    DIVIDE          reduce using rule 27 (expression -> NUMBER_LITERAL .)
+    CONSTANTS       reduce using rule 27 (expression -> NUMBER_LITERAL .)
+    VARIABLES       reduce using rule 27 (expression -> NUMBER_LITERAL .)
+    ATTRIBUTE       reduce using rule 27 (expression -> NUMBER_LITERAL .)
+    $end            reduce using rule 27 (expression -> NUMBER_LITERAL .)
+    RIGHT_PAREN     reduce using rule 27 (expression -> NUMBER_LITERAL .)
+
+
+state 26
+
+    (28) expression -> STRING_LITERAL .
+
+    PLUS            reduce using rule 28 (expression -> STRING_LITERAL .)
+    MINUS           reduce using rule 28 (expression -> STRING_LITERAL .)
+    STAR            reduce using rule 28 (expression -> STRING_LITERAL .)
+    DIVIDE          reduce using rule 28 (expression -> STRING_LITERAL .)
+    CONSTANTS       reduce using rule 28 (expression -> STRING_LITERAL .)
+    VARIABLES       reduce using rule 28 (expression -> STRING_LITERAL .)
+    ATTRIBUTE       reduce using rule 28 (expression -> STRING_LITERAL .)
+    $end            reduce using rule 28 (expression -> STRING_LITERAL .)
+    RIGHT_PAREN     reduce using rule 28 (expression -> STRING_LITERAL .)
+
+
+state 27
+
+    (29) expression -> LEFT_PAREN . expression RIGHT_PAREN
+    (22) expression -> . expression PLUS expression
+    (23) expression -> . expression MINUS expression
+    (24) expression -> . expression STAR expression
+    (25) expression -> . expression DIVIDE expression
+    (26) expression -> . ATTRIBUTE
+    (27) expression -> . NUMBER_LITERAL
+    (28) expression -> . STRING_LITERAL
+    (29) expression -> . LEFT_PAREN expression RIGHT_PAREN
+
+    ATTRIBUTE       shift and go to state 23
+    NUMBER_LITERAL  shift and go to state 25
+    STRING_LITERAL  shift and go to state 26
+    LEFT_PAREN      shift and go to state 27
+
+    expression                     shift and go to state 33
+
+state 28
+
+    (4) names -> names COMMA . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 34
+
+
+state 29
+
+    (22) expression -> expression PLUS . expression
+    (22) expression -> . expression PLUS expression
+    (23) expression -> . expression MINUS expression
+    (24) expression -> . expression STAR expression
+    (25) expression -> . expression DIVIDE expression
+    (26) expression -> . ATTRIBUTE
+    (27) expression -> . NUMBER_LITERAL
+    (28) expression -> . STRING_LITERAL
+    (29) expression -> . LEFT_PAREN expression RIGHT_PAREN
+
+    ATTRIBUTE       shift and go to state 23
+    NUMBER_LITERAL  shift and go to state 25
+    STRING_LITERAL  shift and go to state 26
+    LEFT_PAREN      shift and go to state 27
+
+    expression                     shift and go to state 35
+
+state 30
+
+    (23) expression -> expression MINUS . expression
+    (22) expression -> . expression PLUS expression
+    (23) expression -> . expression MINUS expression
+    (24) expression -> . expression STAR expression
+    (25) expression -> . expression DIVIDE expression
+    (26) expression -> . ATTRIBUTE
+    (27) expression -> . NUMBER_LITERAL
+    (28) expression -> . STRING_LITERAL
+    (29) expression -> . LEFT_PAREN expression RIGHT_PAREN
+
+    ATTRIBUTE       shift and go to state 23
+    NUMBER_LITERAL  shift and go to state 25
+    STRING_LITERAL  shift and go to state 26
+    LEFT_PAREN      shift and go to state 27
+
+    expression                     shift and go to state 36
+
+state 31
+
+    (24) expression -> expression STAR . expression
+    (22) expression -> . expression PLUS expression
+    (23) expression -> . expression MINUS expression
+    (24) expression -> . expression STAR expression
+    (25) expression -> . expression DIVIDE expression
+    (26) expression -> . ATTRIBUTE
+    (27) expression -> . NUMBER_LITERAL
+    (28) expression -> . STRING_LITERAL
+    (29) expression -> . LEFT_PAREN expression RIGHT_PAREN
+
+    ATTRIBUTE       shift and go to state 23
+    NUMBER_LITERAL  shift and go to state 25
+    STRING_LITERAL  shift and go to state 26
+    LEFT_PAREN      shift and go to state 27
+
+    expression                     shift and go to state 37
+
+state 32
+
+    (25) expression -> expression DIVIDE . expression
+    (22) expression -> . expression PLUS expression
+    (23) expression -> . expression MINUS expression
+    (24) expression -> . expression STAR expression
+    (25) expression -> . expression DIVIDE expression
+    (26) expression -> . ATTRIBUTE
+    (27) expression -> . NUMBER_LITERAL
+    (28) expression -> . STRING_LITERAL
+    (29) expression -> . LEFT_PAREN expression RIGHT_PAREN
+
+    ATTRIBUTE       shift and go to state 23
+    NUMBER_LITERAL  shift and go to state 25
+    STRING_LITERAL  shift and go to state 26
+    LEFT_PAREN      shift and go to state 27
+
+    expression                     shift and go to state 38
+
+state 33
+
+    (29) expression -> LEFT_PAREN expression . RIGHT_PAREN
+    (22) expression -> expression . PLUS expression
+    (23) expression -> expression . MINUS expression
+    (24) expression -> expression . STAR expression
+    (25) expression -> expression . DIVIDE expression
+
+    RIGHT_PAREN     shift and go to state 39
+    PLUS            shift and go to state 29
+    MINUS           shift and go to state 30
+    STAR            shift and go to state 31
+    DIVIDE          shift and go to state 32
+
+
+state 34
+
+    (4) names -> names COMMA ATTRIBUTE .
+
+    COMMA           reduce using rule 4 (names -> names COMMA ATTRIBUTE .)
+    CONSTANTS       reduce using rule 4 (names -> names COMMA ATTRIBUTE .)
+    VARIABLES       reduce using rule 4 (names -> names COMMA ATTRIBUTE .)
+    ATTRIBUTE       reduce using rule 4 (names -> names COMMA ATTRIBUTE .)
+    $end            reduce using rule 4 (names -> names COMMA ATTRIBUTE .)
+
+
+state 35
+
+    (22) expression -> expression PLUS expression .
+    (22) expression -> expression . PLUS expression
+    (23) expression -> expression . MINUS expression
+    (24) expression -> expression . STAR expression
+    (25) expression -> expression . DIVIDE expression
+
+    PLUS            reduce using rule 22 (expression -> expression PLUS expression .)
+    MINUS           reduce using rule 22 (expression -> expression PLUS expression .)
+    CONSTANTS       reduce using rule 22 (expression -> expression PLUS expression .)
+    VARIABLES       reduce using rule 22 (expression -> expression PLUS expression .)
+    ATTRIBUTE       reduce using rule 22 (expression -> expression PLUS expression .)
+    $end            reduce using rule 22 (expression -> expression PLUS expression .)
+    RIGHT_PAREN     reduce using rule 22 (expression -> expression PLUS expression .)
+    STAR            shift and go to state 31
+    DIVIDE          shift and go to state 32
+
+  ! STAR            [ reduce using rule 22 (expression -> expression PLUS expression .) ]
+  ! DIVIDE          [ reduce using rule 22 (expression -> expression PLUS expression .) ]
+  ! PLUS            [ shift and go to state 29 ]
+  ! MINUS           [ shift and go to state 30 ]
+
+
+state 36
+
+    (23) expression -> expression MINUS expression .
+    (22) expression -> expression . PLUS expression
+    (23) expression -> expression . MINUS expression
+    (24) expression -> expression . STAR expression
+    (25) expression -> expression . DIVIDE expression
+
+    PLUS            reduce using rule 23 (expression -> expression MINUS expression .)
+    MINUS           reduce using rule 23 (expression -> expression MINUS expression .)
+    CONSTANTS       reduce using rule 23 (expression -> expression MINUS expression .)
+    VARIABLES       reduce using rule 23 (expression -> expression MINUS expression .)
+    ATTRIBUTE       reduce using rule 23 (expression -> expression MINUS expression .)
+    $end            reduce using rule 23 (expression -> expression MINUS expression .)
+    RIGHT_PAREN     reduce using rule 23 (expression -> expression MINUS expression .)
+    STAR            shift and go to state 31
+    DIVIDE          shift and go to state 32
+
+  ! STAR            [ reduce using rule 23 (expression -> expression MINUS expression .) ]
+  ! DIVIDE          [ reduce using rule 23 (expression -> expression MINUS expression .) ]
+  ! PLUS            [ shift and go to state 29 ]
+  ! MINUS           [ shift and go to state 30 ]
+
+
+state 37
+
+    (24) expression -> expression STAR expression .
+    (22) expression -> expression . PLUS expression
+    (23) expression -> expression . MINUS expression
+    (24) expression -> expression . STAR expression
+    (25) expression -> expression . DIVIDE expression
+
+    PLUS            reduce using rule 24 (expression -> expression STAR expression .)
+    MINUS           reduce using rule 24 (expression -> expression STAR expression .)
+    STAR            reduce using rule 24 (expression -> expression STAR expression .)
+    DIVIDE          reduce using rule 24 (expression -> expression STAR expression .)
+    CONSTANTS       reduce using rule 24 (expression -> expression STAR expression .)
+    VARIABLES       reduce using rule 24 (expression -> expression STAR expression .)
+    ATTRIBUTE       reduce using rule 24 (expression -> expression STAR expression .)
+    $end            reduce using rule 24 (expression -> expression STAR expression .)
+    RIGHT_PAREN     reduce using rule 24 (expression -> expression STAR expression .)
+
+  ! PLUS            [ shift and go to state 29 ]
+  ! MINUS           [ shift and go to state 30 ]
+  ! STAR            [ shift and go to state 31 ]
+  ! DIVIDE          [ shift and go to state 32 ]
+
+
+state 38
+
+    (25) expression -> expression DIVIDE expression .
+    (22) expression -> expression . PLUS expression
+    (23) expression -> expression . MINUS expression
+    (24) expression -> expression . STAR expression
+    (25) expression -> expression . DIVIDE expression
+
+    PLUS            reduce using rule 25 (expression -> expression DIVIDE expression .)
+    MINUS           reduce using rule 25 (expression -> expression DIVIDE expression .)
+    STAR            reduce using rule 25 (expression -> expression DIVIDE expression .)
+    DIVIDE          reduce using rule 25 (expression -> expression DIVIDE expression .)
+    CONSTANTS       reduce using rule 25 (expression -> expression DIVIDE expression .)
+    VARIABLES       reduce using rule 25 (expression -> expression DIVIDE expression .)
+    ATTRIBUTE       reduce using rule 25 (expression -> expression DIVIDE expression .)
+    $end            reduce using rule 25 (expression -> expression DIVIDE expression .)
+    RIGHT_PAREN     reduce using rule 25 (expression -> expression DIVIDE expression .)
+
+  ! PLUS            [ shift and go to state 29 ]
+  ! MINUS           [ shift and go to state 30 ]
+  ! STAR            [ shift and go to state 31 ]
+  ! DIVIDE          [ shift and go to state 32 ]
+
+
+state 39
+
+    (29) expression -> LEFT_PAREN expression RIGHT_PAREN .
+
+    PLUS            reduce using rule 29 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    MINUS           reduce using rule 29 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    STAR            reduce using rule 29 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    DIVIDE          reduce using rule 29 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    CONSTANTS       reduce using rule 29 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    VARIABLES       reduce using rule 29 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    ATTRIBUTE       reduce using rule 29 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    $end            reduce using rule 29 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    RIGHT_PAREN     reduce using rule 29 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
 
