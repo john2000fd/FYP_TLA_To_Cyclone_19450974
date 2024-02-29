@@ -41,8 +41,6 @@ def p_extends(p):
     '''extends : EXTENDS names'''
     p[0] = ExtendsNode(p[2])        
 
-
-
     
 
 def p_names(p):
@@ -54,6 +52,11 @@ def p_names(p):
         p[0] = [p[1]]
 
 
+
+
+def p_assume_statement(p):
+    '''assume_statement: ASSUME ATTRIBUTE IN_A_SET Nat AND ATTRIBUTE GREATER_OR_EQ '''
+   
 # Define rules for `statement`, `variable_declaration`, `constants_declaration`, etc.
 
 def p_declarations(p):
