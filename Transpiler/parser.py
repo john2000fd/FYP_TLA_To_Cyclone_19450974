@@ -29,39 +29,39 @@ precedence = (
 
 # Parsing the module with optional extends and body (declarations, assignments, etc.)
 def p_module(p):
-    '''module : MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER extends declarations
-              | MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER declarations'''
+    '''module : MODULE_WRAPPER MODULE attribute MODULE_WRAPPER extends statements
+              | MODULE_WRAPPER MODULE attribute MODULE_WRAPPER statements'''
     if len(p) == 7:
         p[0] = ModuleNode(name=p[3], extends=p[5], declarations=p[6])
     else:
         p[0] = ModuleNode(name=p[3], extends=None, declarations=p[5])
 
 
+def p_attribute(p):
+    'attribute : ATTRIBUTE'
+    p[0] = p[1]  
+
+
 def p_extends(p):
     '''extends : EXTENDS names'''
-    p[0] = ExtendsNode(p[2])        
+    p[0] = p[1]     
 
     
 
 def p_names(p):
-    '''names : names COMMA ATTRIBUTE
-             | ATTRIBUTE'''
+    '''names : names COMMA attribute
+             | attribute'''
     if len(p) == 4:
         p[0] = p[1] + [p[3]]
     else:
         p[0] = [p[1]]
 
 
+#This section deals with the parsing of various declarations, this includes keywords, variables, constants etc
 
-
-def p_assume_statement(p):
-    '''assume_statement: ASSUME ATTRIBUTE IN_A_SET Nat AND ATTRIBUTE GREATER_OR_EQ '''
-   
-# Define rules for `statement`, `variable_declaration`, `constants_declaration`, etc.
-
-def p_declarations(p):
-    '''declarations : declarations declaration
-                    | declaration'''
+def p_statements(p):
+    '''statements : statements statement
+                    | statement'''
     if len(p) == 3:
         p[1].append(p[2])
         p[0] = p[1]
@@ -69,21 +69,84 @@ def p_declarations(p):
         p[0] = [p[1]]
 
 
-def p_declaration(p):
-    '''declaration : constants_declaration
-                   | variables_declaration
-                   | assignment_statement'''
+   
+# Define rules for `statement`, `variable_declaration`, `constants_declaration`, etc.
+
+
+def p_statement(p):
+    '''statement :   constants_statement
+                   | variables_statement
+                   | assignment_statement
+                   | assume_statement'''
     p[0] = p[1]
 
 
-def p_constants_declaration(p):
-    'constants_declaration : CONSTANTS names'
-    p[0] = ConstantsNode(p[2])
+def p_constants_statement(p):
+    '''constants_statement : CONSTANTS names'''
+    p[0] = ConstantsNode(constants=p[2])
 
 
-def p_variables_declaration(p):
-    'variables_declaration : VARIABLES names'
-    p[0] = VariablesNode(p[2])
+def p_variables_statement(p):
+    '''variables_statement : VARIABLES names'''
+    p[0] = VariablesNode(variables=p[2])
+
+
+def p_assume_statement(p):
+    '''assume_statement: ASSUME expression AND expression'''
+    p[0] = AssumeNode(p[2], p[4])
+
+
+
+def p_expression(p):                                      #this section of code was made with help from ChatGPT language model
+    '''expression : expression PLUS expression
+                  | expression MINUS expression
+                  | expression STAR expression
+                  | expression DIVIDE expression
+                  | set_membership
+                  | comparison
+                  | attribute
+                  | NUMBER_LITERAL
+                  | STRING_LITERAL'''
+    
+    if len(p) == 4:
+        # Handles binary operations
+        p[0] = BinaryOperationNode(p[1], p[2], p[3])
+    elif p.slice[1].type == "ATTRIBUTE":
+        # Handles identifiers
+        p[0] = IdentifierNode(p[1])
+    else:
+        # Handles literals (numbers and strings)
+        p[0] = LiteralNode(p[1])
+
+
+def p_comparison(p):
+    '''comparison : attribute comparison_rule number_literal
+                  | attribute comparison_rule attribute'''
+    p[0] = ComparisonNode(p[1], p[2], p[3])
+    
+def p_comparison_rule(p):
+    '''comparison :   GREATER_OR_EQ
+                    | LESS_OR_EQ
+                    | GREATER_THAN                         
+                    | LESS_THAN '''
+    p[0] = p[1]
+    
+def p_set_membership(p):
+    '''set_membership : attribute IN_A_SET Nat '''
+    p[0] = p[1]
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 '''
 def p_graph_declaration(p):
@@ -108,22 +171,22 @@ def p_graph_statement(p):
 
 
 def p_node_declaration(p):
-    'node_declaration : NODE ATTRIBUTE'
+    '''node_declaration : NODE ATTRIBUTE'''
     p[0] = NodeDeclaration(p[2])
 
 
 def p_edge_declaration(p):
-    'edge_declaration : EDGE ATTRIBUTE ARROW ATTRIBUTE'
+    '''edge_declaration : EDGE ATTRIBUTE ARROW ATTRIBUTE'''
     p[0] = EdgeDeclaration(p[2], p[4])
 
 
 def p_invariant_declaration(p):
-    'invariant_declaration : INVARIANT expression'
+    '''invariant_declaration : INVARIANT expression'''
     p[0] = InvariantNode(p[2])
 
 
 def p_property_goal_declaration(p):
-    'property_goal_declaration : GOAL expression'
+    '''property_goal_declaration : GOAL expression'''
     p[0] = PropertyGoalNode(p[2])
 
 
@@ -132,23 +195,7 @@ def p_assignment_statement(p):
     p[0] = AssignmentNode(IdentifierNode(p[1]), p[3])
 
 
-def p_expression(p):
-    '''expression : expression PLUS expression
-                  | expression MINUS expression
-                  | expression STAR expression
-                  | expression DIVIDE expression
-                  | ATTRIBUTE
-                  | NUMBER_LITERAL
-                  | STRING_LITERAL'''
-    if len(p) == 4:
-        # Handles binary operations
-        p[0] = BinaryOperationNode(p[1], p[2], p[3])
-    elif p.slice[1].type == "ATTRIBUTE":
-        # Handles identifiers
-        p[0] = IdentifierNode(p[1])
-    else:
-        # Handles literals (numbers and strings)
-        p[0] = LiteralNode(p[1])
+
 
 
 
@@ -206,6 +253,20 @@ class ConstantsNode(ASTNode):
 class VariablesNode(ASTNode):
     def __init__(self, variables):
         self.variables = variables  # List of variable names
+
+
+class AssumeNode(ASTNode):
+    def __init__(self, expression_1, expression_2):
+       self.expression_1 = expression_1
+       self.expression_2 = expression_2
+       
+
+
+class ComparisonNode(ASTNode):
+    def __init__(self, left, operator, right):
+        self.left = left
+        self.operator = operator
+        self.right = right
 
 
 class InitNode(ASTNode):

@@ -59,6 +59,9 @@ tokens = (
     'ASSUME',
     'IN_A_SET',
     'Nat',
+    'IF',
+    'THEN',
+    'ELSE',
 
 
     #'END_OF_FILE',
@@ -85,7 +88,10 @@ reserved = {
     'CHECK': 'CHECK',
     'UNCHANGED': 'UNCHANGED',
     'ASSUME' : 'ASSUME',
-    'Nat' : 'Nat'
+    'Nat' : 'Nat',
+    'IF' : 'IF',
+    'THEN' : 'THEN',
+    'ELSE' : 'ELSE'
 }
 
 
@@ -123,6 +129,7 @@ t_DOT = r'\.'
 t_EXCLAMATION_MARK = r'\!'
 t_AT = r'\@'
 t_IN_A_SET = r'\\in'
+
 
 
 #t_END_OF_FILE = r'\================================'
