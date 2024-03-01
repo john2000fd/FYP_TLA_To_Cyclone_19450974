@@ -262,7 +262,7 @@ class SetScopeNode(ASTNode):
 class SetDefinitionNode(ASTNode):
     def __init__(self, set_attribute, set_of_records):
         self.set_attribute = set_attribute
-        self.set_of_records = set_of_records
+        self.set_of_records = set_of_records   
 class InitNode(ASTNode):
     def __init__(self, conditions):
         self.conditions = conditions  # List of conditions in the initial state
