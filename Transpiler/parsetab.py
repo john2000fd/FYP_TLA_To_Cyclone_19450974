@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftORleftANDnonassocEQUALS_ASSIGNMENTNOT_EQUALSnonassocLESS_THANLESS_OR_EQGREATER_THANGREATER_OR_EQleftPLUSMINUSleftSTARDIVIDEMODULUSnonassocLEFT_PARENRIGHT_PARENAND ARROW ASSUME AT ATTRIBUTE BACK_SLASH CHECK COLON COMMA CONSTANTS DIVIDE DOT EDGE EQUALS_ASSIGNMENT EQUALS_DEFINITIONS EXCLAMATION_MARK EXTENDS FORWARD_SLASH GOAL GRAPH GREATER_OR_EQ GREATER_THAN INIT INVARIANT IN_A_SET LEFT_BRACE LEFT_PAREN LEFT_SQR_BRACKET LESS_OR_EQ LESS_THAN MINUS MODULE MODULE_WRAPPER MODULUS NEXT NODE NOT_EQUALS NUMBER_LITERAL Nat OR PLUS RIGHT_BRACE RIGHT_PAREN RIGHT_SQR_BRACKET SEMICOLON SINGLE_QUOTE SPEC STAR STRING_LITERAL UNCHANGED UNDERSCORE VARIABLES VARIABLE_NAMEmodule : MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER extends declarations\n              | MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER declarationsextends : EXTENDS namesnames : names COMMA ATTRIBUTE\n             | ATTRIBUTEdeclarations : declarations declaration\n                    | declarationdeclaration : constants_declaration\n                   | variables_declaration\n                   | assignment_statementconstants_declaration : CONSTANTS namesvariables_declaration : VARIABLES namesgraph_body : graph_body graph_statement\n                  | graph_statementgraph_statement : node_declaration\n                       | edge_declarationnode_declaration : NODE ATTRIBUTEedge_declaration : EDGE ATTRIBUTE ARROW ATTRIBUTEinvariant_declaration : INVARIANT expressionproperty_goal_declaration : GOAL expressionassignment_statement : ATTRIBUTE EQUALS_ASSIGNMENT expressionexpression : expression PLUS expression\n                  | expression MINUS expression\n                  | expression STAR expression\n                  | expression DIVIDE expression\n                  | ATTRIBUTE\n                  | NUMBER_LITERAL\n                  | STRING_LITERALexpression : LEFT_PAREN expression RIGHT_PARENinit_declaration : INIT EQUALS_DEFINITIONS expressionempty :'
+_lr_signature = 'leftORleftANDnonassocEQUALS_ASSIGNMENTNOT_EQUALSnonassocLESS_THANLESS_OR_EQGREATER_THANGREATER_OR_EQleftPLUSMINUSleftSTARDIVIDEMODULUSnonassocLEFT_PARENRIGHT_PARENAND ARROW ASSUME AT ATTRIBUTE BACK_SLASH CHECK COLON COMMA CONSTANTS DIVIDE DOT EDGE ELSE EQUALS_ASSIGNMENT EQUALS_DEFINITIONS EXCLAMATION_MARK EXTENDS FORWARD_SLASH GOAL GRAPH GREATER_OR_EQ GREATER_THAN IF INIT INVARIANT IN_A_SET LEFT_BRACE LEFT_PAREN LEFT_SQR_BRACKET LESS_OR_EQ LESS_THAN MINUS MODULE MODULE_WRAPPER MODULUS NEXT NODE NOT_EQUALS NUMBER_LITERAL Nat OR PLUS RIGHT_BRACE RIGHT_PAREN RIGHT_SQR_BRACKET SEMICOLON SINGLE_QUOTE SPEC STAR STRING_LITERAL THEN UNCHANGED UNDERSCORE VARIABLES VARIABLE_NAMEmodule : MODULE_WRAPPER MODULE attribute MODULE_WRAPPER extends statements\n              | MODULE_WRAPPER MODULE attribute MODULE_WRAPPER statementsattribute : ATTRIBUTEextends : EXTENDS namesnames : names COMMA attribute\n             | attributestatements : statements statement\n                    | statementstatement :   constants_statement\n                   | variables_statement\n                   | assignment_statement\n                   | assume_statementconstants_statement : CONSTANTS namesvariables_statement : VARIABLES namesassume_statement : ASSUME expression AND expressionassignment_statement : ATTRIBUTE EQUALS_ASSIGNMENT expressionexpression : expression PLUS expression\n                  | expression MINUS expression\n                  | expression STAR expression\n                  | expression DIVIDE expression\n                  | set_membership\n                  | comparison\n                  | attribute\n                  | NUMBER_LITERAL\n                  | STRING_LITERALcomparison : attribute comparison_rule NUMBER_LITERAL\n                  | attribute comparison_rule attributecomparison_rule :   GREATER_OR_EQ\n                    | LESS_OR_EQ\n                    | GREATER_THAN                         \n                    | LESS_THAN set_membership : attribute IN_A_SET Nat expression : LEFT_PAREN expression RIGHT_PARENinit_declaration : INIT EQUALS_DEFINITIONS expressionempty :'
     
-_lr_action_items = {'MODULE_WRAPPER':([0,4,],[2,5,]),'$end':([1,8,10,11,12,13,17,18,20,21,22,23,24,25,26,34,35,36,37,38,39,],[0,-2,-7,-8,-9,-10,-1,-6,-5,-11,-12,-26,-21,-27,-28,-4,-22,-23,-24,-25,-29,]),'MODULE':([2,],[3,]),'ATTRIBUTE':([3,5,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,34,35,36,37,38,39,],[4,6,6,6,20,-7,-8,-9,-10,20,20,23,6,-6,-3,-5,-11,-12,-26,-21,-27,-28,23,34,23,23,23,23,-4,-22,-23,-24,-25,-29,]),'EXTENDS':([5,],[9,]),'CONSTANTS':([5,7,8,10,11,12,13,17,18,19,20,21,22,23,24,25,26,34,35,36,37,38,39,],[14,14,14,-7,-8,-9,-10,14,-6,-3,-5,-11,-12,-26,-21,-27,-28,-4,-22,-23,-24,-25,-29,]),'VARIABLES':([5,7,8,10,11,12,13,17,18,19,20,21,22,23,24,25,26,34,35,36,37,38,39,],[15,15,15,-7,-8,-9,-10,15,-6,-3,-5,-11,-12,-26,-21,-27,-28,-4,-22,-23,-24,-25,-29,]),'EQUALS_ASSIGNMENT':([6,],[16,]),'NUMBER_LITERAL':([16,27,29,30,31,32,],[25,25,25,25,25,25,]),'STRING_LITERAL':([16,27,29,30,31,32,],[26,26,26,26,26,26,]),'LEFT_PAREN':([16,27,29,30,31,32,],[27,27,27,27,27,27,]),'COMMA':([19,20,21,22,34,],[28,-5,28,28,-4,]),'PLUS':([23,24,25,26,33,35,36,37,38,39,],[-26,29,-27,-28,29,-22,-23,-24,-25,-29,]),'MINUS':([23,24,25,26,33,35,36,37,38,39,],[-26,30,-27,-28,30,-22,-23,-24,-25,-29,]),'STAR':([23,24,25,26,33,35,36,37,38,39,],[-26,31,-27,-28,31,31,31,-24,-25,-29,]),'DIVIDE':([23,24,25,26,33,35,36,37,38,39,],[-26,32,-27,-28,32,32,32,-24,-25,-29,]),'RIGHT_PAREN':([23,25,26,33,35,36,37,38,39,],[-26,-27,-28,39,-22,-23,-24,-25,-29,]),}
+_lr_action_items = {'MODULE_WRAPPER':([0,4,5,],[2,6,-3,]),'$end':([1,5,8,10,11,12,13,14,19,20,22,23,24,27,28,29,30,31,34,47,48,49,50,51,52,53,54,55,56,],[0,-3,-2,-8,-9,-10,-11,-12,-1,-7,-6,-13,-14,-21,-22,-23,-24,-25,-16,-5,-15,-17,-18,-19,-20,-32,-27,-26,-33,]),'MODULE':([2,],[3,]),'ATTRIBUTE':([3,5,6,7,8,9,10,11,12,13,14,15,16,18,19,20,21,22,23,24,25,27,28,29,30,31,32,33,34,35,36,37,38,39,41,42,43,44,45,47,48,49,50,51,52,53,54,55,56,],[5,-3,17,17,17,5,-8,-9,-10,-11,-12,5,5,5,17,-7,-4,-6,-13,-14,5,-21,-22,-23,-24,-25,5,5,-16,5,5,5,5,5,5,-28,-29,-30,-31,-5,-15,-17,-18,-19,-20,-32,-27,-26,-33,]),'COMMA':([5,21,22,23,24,47,],[-3,33,-6,33,33,-5,]),'CONSTANTS':([5,6,7,8,10,11,12,13,14,19,20,21,22,23,24,27,28,29,30,31,34,47,48,49,50,51,52,53,54,55,56,],[-3,15,15,15,-8,-9,-10,-11,-12,15,-7,-4,-6,-13,-14,-21,-22,-23,-24,-25,-16,-5,-15,-17,-18,-19,-20,-32,-27,-26,-33,]),'VARIABLES':([5,6,7,8,10,11,12,13,14,19,20,21,22,23,24,27,28,29,30,31,34,47,48,49,50,51,52,53,54,55,56,],[-3,16,16,16,-8,-9,-10,-11,-12,16,-7,-4,-6,-13,-14,-21,-22,-23,-24,-25,-16,-5,-15,-17,-18,-19,-20,-32,-27,-26,-33,]),'ASSUME':([5,6,7,8,10,11,12,13,14,19,20,21,22,23,24,27,28,29,30,31,34,47,48,49,50,51,52,53,54,55,56,],[-3,18,18,18,-8,-9,-10,-11,-12,18,-7,-4,-6,-13,-14,-21,-22,-23,-24,-25,-16,-5,-15,-17,-18,-19,-20,-32,-27,-26,-33,]),'IN_A_SET':([5,29,],[-3,40,]),'GREATER_OR_EQ':([5,29,],[-3,42,]),'LESS_OR_EQ':([5,29,],[-3,43,]),'GREATER_THAN':([5,29,],[-3,44,]),'LESS_THAN':([5,29,],[-3,45,]),'AND':([5,26,27,28,29,30,31,49,50,51,52,53,54,55,56,],[-3,35,-21,-22,-23,-24,-25,-17,-18,-19,-20,-32,-27,-26,-33,]),'PLUS':([5,26,27,28,29,30,31,34,46,48,49,50,51,52,53,54,55,56,],[-3,36,-21,-22,-23,-24,-25,36,36,36,-17,-18,-19,-20,-32,-27,-26,-33,]),'MINUS':([5,26,27,28,29,30,31,34,46,48,49,50,51,52,53,54,55,56,],[-3,37,-21,-22,-23,-24,-25,37,37,37,-17,-18,-19,-20,-32,-27,-26,-33,]),'STAR':([5,26,27,28,29,30,31,34,46,48,49,50,51,52,53,54,55,56,],[-3,38,-21,-22,-23,-24,-25,38,38,38,38,38,-19,-20,-32,-27,-26,-33,]),'DIVIDE':([5,26,27,28,29,30,31,34,46,48,49,50,51,52,53,54,55,56,],[-3,39,-21,-22,-23,-24,-25,39,39,39,39,39,-19,-20,-32,-27,-26,-33,]),'RIGHT_PAREN':([5,27,28,29,30,31,46,49,50,51,52,53,54,55,56,],[-3,-21,-22,-23,-24,-25,56,-17,-18,-19,-20,-32,-27,-26,-33,]),'EXTENDS':([6,],[9,]),'EQUALS_ASSIGNMENT':([17,],[25,]),'NUMBER_LITERAL':([18,25,32,35,36,37,38,39,41,42,43,44,45,],[30,30,30,30,30,30,30,30,55,-28,-29,-30,-31,]),'STRING_LITERAL':([18,25,32,35,36,37,38,39,],[31,31,31,31,31,31,31,31,]),'LEFT_PAREN':([18,25,32,35,36,37,38,39,],[32,32,32,32,32,32,32,32,]),'Nat':([40,],[53,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'module':([0,],[1,]),'extends':([5,],[7,]),'declarations':([5,7,],[8,17,]),'declaration':([5,7,8,17,],[10,10,18,18,]),'constants_declaration':([5,7,8,17,],[11,11,11,11,]),'variables_declaration':([5,7,8,17,],[12,12,12,12,]),'assignment_statement':([5,7,8,17,],[13,13,13,13,]),'names':([9,14,15,],[19,21,22,]),'expression':([16,27,29,30,31,32,],[24,33,35,36,37,38,]),}
+_lr_goto_items = {'module':([0,],[1,]),'attribute':([3,9,15,16,18,25,32,33,35,36,37,38,39,41,],[4,22,22,22,29,29,29,47,29,29,29,29,29,54,]),'extends':([6,],[7,]),'statements':([6,7,],[8,19,]),'statement':([6,7,8,19,],[10,10,20,20,]),'constants_statement':([6,7,8,19,],[11,11,11,11,]),'variables_statement':([6,7,8,19,],[12,12,12,12,]),'assignment_statement':([6,7,8,19,],[13,13,13,13,]),'assume_statement':([6,7,8,19,],[14,14,14,14,]),'names':([9,15,16,],[21,23,24,]),'expression':([18,25,32,35,36,37,38,39,],[26,34,46,48,49,50,51,52,]),'set_membership':([18,25,32,35,36,37,38,39,],[27,27,27,27,27,27,27,27,]),'comparison':([18,25,32,35,36,37,38,39,],[28,28,28,28,28,28,28,28,]),'comparison_rule':([29,],[41,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,35 +27,39 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> module","S'",1,None,None,None),
-  ('module -> MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER extends declarations','module',6,'p_module','parser.py',32),
-  ('module -> MODULE_WRAPPER MODULE ATTRIBUTE MODULE_WRAPPER declarations','module',5,'p_module','parser.py',33),
-  ('extends -> EXTENDS names','extends',2,'p_extends','parser.py',41),
-  ('names -> names COMMA ATTRIBUTE','names',3,'p_names','parser.py',49),
-  ('names -> ATTRIBUTE','names',1,'p_names','parser.py',50),
-  ('declarations -> declarations declaration','declarations',2,'p_declarations','parser.py',60),
-  ('declarations -> declaration','declarations',1,'p_declarations','parser.py',61),
-  ('declaration -> constants_declaration','declaration',1,'p_declaration','parser.py',70),
-  ('declaration -> variables_declaration','declaration',1,'p_declaration','parser.py',71),
-  ('declaration -> assignment_statement','declaration',1,'p_declaration','parser.py',72),
-  ('constants_declaration -> CONSTANTS names','constants_declaration',2,'p_constants_declaration','parser.py',77),
-  ('variables_declaration -> VARIABLES names','variables_declaration',2,'p_variables_declaration','parser.py',82),
-  ('graph_body -> graph_body graph_statement','graph_body',2,'p_graph_body','parser.py',92),
-  ('graph_body -> graph_statement','graph_body',1,'p_graph_body','parser.py',93),
-  ('graph_statement -> node_declaration','graph_statement',1,'p_graph_statement','parser.py',102),
-  ('graph_statement -> edge_declaration','graph_statement',1,'p_graph_statement','parser.py',103),
-  ('node_declaration -> NODE ATTRIBUTE','node_declaration',2,'p_node_declaration','parser.py',108),
-  ('edge_declaration -> EDGE ATTRIBUTE ARROW ATTRIBUTE','edge_declaration',4,'p_edge_declaration','parser.py',113),
-  ('invariant_declaration -> INVARIANT expression','invariant_declaration',2,'p_invariant_declaration','parser.py',118),
-  ('property_goal_declaration -> GOAL expression','property_goal_declaration',2,'p_property_goal_declaration','parser.py',123),
-  ('assignment_statement -> ATTRIBUTE EQUALS_ASSIGNMENT expression','assignment_statement',3,'p_assignment_statement','parser.py',128),
-  ('expression -> expression PLUS expression','expression',3,'p_expression','parser.py',133),
-  ('expression -> expression MINUS expression','expression',3,'p_expression','parser.py',134),
-  ('expression -> expression STAR expression','expression',3,'p_expression','parser.py',135),
-  ('expression -> expression DIVIDE expression','expression',3,'p_expression','parser.py',136),
-  ('expression -> ATTRIBUTE','expression',1,'p_expression','parser.py',137),
-  ('expression -> NUMBER_LITERAL','expression',1,'p_expression','parser.py',138),
-  ('expression -> STRING_LITERAL','expression',1,'p_expression','parser.py',139),
-  ('expression -> LEFT_PAREN expression RIGHT_PAREN','expression',3,'p_expression_group','parser.py',154),
-  ('init_declaration -> INIT EQUALS_DEFINITIONS expression','init_declaration',3,'p_init_declaration','parser.py',164),
-  ('empty -> <empty>','empty',0,'p_empty','parser.py',170),
+  ('module -> MODULE_WRAPPER MODULE attribute MODULE_WRAPPER extends statements','module',6,'p_module','parser.py',32),
+  ('module -> MODULE_WRAPPER MODULE attribute MODULE_WRAPPER statements','module',5,'p_module','parser.py',33),
+  ('attribute -> ATTRIBUTE','attribute',1,'p_attribute','parser.py',41),
+  ('extends -> EXTENDS names','extends',2,'p_extends','parser.py',46),
+  ('names -> names COMMA attribute','names',3,'p_names','parser.py',52),
+  ('names -> attribute','names',1,'p_names','parser.py',53),
+  ('statements -> statements statement','statements',2,'p_statements','parser.py',63),
+  ('statements -> statement','statements',1,'p_statements','parser.py',64),
+  ('statement -> constants_statement','statement',1,'p_statement','parser.py',77),
+  ('statement -> variables_statement','statement',1,'p_statement','parser.py',78),
+  ('statement -> assignment_statement','statement',1,'p_statement','parser.py',79),
+  ('statement -> assume_statement','statement',1,'p_statement','parser.py',80),
+  ('constants_statement -> CONSTANTS names','constants_statement',2,'p_constants_statement','parser.py',85),
+  ('variables_statement -> VARIABLES names','variables_statement',2,'p_variables_statement','parser.py',90),
+  ('assume_statement -> ASSUME expression AND expression','assume_statement',4,'p_assume_statement','parser.py',95),
+  ('assignment_statement -> ATTRIBUTE EQUALS_ASSIGNMENT expression','assignment_statement',3,'p_assignment_statement','parser.py',99),
+  ('expression -> expression PLUS expression','expression',3,'p_expression','parser.py',103),
+  ('expression -> expression MINUS expression','expression',3,'p_expression','parser.py',104),
+  ('expression -> expression STAR expression','expression',3,'p_expression','parser.py',105),
+  ('expression -> expression DIVIDE expression','expression',3,'p_expression','parser.py',106),
+  ('expression -> set_membership','expression',1,'p_expression','parser.py',107),
+  ('expression -> comparison','expression',1,'p_expression','parser.py',108),
+  ('expression -> attribute','expression',1,'p_expression','parser.py',109),
+  ('expression -> NUMBER_LITERAL','expression',1,'p_expression','parser.py',110),
+  ('expression -> STRING_LITERAL','expression',1,'p_expression','parser.py',111),
+  ('comparison -> attribute comparison_rule NUMBER_LITERAL','comparison',3,'p_comparison','parser.py',125),
+  ('comparison -> attribute comparison_rule attribute','comparison',3,'p_comparison','parser.py',126),
+  ('comparison_rule -> GREATER_OR_EQ','comparison_rule',1,'p_comparison_rule','parser.py',130),
+  ('comparison_rule -> LESS_OR_EQ','comparison_rule',1,'p_comparison_rule','parser.py',131),
+  ('comparison_rule -> GREATER_THAN','comparison_rule',1,'p_comparison_rule','parser.py',132),
+  ('comparison_rule -> LESS_THAN','comparison_rule',1,'p_comparison_rule','parser.py',133),
+  ('set_membership -> attribute IN_A_SET Nat','set_membership',3,'p_set_membership','parser.py',137),
+  ('expression -> LEFT_PAREN expression RIGHT_PAREN','expression',3,'p_expression_group','parser.py',160),
+  ('init_declaration -> INIT EQUALS_DEFINITIONS expression','init_declaration',3,'p_init_declaration','parser.py',170),
+  ('empty -> <empty>','empty',0,'p_empty','parser.py',176),
 ]

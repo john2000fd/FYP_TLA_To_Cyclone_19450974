@@ -10,7 +10,7 @@ parsed_data = {}
 precedence = (
     ('left', 'OR'),  # Logical OR
     ('left', 'AND'),  # Logical AND
-    ('nonassoc', 'EQUALS_ASSIGNMENT', 'NOT_EQUALS'),  # Equality and inequality
+    ('nonassoc', 'EQUALS_DEFINITIONS', 'NOT_EQUALS'),  # Equality and inequality
     ('nonassoc', 'LESS_THAN', 'LESS_OR_EQ', 'GREATER_THAN', 'GREATER_OR_EQ'),  # Relational operators
     ('left', 'PLUS', 'MINUS'),  # Addition and subtraction
     ('left', 'STAR', 'DIVIDE', 'MODULUS'),  # Multiplication, division, modulo
@@ -92,10 +92,12 @@ def p_variables_statement(p):
 
 
 def p_assume_statement(p):
-    '''assume_statement: ASSUME expression AND expression'''
+    '''assume_statement : ASSUME expression AND expression'''
     p[0] = AssumeNode(p[2], p[4])
 
-
+def p_assignment_statement(p):
+    'assignment_statement : ATTRIBUTE EQUALS_ASSIGNMENT expression'
+    p[0] = AssignmentNode(IdentifierNode(p[1]), p[3])
 
 def p_expression(p):                                      #this section of code was made with help from ChatGPT language model
     '''expression : expression PLUS expression
@@ -116,16 +118,16 @@ def p_expression(p):                                      #this section of code 
         p[0] = IdentifierNode(p[1])
     else:
         # Handles literals (numbers and strings)
-        p[0] = LiteralNode(p[1])
+        p[0] = NumberNode(p[1])
 
 
 def p_comparison(p):
-    '''comparison : attribute comparison_rule number_literal
+    '''comparison : attribute comparison_rule NUMBER_LITERAL
                   | attribute comparison_rule attribute'''
     p[0] = ComparisonNode(p[1], p[2], p[3])
     
 def p_comparison_rule(p):
-    '''comparison :   GREATER_OR_EQ
+    '''comparison_rule :   GREATER_OR_EQ
                     | LESS_OR_EQ
                     | GREATER_THAN                         
                     | LESS_THAN '''
@@ -136,6 +138,7 @@ def p_set_membership(p):
     p[0] = p[1]
 
 
+#def p_
 
 
 
@@ -146,53 +149,6 @@ def p_set_membership(p):
 
 
 
-
-
-'''
-def p_graph_declaration(p):
-    'graph_declaration : GRAPH ATTRIBUTE graph_body'
-    p[0] = GraphNode(p[2], p[3])
-'''
-
-def p_graph_body(p):
-    '''graph_body : graph_body graph_statement
-                  | graph_statement'''
-    if len(p) == 3:
-        p[1].append(p[2])
-        p[0] = p[1]
-    else:
-        p[0] = [p[1]]
-
-
-def p_graph_statement(p):
-    '''graph_statement : node_declaration
-                       | edge_declaration'''
-    p[0] = p[1]
-
-
-def p_node_declaration(p):
-    '''node_declaration : NODE ATTRIBUTE'''
-    p[0] = NodeDeclaration(p[2])
-
-
-def p_edge_declaration(p):
-    '''edge_declaration : EDGE ATTRIBUTE ARROW ATTRIBUTE'''
-    p[0] = EdgeDeclaration(p[2], p[4])
-
-
-def p_invariant_declaration(p):
-    '''invariant_declaration : INVARIANT expression'''
-    p[0] = InvariantNode(p[2])
-
-
-def p_property_goal_declaration(p):
-    '''property_goal_declaration : GOAL expression'''
-    p[0] = PropertyGoalNode(p[2])
-
-
-def p_assignment_statement(p):
-    'assignment_statement : ATTRIBUTE EQUALS_ASSIGNMENT expression'
-    p[0] = AssignmentNode(IdentifierNode(p[1]), p[3])
 
 
 
@@ -293,7 +249,7 @@ class IdentifierNode(ASTNode):
     def __init__(self, name):
         self.name = name
 
-class LiteralNode(ASTNode):
+class NumberNode(ASTNode):
     def __init__(self, value):
         self.value = value
 

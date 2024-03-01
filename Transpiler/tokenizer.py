@@ -30,7 +30,7 @@ tokens = (
     'LEFT_BRACE',
     'RIGHT_BRACE',
     #'COMMENT',
-    'EQUALS_ASSIGNMENT',
+    'EQUALS_EQUALITY',
     'STAR',
     'BACK_SLASH',
     'FORWARD_SLASH',
@@ -103,7 +103,7 @@ t_LEFT_PAREN = r'\('
 t_RIGHT_PAREN = r'\)'
 t_LEFT_BRACE = r'\{'
 t_RIGHT_BRACE = r'\}'
-t_EQUALS_ASSIGNMENT = r'\='
+t_EQUALS_EQUALITY = r'\='
 t_STAR = r'\*'
 t_BACK_SLASH = r'\\'
 t_FORWARD_SLASH = r'\/'
