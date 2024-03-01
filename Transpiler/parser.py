@@ -152,12 +152,15 @@ def p_set_individual_info(p):
     '''set_individual_info : ATTRIBUTE COLON set_scope'''
     p[0] = SetIndividualInfoNode(p[1],p[3])
 
+
 def p_set_scope(p):
     '''set_scope : NUMBER_LITERAL DOT DOT attribute'''
     p[0] = SetScopeNode(p[1], p[4])        
 
 
-
+def p_set_definition(p):
+    '''set_definition : IDENTIFIER EQUALS_DEFINITIONS set_of_records'''
+    p[0] = SetDefinitionNode(p[1], p[3])
 
 
 
@@ -254,6 +257,12 @@ class SetScopeNode(ASTNode):
     def __init__(self,start_value,end_value):
        self.start_value = start_value
        self.end_value = end_value
+
+
+class SetDefinitionNode(ASTNode):
+    def __init__(self, set_attribute, set_of_records):
+        self.set_attribute = set_attribute
+        self.set_of_records = set_of_records
 class InitNode(ASTNode):
     def __init__(self, conditions):
         self.conditions = conditions  # List of conditions in the initial state
