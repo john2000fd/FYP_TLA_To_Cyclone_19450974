@@ -76,7 +76,6 @@ def p_statements(p):
 def p_statement(p):
     '''statement :   constants_statement
                    | variables_statement
-                   | assignment_statement
                    | assume_statement'''
     p[0] = p[1]
 
@@ -95,9 +94,7 @@ def p_assume_statement(p):
     '''assume_statement : ASSUME expression AND expression'''
     p[0] = AssumeNode(p[2], p[4])
 
-def p_assignment_statement(p):
-    'assignment_statement : ATTRIBUTE EQUALS_ASSIGNMENT expression'
-    p[0] = AssignmentNode(IdentifierNode(p[1]), p[3])
+
 
 def p_expression(p):                                      #this section of code was made with help from ChatGPT language model
     '''expression : expression PLUS expression
@@ -138,7 +135,27 @@ def p_set_membership(p):
     p[0] = p[1]
 
 
-#def p_
+def p_set_of_records(p):
+    '''set_of_records : LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET'''
+    p[0] = SetOfRecordsNode(p[2])
+
+
+def p_set_info(p):
+    '''set_info : set_info COMMA set_individual_info
+                      | set_individual_info'''
+    if len(p) == 4:
+        p[0] = p[1] + [p[3]]
+    else:
+        p[0] = [p[1]]
+
+def p_set_individual_info(p):
+    '''set_individual_info : ATTRIBUTE COLON set_scope'''
+    p[0] = SetIndividualInfoNode(p[1],p[3])
+
+def p_set_scope(p):
+    '''set_scope : NUMBER_LITERAL DOT DOT attribute'''
+    p[0] = SetScopeNode(p[1], p[4])        
+
 
 
 
@@ -224,7 +241,19 @@ class ComparisonNode(ASTNode):
         self.operator = operator
         self.right = right
 
+class SetOfRecordsNode(ASTNode):
+    def __init__(self, set_info):
+        self.set_info = set_info
 
+class SetIndividualInfoNode(ASTNode):
+    def __init__(self,attribute,scope):
+       self.attribute = attribute
+       self.scope = scope
+
+class SetScopeNode(ASTNode):
+    def __init__(self,start_value,end_value):
+       self.start_value = start_value
+       self.end_value = end_value
 class InitNode(ASTNode):
     def __init__(self, conditions):
         self.conditions = conditions  # List of conditions in the initial state

@@ -143,3 +143,7 @@ def p_property_goal_declaration(p):
     p[0] = PropertyGoalNode(p[2])
 
 
+
+def p_assignment_statement(p):
+    'assignment_statement : ATTRIBUTE EQUALS_ASSIGNMENT expression'
+    p[0] = AssignmentNode(IdentifierNode(p[1]), p[3])
