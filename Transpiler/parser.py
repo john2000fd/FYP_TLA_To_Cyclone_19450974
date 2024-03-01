@@ -266,7 +266,7 @@ class NextNode(ASTNode):
 class AssignmentNode(ASTNode):
     def __init__(self, left, right):
         self.left = left
-        self.right = right
+        self.right = right 
 
 class BinaryOperationNode(ASTNode):
     def __init__(self, left, operator, right):
