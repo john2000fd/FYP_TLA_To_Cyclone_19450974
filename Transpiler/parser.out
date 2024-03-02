@@ -19,7 +19,6 @@ Unused terminals:
     NODE
     NOT_EQUALS
     OR
-    RIGHT_BRACE
     SEMICOLON
     SINGLE_QUOTE
     SPEC
@@ -77,8 +76,8 @@ Rule 43    set_scope -> NUMBER_LITERAL DOT DOT attribute
 Rule 44    type_invariant -> attribute equals expression
 Rule 45    init -> INIT equals attribute IN_A_SET init_set_statement
 Rule 46    init_set_statement -> LEFT_BRACE attribute IN_A_SET attribute COLON order
-Rule 47    order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values
-Rule 48    range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL
+Rule 47    order -> attribute DOT attribute PLUS attribute DOT attribute IN_A_SET range_of_values
+Rule 48    range_of_values -> NUMBER_LITERAL DOT DOT attribute RIGHT_BRACE
 Rule 49    expression -> LEFT_PAREN expression RIGHT_PAREN
 Rule 50    empty -> <empty>
 
@@ -110,7 +109,7 @@ GREATER_THAN         : 34
 IF                   : 
 INIT                 : 45
 INVARIANT            : 
-IN_A_SET             : 28 36 45 46
+IN_A_SET             : 28 36 45 46 47
 LEFT_BRACE           : 46
 LEFT_PAREN           : 49
 LEFT_SQR_BRACKET     : 39
@@ -127,7 +126,7 @@ NUMBER_LITERAL       : 26 30 43 48
 Nat                  : 36
 OR                   : 
 PLUS                 : 18 47
-RIGHT_BRACE          : 
+RIGHT_BRACE          : 48
 RIGHT_PAREN          : 49
 RIGHT_SQR_BRACKET    : 39
 SEMICOLON            : 
@@ -145,7 +144,7 @@ error                :
 Nonterminals, with rules where they appear
 
 assume_statement     : 11
-attribute            : 1 2 5 6 24 28 28 30 31 31 36 39 43 44 45 46 46 47 47 47 47 48 48
+attribute            : 1 2 5 6 24 28 28 30 31 31 36 39 43 44 45 46 46 47 47 47 47 48
 comparison           : 23
 comparison_rule      : 30 31
 constants_statement  : 9
@@ -243,7 +242,7 @@ state 5
     COLON           reduce using rule 3 (attribute -> ATTRIBUTE .)
     RIGHT_SQR_BRACKET reduce using rule 3 (attribute -> ATTRIBUTE .)
     DOT             reduce using rule 3 (attribute -> ATTRIBUTE .)
-    NUMBER_LITERAL  reduce using rule 3 (attribute -> ATTRIBUTE .)
+    RIGHT_BRACE     reduce using rule 3 (attribute -> ATTRIBUTE .)
 
 
 state 6
@@ -1520,7 +1519,7 @@ state 84
 state 85
 
     (46) init_set_statement -> LEFT_BRACE attribute IN_A_SET attribute COLON . order
-    (47) order -> . attribute DOT attribute PLUS attribute DOT attribute range_of_values
+    (47) order -> . attribute DOT attribute PLUS attribute DOT attribute IN_A_SET range_of_values
     (3) attribute -> . ATTRIBUTE
 
     ATTRIBUTE       shift and go to state 5
@@ -1530,7 +1529,7 @@ state 85
 
 state 86
 
-    (47) order -> attribute . DOT attribute PLUS attribute DOT attribute range_of_values
+    (47) order -> attribute . DOT attribute PLUS attribute DOT attribute IN_A_SET range_of_values
 
     DOT             shift and go to state 88
 
@@ -1549,7 +1548,7 @@ state 87
 
 state 88
 
-    (47) order -> attribute DOT . attribute PLUS attribute DOT attribute range_of_values
+    (47) order -> attribute DOT . attribute PLUS attribute DOT attribute IN_A_SET range_of_values
     (3) attribute -> . ATTRIBUTE
 
     ATTRIBUTE       shift and go to state 5
@@ -1558,14 +1557,14 @@ state 88
 
 state 89
 
-    (47) order -> attribute DOT attribute . PLUS attribute DOT attribute range_of_values
+    (47) order -> attribute DOT attribute . PLUS attribute DOT attribute IN_A_SET range_of_values
 
     PLUS            shift and go to state 90
 
 
 state 90
 
-    (47) order -> attribute DOT attribute PLUS . attribute DOT attribute range_of_values
+    (47) order -> attribute DOT attribute PLUS . attribute DOT attribute IN_A_SET range_of_values
     (3) attribute -> . ATTRIBUTE
 
     ATTRIBUTE       shift and go to state 5
@@ -1574,14 +1573,14 @@ state 90
 
 state 91
 
-    (47) order -> attribute DOT attribute PLUS attribute . DOT attribute range_of_values
+    (47) order -> attribute DOT attribute PLUS attribute . DOT attribute IN_A_SET range_of_values
 
     DOT             shift and go to state 92
 
 
 state 92
 
-    (47) order -> attribute DOT attribute PLUS attribute DOT . attribute range_of_values
+    (47) order -> attribute DOT attribute PLUS attribute DOT . attribute IN_A_SET range_of_values
     (3) attribute -> . ATTRIBUTE
 
     ATTRIBUTE       shift and go to state 5
@@ -1590,65 +1589,70 @@ state 92
 
 state 93
 
-    (47) order -> attribute DOT attribute PLUS attribute DOT attribute . range_of_values
-    (48) range_of_values -> . attribute DOT DOT attribute NUMBER_LITERAL
-    (3) attribute -> . ATTRIBUTE
+    (47) order -> attribute DOT attribute PLUS attribute DOT attribute . IN_A_SET range_of_values
 
-    ATTRIBUTE       shift and go to state 5
+    IN_A_SET        shift and go to state 94
 
-    attribute                      shift and go to state 94
-    range_of_values                shift and go to state 95
 
 state 94
 
-    (48) range_of_values -> attribute . DOT DOT attribute NUMBER_LITERAL
+    (47) order -> attribute DOT attribute PLUS attribute DOT attribute IN_A_SET . range_of_values
+    (48) range_of_values -> . NUMBER_LITERAL DOT DOT attribute RIGHT_BRACE
 
-    DOT             shift and go to state 96
+    NUMBER_LITERAL  shift and go to state 96
 
+    range_of_values                shift and go to state 95
 
 state 95
 
-    (47) order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values .
+    (47) order -> attribute DOT attribute PLUS attribute DOT attribute IN_A_SET range_of_values .
 
-    CONSTANTS       reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values .)
-    VARIABLES       reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values .)
-    ASSUME          reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values .)
-    INIT            reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values .)
-    ATTRIBUTE       reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values .)
-    $end            reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values .)
+    CONSTANTS       reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute IN_A_SET range_of_values .)
+    VARIABLES       reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute IN_A_SET range_of_values .)
+    ASSUME          reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute IN_A_SET range_of_values .)
+    INIT            reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute IN_A_SET range_of_values .)
+    ATTRIBUTE       reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute IN_A_SET range_of_values .)
+    $end            reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute IN_A_SET range_of_values .)
 
 
 state 96
 
-    (48) range_of_values -> attribute DOT . DOT attribute NUMBER_LITERAL
+    (48) range_of_values -> NUMBER_LITERAL . DOT DOT attribute RIGHT_BRACE
 
     DOT             shift and go to state 97
 
 
 state 97
 
-    (48) range_of_values -> attribute DOT DOT . attribute NUMBER_LITERAL
+    (48) range_of_values -> NUMBER_LITERAL DOT . DOT attribute RIGHT_BRACE
+
+    DOT             shift and go to state 98
+
+
+state 98
+
+    (48) range_of_values -> NUMBER_LITERAL DOT DOT . attribute RIGHT_BRACE
     (3) attribute -> . ATTRIBUTE
 
     ATTRIBUTE       shift and go to state 5
 
-    attribute                      shift and go to state 98
-
-state 98
-
-    (48) range_of_values -> attribute DOT DOT attribute . NUMBER_LITERAL
-
-    NUMBER_LITERAL  shift and go to state 99
-
+    attribute                      shift and go to state 99
 
 state 99
 
-    (48) range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL .
+    (48) range_of_values -> NUMBER_LITERAL DOT DOT attribute . RIGHT_BRACE
 
-    CONSTANTS       reduce using rule 48 (range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL .)
-    VARIABLES       reduce using rule 48 (range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL .)
-    ASSUME          reduce using rule 48 (range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL .)
-    INIT            reduce using rule 48 (range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL .)
-    ATTRIBUTE       reduce using rule 48 (range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL .)
-    $end            reduce using rule 48 (range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL .)
+    RIGHT_BRACE     shift and go to state 100
+
+
+state 100
+
+    (48) range_of_values -> NUMBER_LITERAL DOT DOT attribute RIGHT_BRACE .
+
+    CONSTANTS       reduce using rule 48 (range_of_values -> NUMBER_LITERAL DOT DOT attribute RIGHT_BRACE .)
+    VARIABLES       reduce using rule 48 (range_of_values -> NUMBER_LITERAL DOT DOT attribute RIGHT_BRACE .)
+    ASSUME          reduce using rule 48 (range_of_values -> NUMBER_LITERAL DOT DOT attribute RIGHT_BRACE .)
+    INIT            reduce using rule 48 (range_of_values -> NUMBER_LITERAL DOT DOT attribute RIGHT_BRACE .)
+    ATTRIBUTE       reduce using rule 48 (range_of_values -> NUMBER_LITERAL DOT DOT attribute RIGHT_BRACE .)
+    $end            reduce using rule 48 (range_of_values -> NUMBER_LITERAL DOT DOT attribute RIGHT_BRACE .)
 

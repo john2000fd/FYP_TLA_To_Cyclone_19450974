@@ -191,14 +191,17 @@ def p_init_set_statement(p):
 
 
 def p_order(p):
-    '''order : attribute DOT attribute PLUS attribute DOT attribute range_of_values'''
-    p[0] = InitSetOrderNode(p[1], p[3], p)
+    '''order : attribute DOT attribute PLUS attribute DOT attribute IN_A_SET range_of_values'''
+    left_plus = PlusNode(AttributeNode(p[1]), AttributeNode(p[3]))                         #These nodes deal with the individual parts of our addition operation, and the final addition value
+    right_plus = PlusNode(AttributeNode(p[5]), AttributeNode(p[7]))
+    addition_result = AdditionResultNode(left_plus, right_plus)
+
 
 
 
 def p_range_of_values(p):
-    '''range_of_values : attribute DOT DOT attribute NUMBER_LITERAL'''
-    p[0] = InitSetRangeOfValuesNode()
+    '''range_of_values :  NUMBER_LITERAL DOT DOT attribute RIGHT_BRACE'''
+    p[0] = InitSetRangeOfValuesNode(p[1], p[4])
 
 
 
@@ -248,6 +251,10 @@ class ModuleNode(ASTNode):
         self.extends = extends
         self.declarations = declarations
 
+class AttributeNode(ASTNode):
+    def __init__(self, attribute_name):
+        self.attribute_name = attribute_name
+        
 
 class ExtendsNode(ASTNode):
     def __init__(self, extended_modules):
@@ -321,6 +328,34 @@ class InitSetStatementNode(ASTNode):
         self.attribute2 = attribute2
         self.order = order
 
+
+
+
+class PlusNode(ASTNode):
+    def __init__(self, attribute_1_left, attribute_2_right):
+        self.attribute_1_left = attribute_1_left
+        self.attribute_2_right = attribute_2_right
+        
+
+
+class AdditionResultNode(ASTNode):
+    def __init__(self, left_value, right_value):
+        self.left_value = left_value
+        self.right_value = right_value
+
+
+
+
+class InitSetRangeOfValuesNode(ASTNode):
+    def __init__(self, start_of_range, end_of_range):
+        self.start_of_range = start_of_range
+        self.end_of_range = end_of_range
+
+
+
+
+
+
 class NextNode(ASTNode):
     def __init__(self, transitions):
         self.transitions = transitions  # List of state transitions
@@ -343,6 +378,22 @@ class IdentifierNode(ASTNode):
 class NumberNode(ASTNode):
     def __init__(self, value):
         self.value = value
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class GraphNode(ASTNode):
