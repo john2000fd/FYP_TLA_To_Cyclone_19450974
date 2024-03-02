@@ -76,7 +76,10 @@ def p_statements(p):
 def p_statement(p):
     '''statement :   constants_statement
                    | variables_statement
-                   | assume_statement'''
+                   | assume_statement
+                   | type_invariant
+                   | set_definition
+                   | init'''
     p[0] = p[1]
 
 
@@ -104,6 +107,7 @@ def p_expression(p):                                      #this section of code 
                   | set_membership
                   | comparison
                   | attribute
+                  | type_invariant_expression
                   | NUMBER_LITERAL
                   | STRING_LITERAL'''
     
@@ -117,6 +121,13 @@ def p_expression(p):                                      #this section of code 
         # Handles literals (numbers and strings)
         p[0] = NumberNode(p[1])
 
+
+def p_type_invariant_expression(p):
+    '''type_invariant_expression : attribute IN_A_SET attribute'''
+    p[0] = TypeInvariantExpressionNode(p[1], p[2], p[3])
+
+def p_init_expression(p):
+    '''init_expression : '''
 
 def p_comparison(p):
     '''comparison : attribute comparison_rule NUMBER_LITERAL
@@ -134,10 +145,16 @@ def p_set_membership(p):
     '''set_membership : attribute IN_A_SET Nat '''
     p[0] = p[1]
 
+def p_equals(p):
+    '''equals : EQUALS_DEFINITIONS
+              | EQUALS_EQUALITY'''
+    p[0] = p[1]
 
-def p_set_of_records(p):
-    '''set_of_records : LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET'''
-    p[0] = SetOfRecordsNode(p[2])
+def p_set_definition(p):
+    '''set_definition : attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET'''
+    p[0] = SetDefinitionNode(p[1], p[3])
+
+
 
 
 def p_set_info(p):
@@ -158,9 +175,31 @@ def p_set_scope(p):
     p[0] = SetScopeNode(p[1], p[4])        
 
 
-def p_set_definition(p):
-    '''set_definition : IDENTIFIER EQUALS_DEFINITIONS set_of_records'''
-    p[0] = SetDefinitionNode(p[1], p[3])
+def p_type_invariant(p):
+    '''type_invariant : attribute equals expression'''
+    p[0] = TypeInvariantNode(p[1], p[2], p[3])
+
+
+def p_init(p):
+    '''init : INIT equals attribute IN_A_SET init_set_statement'''
+    p[0] = InitNode(p[1], p[5])
+
+
+def p_init_set_statement(p):
+    '''init_set_statement : LEFT_BRACE attribute IN_A_SET attribute COLON order'''
+    p[0] = InitSetStatementNode(p[2], p[4], p[6])
+
+
+def p_order(p):
+    '''order : attribute DOT attribute PLUS attribute DOT attribute range_of_values'''
+    p[0] = InitSetOrderNode(p[1], p[3], p)
+
+
+
+def p_range_of_values(p):
+    '''range_of_values : attribute DOT DOT attribute NUMBER_LITERAL'''
+    p[0] = InitSetRangeOfValuesNode()
+
 
 
 
@@ -181,25 +220,18 @@ def p_expression_group(p):
     p[0] = p[2]  # Grouped expression, no node needed
 
 
-
-
-
-
-
-def p_init_declaration(p):
-    'init_declaration : INIT EQUALS_DEFINITIONS expression'
-    p[0] = InitNode(p[3])
-
-
-
 def p_empty(p):
     'empty :'
     pass
 
-# Error handling rule for syntax errors
+# Error handling for syntax errors
 def p_error(p):
     if p:
         print(f"Syntax error at token '{p.type}', value: '{p.value}', line: {p.lineno}, position: {p.lexpos}")
+        # Optionally, print a few tokens leading up to the error for context
+        context = max(0, p.lexpos - 10)  # Adjust as needed for context size
+        print("Error context:")
+        print(tla_code[context:p.lexpos + 10])  # Adjust slicing as needed
     else:
         print("Syntax error at EOF")
 
@@ -244,9 +276,6 @@ class ComparisonNode(ASTNode):
         self.operator = operator
         self.right = right
 
-class SetOfRecordsNode(ASTNode):
-    def __init__(self, set_info):
-        self.set_info = set_info
 
 class SetIndividualInfoNode(ASTNode):
     def __init__(self,attribute,scope):
@@ -257,16 +286,40 @@ class SetScopeNode(ASTNode):
     def __init__(self,start_value,end_value):
        self.start_value = start_value
        self.end_value = end_value
-
+    def __repr__(self):
+        return f"SetScopeNode(start_value={self.start_value}, end_value={self.end_value})"
 
 class SetDefinitionNode(ASTNode):
     def __init__(self, set_attribute, set_of_records):
         self.set_attribute = set_attribute
         self.set_of_records = set_of_records   
-class InitNode(ASTNode):
-    def __init__(self, conditions):
-        self.conditions = conditions  # List of conditions in the initial state
 
+
+class TypeInvariantNode(ASTNode):
+    def __init__(self, name, equals_type, expression):
+        self.name = name
+        self.equals_type = equals_type
+        self.expression = expression
+       
+
+class TypeInvariantExpressionNode(ASTNode):
+    def __init__(self, attribute1, in_a_set_value, attribute2):
+        self.attribute1 = attribute1
+        self.in_a_set_value = in_a_set_value
+        self.attribute2 = attribute2
+
+
+class InitNode(ASTNode):
+    def __init__(self, init, init_set):
+        self.init = init
+        self.init_set = init_set  # List of conditions in the initial state
+
+
+class InitSetStatementNode(ASTNode):
+    def __init__(self, attribute1, attribute2, order):
+        self.attribute1 = attribute1
+        self.attribute2 = attribute2
+        self.order = order
 
 class NextNode(ASTNode):
     def __init__(self, transitions):

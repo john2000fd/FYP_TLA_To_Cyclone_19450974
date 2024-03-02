@@ -8,14 +8,12 @@ Unused terminals:
     CHECK
     EDGE
     ELSE
-    EQUALS_EQUALITY
     EXCLAMATION_MARK
     FORWARD_SLASH
     GOAL
     GRAPH
     IF
     INVARIANT
-    LEFT_BRACE
     MODULUS
     NEXT
     NODE
@@ -44,114 +42,133 @@ Rule 8     statements -> statement
 Rule 9     statement -> constants_statement
 Rule 10    statement -> variables_statement
 Rule 11    statement -> assume_statement
-Rule 12    constants_statement -> CONSTANTS names
-Rule 13    variables_statement -> VARIABLES names
-Rule 14    assume_statement -> ASSUME expression AND expression
-Rule 15    expression -> expression PLUS expression
-Rule 16    expression -> expression MINUS expression
-Rule 17    expression -> expression STAR expression
-Rule 18    expression -> expression DIVIDE expression
-Rule 19    expression -> set_membership
-Rule 20    expression -> comparison
-Rule 21    expression -> attribute
-Rule 22    expression -> NUMBER_LITERAL
-Rule 23    expression -> STRING_LITERAL
-Rule 24    comparison -> attribute comparison_rule NUMBER_LITERAL
-Rule 25    comparison -> attribute comparison_rule attribute
-Rule 26    comparison_rule -> GREATER_OR_EQ
-Rule 27    comparison_rule -> LESS_OR_EQ
-Rule 28    comparison_rule -> GREATER_THAN
-Rule 29    comparison_rule -> LESS_THAN
-Rule 30    set_membership -> attribute IN_A_SET Nat
-Rule 31    set_of_records -> LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET
-Rule 32    set_info -> set_info COMMA set_individual_info
-Rule 33    set_info -> set_individual_info
-Rule 34    set_individual_info -> ATTRIBUTE COLON set_scope
-Rule 35    set_scope -> NUMBER_LITERAL DOT DOT attribute
-Rule 36    expression -> LEFT_PAREN expression RIGHT_PAREN
-Rule 37    init_declaration -> INIT EQUALS_DEFINITIONS expression
-Rule 38    empty -> <empty>
+Rule 12    statement -> type_invariant
+Rule 13    statement -> set_definition
+Rule 14    statement -> init
+Rule 15    constants_statement -> CONSTANTS names
+Rule 16    variables_statement -> VARIABLES names
+Rule 17    assume_statement -> ASSUME expression AND expression
+Rule 18    expression -> expression PLUS expression
+Rule 19    expression -> expression MINUS expression
+Rule 20    expression -> expression STAR expression
+Rule 21    expression -> expression DIVIDE expression
+Rule 22    expression -> set_membership
+Rule 23    expression -> comparison
+Rule 24    expression -> attribute
+Rule 25    expression -> type_invariant_expression
+Rule 26    expression -> NUMBER_LITERAL
+Rule 27    expression -> STRING_LITERAL
+Rule 28    type_invariant_expression -> attribute IN_A_SET attribute
+Rule 29    init_expression -> <empty>
+Rule 30    comparison -> attribute comparison_rule NUMBER_LITERAL
+Rule 31    comparison -> attribute comparison_rule attribute
+Rule 32    comparison_rule -> GREATER_OR_EQ
+Rule 33    comparison_rule -> LESS_OR_EQ
+Rule 34    comparison_rule -> GREATER_THAN
+Rule 35    comparison_rule -> LESS_THAN
+Rule 36    set_membership -> attribute IN_A_SET Nat
+Rule 37    equals -> EQUALS_DEFINITIONS
+Rule 38    equals -> EQUALS_EQUALITY
+Rule 39    set_definition -> attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET
+Rule 40    set_info -> set_info COMMA set_individual_info
+Rule 41    set_info -> set_individual_info
+Rule 42    set_individual_info -> ATTRIBUTE COLON set_scope
+Rule 43    set_scope -> NUMBER_LITERAL DOT DOT attribute
+Rule 44    type_invariant -> attribute equals expression
+Rule 45    init -> INIT equals attribute IN_A_SET init_set_statement
+Rule 46    init_set_statement -> LEFT_BRACE attribute IN_A_SET attribute COLON order
+Rule 47    order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values
+Rule 48    range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL
+Rule 49    expression -> LEFT_PAREN expression RIGHT_PAREN
+Rule 50    empty -> <empty>
 
 Terminals, with rules where they appear
 
-AND                  : 14
+AND                  : 17
 ARROW                : 
-ASSUME               : 14
+ASSUME               : 17
 AT                   : 
-ATTRIBUTE            : 3 34
+ATTRIBUTE            : 3 42
 BACK_SLASH           : 
 CHECK                : 
-COLON                : 34
-COMMA                : 5 32
-CONSTANTS            : 12
-DIVIDE               : 18
-DOT                  : 35 35
+COLON                : 42 46
+COMMA                : 5 40
+CONSTANTS            : 15
+DIVIDE               : 21
+DOT                  : 43 43 47 47 48 48
 EDGE                 : 
 ELSE                 : 
 EQUALS_DEFINITIONS   : 37
-EQUALS_EQUALITY      : 
+EQUALS_EQUALITY      : 38
 EXCLAMATION_MARK     : 
 EXTENDS              : 4
 FORWARD_SLASH        : 
 GOAL                 : 
 GRAPH                : 
-GREATER_OR_EQ        : 26
-GREATER_THAN         : 28
+GREATER_OR_EQ        : 32
+GREATER_THAN         : 34
 IF                   : 
-INIT                 : 37
+INIT                 : 45
 INVARIANT            : 
-IN_A_SET             : 30
-LEFT_BRACE           : 
-LEFT_PAREN           : 36
-LEFT_SQR_BRACKET     : 31
-LESS_OR_EQ           : 27
-LESS_THAN            : 29
-MINUS                : 16
+IN_A_SET             : 28 36 45 46
+LEFT_BRACE           : 46
+LEFT_PAREN           : 49
+LEFT_SQR_BRACKET     : 39
+LESS_OR_EQ           : 33
+LESS_THAN            : 35
+MINUS                : 19
 MODULE               : 1 2
 MODULE_WRAPPER       : 1 1 2 2
 MODULUS              : 
 NEXT                 : 
 NODE                 : 
 NOT_EQUALS           : 
-NUMBER_LITERAL       : 22 24 35
-Nat                  : 30
+NUMBER_LITERAL       : 26 30 43 48
+Nat                  : 36
 OR                   : 
-PLUS                 : 15
+PLUS                 : 18 47
 RIGHT_BRACE          : 
-RIGHT_PAREN          : 36
-RIGHT_SQR_BRACKET    : 31
+RIGHT_PAREN          : 49
+RIGHT_SQR_BRACKET    : 39
 SEMICOLON            : 
 SINGLE_QUOTE         : 
 SPEC                 : 
-STAR                 : 17
-STRING_LITERAL       : 23
+STAR                 : 20
+STRING_LITERAL       : 27
 THEN                 : 
 UNCHANGED            : 
 UNDERSCORE           : 
-VARIABLES            : 13
+VARIABLES            : 16
 VARIABLE_NAME        : 
 error                : 
 
 Nonterminals, with rules where they appear
 
 assume_statement     : 11
-attribute            : 1 2 5 6 21 24 25 25 30 35
-comparison           : 20
-comparison_rule      : 24 25
+attribute            : 1 2 5 6 24 28 28 30 31 31 36 39 43 44 45 46 46 47 47 47 47 48 48
+comparison           : 23
+comparison_rule      : 30 31
 constants_statement  : 9
 empty                : 
-expression           : 14 14 15 15 16 16 17 17 18 18 36 37
+equals               : 39 44 45
+expression           : 17 17 18 18 19 19 20 20 21 21 44 49
 extends              : 1
-init_declaration     : 
+init                 : 14
+init_expression      : 
+init_set_statement   : 45
 module               : 0
-names                : 4 5 12 13
-set_individual_info  : 32 33
-set_info             : 31 32
-set_membership       : 19
-set_of_records       : 
-set_scope            : 34
+names                : 4 5 15 16
+order                : 46
+range_of_values      : 47
+set_definition       : 13
+set_individual_info  : 40 41
+set_info             : 39 40
+set_membership       : 22
+set_scope            : 42
 statement            : 7 8
 statements           : 1 2 7
+type_invariant       : 12
+type_invariant_expression : 25
 variables_statement  : 10
 
 Parsing method: LALR
@@ -203,10 +220,14 @@ state 5
     (3) attribute -> ATTRIBUTE .
 
     MODULE_WRAPPER  reduce using rule 3 (attribute -> ATTRIBUTE .)
+    EQUALS_DEFINITIONS reduce using rule 3 (attribute -> ATTRIBUTE .)
+    EQUALS_EQUALITY reduce using rule 3 (attribute -> ATTRIBUTE .)
     COMMA           reduce using rule 3 (attribute -> ATTRIBUTE .)
     CONSTANTS       reduce using rule 3 (attribute -> ATTRIBUTE .)
     VARIABLES       reduce using rule 3 (attribute -> ATTRIBUTE .)
     ASSUME          reduce using rule 3 (attribute -> ATTRIBUTE .)
+    INIT            reduce using rule 3 (attribute -> ATTRIBUTE .)
+    ATTRIBUTE       reduce using rule 3 (attribute -> ATTRIBUTE .)
     $end            reduce using rule 3 (attribute -> ATTRIBUTE .)
     IN_A_SET        reduce using rule 3 (attribute -> ATTRIBUTE .)
     GREATER_OR_EQ   reduce using rule 3 (attribute -> ATTRIBUTE .)
@@ -219,6 +240,10 @@ state 5
     STAR            reduce using rule 3 (attribute -> ATTRIBUTE .)
     DIVIDE          reduce using rule 3 (attribute -> ATTRIBUTE .)
     RIGHT_PAREN     reduce using rule 3 (attribute -> ATTRIBUTE .)
+    COLON           reduce using rule 3 (attribute -> ATTRIBUTE .)
+    RIGHT_SQR_BRACKET reduce using rule 3 (attribute -> ATTRIBUTE .)
+    DOT             reduce using rule 3 (attribute -> ATTRIBUTE .)
+    NUMBER_LITERAL  reduce using rule 3 (attribute -> ATTRIBUTE .)
 
 
 state 6
@@ -231,23 +256,48 @@ state 6
     (9) statement -> . constants_statement
     (10) statement -> . variables_statement
     (11) statement -> . assume_statement
-    (12) constants_statement -> . CONSTANTS names
-    (13) variables_statement -> . VARIABLES names
-    (14) assume_statement -> . ASSUME expression AND expression
+    (12) statement -> . type_invariant
+    (13) statement -> . set_definition
+    (14) statement -> . init
+    (15) constants_statement -> . CONSTANTS names
+    (16) variables_statement -> . VARIABLES names
+    (17) assume_statement -> . ASSUME expression AND expression
+    (44) type_invariant -> . attribute equals expression
+    (39) set_definition -> . attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET
+    (45) init -> . INIT equals attribute IN_A_SET init_set_statement
+    (3) attribute -> . ATTRIBUTE
 
-    EXTENDS         shift and go to state 9
-    CONSTANTS       shift and go to state 14
-    VARIABLES       shift and go to state 15
-    ASSUME          shift and go to state 16
+    EXTENDS         shift and go to state 10
+    CONSTANTS       shift and go to state 18
+    VARIABLES       shift and go to state 19
+    ASSUME          shift and go to state 20
+    INIT            shift and go to state 21
+    ATTRIBUTE       shift and go to state 5
 
-    extends                        shift and go to state 7
-    statements                     shift and go to state 8
-    statement                      shift and go to state 10
-    constants_statement            shift and go to state 11
-    variables_statement            shift and go to state 12
-    assume_statement               shift and go to state 13
+    attribute                      shift and go to state 7
+    extends                        shift and go to state 8
+    statements                     shift and go to state 9
+    statement                      shift and go to state 11
+    constants_statement            shift and go to state 12
+    variables_statement            shift and go to state 13
+    assume_statement               shift and go to state 14
+    type_invariant                 shift and go to state 15
+    set_definition                 shift and go to state 16
+    init                           shift and go to state 17
 
 state 7
+
+    (44) type_invariant -> attribute . equals expression
+    (39) set_definition -> attribute . equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET
+    (37) equals -> . EQUALS_DEFINITIONS
+    (38) equals -> . EQUALS_EQUALITY
+
+    EQUALS_DEFINITIONS shift and go to state 23
+    EQUALS_EQUALITY shift and go to state 24
+
+    equals                         shift and go to state 22
+
+state 8
 
     (1) module -> MODULE_WRAPPER MODULE attribute MODULE_WRAPPER extends . statements
     (7) statements -> . statements statement
@@ -255,42 +305,68 @@ state 7
     (9) statement -> . constants_statement
     (10) statement -> . variables_statement
     (11) statement -> . assume_statement
-    (12) constants_statement -> . CONSTANTS names
-    (13) variables_statement -> . VARIABLES names
-    (14) assume_statement -> . ASSUME expression AND expression
+    (12) statement -> . type_invariant
+    (13) statement -> . set_definition
+    (14) statement -> . init
+    (15) constants_statement -> . CONSTANTS names
+    (16) variables_statement -> . VARIABLES names
+    (17) assume_statement -> . ASSUME expression AND expression
+    (44) type_invariant -> . attribute equals expression
+    (39) set_definition -> . attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET
+    (45) init -> . INIT equals attribute IN_A_SET init_set_statement
+    (3) attribute -> . ATTRIBUTE
 
-    CONSTANTS       shift and go to state 14
-    VARIABLES       shift and go to state 15
-    ASSUME          shift and go to state 16
+    CONSTANTS       shift and go to state 18
+    VARIABLES       shift and go to state 19
+    ASSUME          shift and go to state 20
+    INIT            shift and go to state 21
+    ATTRIBUTE       shift and go to state 5
 
-    statements                     shift and go to state 17
-    statement                      shift and go to state 10
-    constants_statement            shift and go to state 11
-    variables_statement            shift and go to state 12
-    assume_statement               shift and go to state 13
+    attribute                      shift and go to state 7
+    statements                     shift and go to state 25
+    statement                      shift and go to state 11
+    constants_statement            shift and go to state 12
+    variables_statement            shift and go to state 13
+    assume_statement               shift and go to state 14
+    type_invariant                 shift and go to state 15
+    set_definition                 shift and go to state 16
+    init                           shift and go to state 17
 
-state 8
+state 9
 
     (2) module -> MODULE_WRAPPER MODULE attribute MODULE_WRAPPER statements .
     (7) statements -> statements . statement
     (9) statement -> . constants_statement
     (10) statement -> . variables_statement
     (11) statement -> . assume_statement
-    (12) constants_statement -> . CONSTANTS names
-    (13) variables_statement -> . VARIABLES names
-    (14) assume_statement -> . ASSUME expression AND expression
+    (12) statement -> . type_invariant
+    (13) statement -> . set_definition
+    (14) statement -> . init
+    (15) constants_statement -> . CONSTANTS names
+    (16) variables_statement -> . VARIABLES names
+    (17) assume_statement -> . ASSUME expression AND expression
+    (44) type_invariant -> . attribute equals expression
+    (39) set_definition -> . attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET
+    (45) init -> . INIT equals attribute IN_A_SET init_set_statement
+    (3) attribute -> . ATTRIBUTE
 
     $end            reduce using rule 2 (module -> MODULE_WRAPPER MODULE attribute MODULE_WRAPPER statements .)
-    CONSTANTS       shift and go to state 14
-    VARIABLES       shift and go to state 15
-    ASSUME          shift and go to state 16
+    CONSTANTS       shift and go to state 18
+    VARIABLES       shift and go to state 19
+    ASSUME          shift and go to state 20
+    INIT            shift and go to state 21
+    ATTRIBUTE       shift and go to state 5
 
-    statement                      shift and go to state 18
-    constants_statement            shift and go to state 11
-    variables_statement            shift and go to state 12
-    assume_statement               shift and go to state 13
+    attribute                      shift and go to state 7
+    statement                      shift and go to state 26
+    constants_statement            shift and go to state 12
+    variables_statement            shift and go to state 13
+    assume_statement               shift and go to state 14
+    type_invariant                 shift and go to state 15
+    set_definition                 shift and go to state 16
+    init                           shift and go to state 17
 
-state 9
+state 10
 
     (4) extends -> EXTENDS . names
     (5) names -> . names COMMA attribute
@@ -299,133 +375,261 @@ state 9
 
     ATTRIBUTE       shift and go to state 5
 
-    names                          shift and go to state 19
-    attribute                      shift and go to state 20
+    names                          shift and go to state 27
+    attribute                      shift and go to state 28
 
-state 10
+state 11
 
     (8) statements -> statement .
 
     CONSTANTS       reduce using rule 8 (statements -> statement .)
     VARIABLES       reduce using rule 8 (statements -> statement .)
     ASSUME          reduce using rule 8 (statements -> statement .)
+    INIT            reduce using rule 8 (statements -> statement .)
+    ATTRIBUTE       reduce using rule 8 (statements -> statement .)
     $end            reduce using rule 8 (statements -> statement .)
 
 
-state 11
+state 12
 
     (9) statement -> constants_statement .
 
     CONSTANTS       reduce using rule 9 (statement -> constants_statement .)
     VARIABLES       reduce using rule 9 (statement -> constants_statement .)
     ASSUME          reduce using rule 9 (statement -> constants_statement .)
+    INIT            reduce using rule 9 (statement -> constants_statement .)
+    ATTRIBUTE       reduce using rule 9 (statement -> constants_statement .)
     $end            reduce using rule 9 (statement -> constants_statement .)
 
 
-state 12
+state 13
 
     (10) statement -> variables_statement .
 
     CONSTANTS       reduce using rule 10 (statement -> variables_statement .)
     VARIABLES       reduce using rule 10 (statement -> variables_statement .)
     ASSUME          reduce using rule 10 (statement -> variables_statement .)
+    INIT            reduce using rule 10 (statement -> variables_statement .)
+    ATTRIBUTE       reduce using rule 10 (statement -> variables_statement .)
     $end            reduce using rule 10 (statement -> variables_statement .)
 
 
-state 13
+state 14
 
     (11) statement -> assume_statement .
 
     CONSTANTS       reduce using rule 11 (statement -> assume_statement .)
     VARIABLES       reduce using rule 11 (statement -> assume_statement .)
     ASSUME          reduce using rule 11 (statement -> assume_statement .)
+    INIT            reduce using rule 11 (statement -> assume_statement .)
+    ATTRIBUTE       reduce using rule 11 (statement -> assume_statement .)
     $end            reduce using rule 11 (statement -> assume_statement .)
 
 
-state 14
-
-    (12) constants_statement -> CONSTANTS . names
-    (5) names -> . names COMMA attribute
-    (6) names -> . attribute
-    (3) attribute -> . ATTRIBUTE
-
-    ATTRIBUTE       shift and go to state 5
-
-    names                          shift and go to state 21
-    attribute                      shift and go to state 20
-
 state 15
 
-    (13) variables_statement -> VARIABLES . names
-    (5) names -> . names COMMA attribute
-    (6) names -> . attribute
-    (3) attribute -> . ATTRIBUTE
+    (12) statement -> type_invariant .
 
-    ATTRIBUTE       shift and go to state 5
+    CONSTANTS       reduce using rule 12 (statement -> type_invariant .)
+    VARIABLES       reduce using rule 12 (statement -> type_invariant .)
+    ASSUME          reduce using rule 12 (statement -> type_invariant .)
+    INIT            reduce using rule 12 (statement -> type_invariant .)
+    ATTRIBUTE       reduce using rule 12 (statement -> type_invariant .)
+    $end            reduce using rule 12 (statement -> type_invariant .)
 
-    names                          shift and go to state 22
-    attribute                      shift and go to state 20
 
 state 16
 
-    (14) assume_statement -> ASSUME . expression AND expression
-    (15) expression -> . expression PLUS expression
-    (16) expression -> . expression MINUS expression
-    (17) expression -> . expression STAR expression
-    (18) expression -> . expression DIVIDE expression
-    (19) expression -> . set_membership
-    (20) expression -> . comparison
-    (21) expression -> . attribute
-    (22) expression -> . NUMBER_LITERAL
-    (23) expression -> . STRING_LITERAL
-    (36) expression -> . LEFT_PAREN expression RIGHT_PAREN
-    (30) set_membership -> . attribute IN_A_SET Nat
-    (24) comparison -> . attribute comparison_rule NUMBER_LITERAL
-    (25) comparison -> . attribute comparison_rule attribute
-    (3) attribute -> . ATTRIBUTE
+    (13) statement -> set_definition .
 
-    NUMBER_LITERAL  shift and go to state 27
-    STRING_LITERAL  shift and go to state 28
-    LEFT_PAREN      shift and go to state 29
-    ATTRIBUTE       shift and go to state 5
+    CONSTANTS       reduce using rule 13 (statement -> set_definition .)
+    VARIABLES       reduce using rule 13 (statement -> set_definition .)
+    ASSUME          reduce using rule 13 (statement -> set_definition .)
+    INIT            reduce using rule 13 (statement -> set_definition .)
+    ATTRIBUTE       reduce using rule 13 (statement -> set_definition .)
+    $end            reduce using rule 13 (statement -> set_definition .)
 
-    expression                     shift and go to state 23
-    set_membership                 shift and go to state 24
-    comparison                     shift and go to state 25
-    attribute                      shift and go to state 26
 
 state 17
+
+    (14) statement -> init .
+
+    CONSTANTS       reduce using rule 14 (statement -> init .)
+    VARIABLES       reduce using rule 14 (statement -> init .)
+    ASSUME          reduce using rule 14 (statement -> init .)
+    INIT            reduce using rule 14 (statement -> init .)
+    ATTRIBUTE       reduce using rule 14 (statement -> init .)
+    $end            reduce using rule 14 (statement -> init .)
+
+
+state 18
+
+    (15) constants_statement -> CONSTANTS . names
+    (5) names -> . names COMMA attribute
+    (6) names -> . attribute
+    (3) attribute -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 5
+
+    names                          shift and go to state 29
+    attribute                      shift and go to state 28
+
+state 19
+
+    (16) variables_statement -> VARIABLES . names
+    (5) names -> . names COMMA attribute
+    (6) names -> . attribute
+    (3) attribute -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 5
+
+    names                          shift and go to state 30
+    attribute                      shift and go to state 28
+
+state 20
+
+    (17) assume_statement -> ASSUME . expression AND expression
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression STAR expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . set_membership
+    (23) expression -> . comparison
+    (24) expression -> . attribute
+    (25) expression -> . type_invariant_expression
+    (26) expression -> . NUMBER_LITERAL
+    (27) expression -> . STRING_LITERAL
+    (49) expression -> . LEFT_PAREN expression RIGHT_PAREN
+    (36) set_membership -> . attribute IN_A_SET Nat
+    (30) comparison -> . attribute comparison_rule NUMBER_LITERAL
+    (31) comparison -> . attribute comparison_rule attribute
+    (3) attribute -> . ATTRIBUTE
+    (28) type_invariant_expression -> . attribute IN_A_SET attribute
+
+    NUMBER_LITERAL  shift and go to state 36
+    STRING_LITERAL  shift and go to state 37
+    LEFT_PAREN      shift and go to state 38
+    ATTRIBUTE       shift and go to state 5
+
+    expression                     shift and go to state 31
+    set_membership                 shift and go to state 32
+    comparison                     shift and go to state 33
+    attribute                      shift and go to state 34
+    type_invariant_expression      shift and go to state 35
+
+state 21
+
+    (45) init -> INIT . equals attribute IN_A_SET init_set_statement
+    (37) equals -> . EQUALS_DEFINITIONS
+    (38) equals -> . EQUALS_EQUALITY
+
+    EQUALS_DEFINITIONS shift and go to state 23
+    EQUALS_EQUALITY shift and go to state 24
+
+    equals                         shift and go to state 39
+
+state 22
+
+    (44) type_invariant -> attribute equals . expression
+    (39) set_definition -> attribute equals . LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression STAR expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . set_membership
+    (23) expression -> . comparison
+    (24) expression -> . attribute
+    (25) expression -> . type_invariant_expression
+    (26) expression -> . NUMBER_LITERAL
+    (27) expression -> . STRING_LITERAL
+    (49) expression -> . LEFT_PAREN expression RIGHT_PAREN
+    (36) set_membership -> . attribute IN_A_SET Nat
+    (30) comparison -> . attribute comparison_rule NUMBER_LITERAL
+    (31) comparison -> . attribute comparison_rule attribute
+    (3) attribute -> . ATTRIBUTE
+    (28) type_invariant_expression -> . attribute IN_A_SET attribute
+
+    LEFT_SQR_BRACKET shift and go to state 41
+    NUMBER_LITERAL  shift and go to state 36
+    STRING_LITERAL  shift and go to state 37
+    LEFT_PAREN      shift and go to state 38
+    ATTRIBUTE       shift and go to state 5
+
+    attribute                      shift and go to state 34
+    expression                     shift and go to state 40
+    set_membership                 shift and go to state 32
+    comparison                     shift and go to state 33
+    type_invariant_expression      shift and go to state 35
+
+state 23
+
+    (37) equals -> EQUALS_DEFINITIONS .
+
+    LEFT_SQR_BRACKET reduce using rule 37 (equals -> EQUALS_DEFINITIONS .)
+    NUMBER_LITERAL  reduce using rule 37 (equals -> EQUALS_DEFINITIONS .)
+    STRING_LITERAL  reduce using rule 37 (equals -> EQUALS_DEFINITIONS .)
+    LEFT_PAREN      reduce using rule 37 (equals -> EQUALS_DEFINITIONS .)
+    ATTRIBUTE       reduce using rule 37 (equals -> EQUALS_DEFINITIONS .)
+
+
+state 24
+
+    (38) equals -> EQUALS_EQUALITY .
+
+    LEFT_SQR_BRACKET reduce using rule 38 (equals -> EQUALS_EQUALITY .)
+    NUMBER_LITERAL  reduce using rule 38 (equals -> EQUALS_EQUALITY .)
+    STRING_LITERAL  reduce using rule 38 (equals -> EQUALS_EQUALITY .)
+    LEFT_PAREN      reduce using rule 38 (equals -> EQUALS_EQUALITY .)
+    ATTRIBUTE       reduce using rule 38 (equals -> EQUALS_EQUALITY .)
+
+
+state 25
 
     (1) module -> MODULE_WRAPPER MODULE attribute MODULE_WRAPPER extends statements .
     (7) statements -> statements . statement
     (9) statement -> . constants_statement
     (10) statement -> . variables_statement
     (11) statement -> . assume_statement
-    (12) constants_statement -> . CONSTANTS names
-    (13) variables_statement -> . VARIABLES names
-    (14) assume_statement -> . ASSUME expression AND expression
+    (12) statement -> . type_invariant
+    (13) statement -> . set_definition
+    (14) statement -> . init
+    (15) constants_statement -> . CONSTANTS names
+    (16) variables_statement -> . VARIABLES names
+    (17) assume_statement -> . ASSUME expression AND expression
+    (44) type_invariant -> . attribute equals expression
+    (39) set_definition -> . attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET
+    (45) init -> . INIT equals attribute IN_A_SET init_set_statement
+    (3) attribute -> . ATTRIBUTE
 
     $end            reduce using rule 1 (module -> MODULE_WRAPPER MODULE attribute MODULE_WRAPPER extends statements .)
-    CONSTANTS       shift and go to state 14
-    VARIABLES       shift and go to state 15
-    ASSUME          shift and go to state 16
+    CONSTANTS       shift and go to state 18
+    VARIABLES       shift and go to state 19
+    ASSUME          shift and go to state 20
+    INIT            shift and go to state 21
+    ATTRIBUTE       shift and go to state 5
 
-    statement                      shift and go to state 18
-    constants_statement            shift and go to state 11
-    variables_statement            shift and go to state 12
-    assume_statement               shift and go to state 13
+    attribute                      shift and go to state 7
+    statement                      shift and go to state 26
+    constants_statement            shift and go to state 12
+    variables_statement            shift and go to state 13
+    assume_statement               shift and go to state 14
+    type_invariant                 shift and go to state 15
+    set_definition                 shift and go to state 16
+    init                           shift and go to state 17
 
-state 18
+state 26
 
     (7) statements -> statements statement .
 
     CONSTANTS       reduce using rule 7 (statements -> statements statement .)
     VARIABLES       reduce using rule 7 (statements -> statements statement .)
     ASSUME          reduce using rule 7 (statements -> statements statement .)
+    INIT            reduce using rule 7 (statements -> statements statement .)
+    ATTRIBUTE       reduce using rule 7 (statements -> statements statement .)
     $end            reduce using rule 7 (statements -> statements statement .)
 
 
-state 19
+state 27
 
     (4) extends -> EXTENDS names .
     (5) names -> names . COMMA attribute
@@ -433,10 +637,12 @@ state 19
     CONSTANTS       reduce using rule 4 (extends -> EXTENDS names .)
     VARIABLES       reduce using rule 4 (extends -> EXTENDS names .)
     ASSUME          reduce using rule 4 (extends -> EXTENDS names .)
-    COMMA           shift and go to state 30
+    INIT            reduce using rule 4 (extends -> EXTENDS names .)
+    ATTRIBUTE       reduce using rule 4 (extends -> EXTENDS names .)
+    COMMA           shift and go to state 42
 
 
-state 20
+state 28
 
     (6) names -> attribute .
 
@@ -444,384 +650,513 @@ state 20
     CONSTANTS       reduce using rule 6 (names -> attribute .)
     VARIABLES       reduce using rule 6 (names -> attribute .)
     ASSUME          reduce using rule 6 (names -> attribute .)
+    INIT            reduce using rule 6 (names -> attribute .)
+    ATTRIBUTE       reduce using rule 6 (names -> attribute .)
     $end            reduce using rule 6 (names -> attribute .)
-
-
-state 21
-
-    (12) constants_statement -> CONSTANTS names .
-    (5) names -> names . COMMA attribute
-
-    CONSTANTS       reduce using rule 12 (constants_statement -> CONSTANTS names .)
-    VARIABLES       reduce using rule 12 (constants_statement -> CONSTANTS names .)
-    ASSUME          reduce using rule 12 (constants_statement -> CONSTANTS names .)
-    $end            reduce using rule 12 (constants_statement -> CONSTANTS names .)
-    COMMA           shift and go to state 30
-
-
-state 22
-
-    (13) variables_statement -> VARIABLES names .
-    (5) names -> names . COMMA attribute
-
-    CONSTANTS       reduce using rule 13 (variables_statement -> VARIABLES names .)
-    VARIABLES       reduce using rule 13 (variables_statement -> VARIABLES names .)
-    ASSUME          reduce using rule 13 (variables_statement -> VARIABLES names .)
-    $end            reduce using rule 13 (variables_statement -> VARIABLES names .)
-    COMMA           shift and go to state 30
-
-
-state 23
-
-    (14) assume_statement -> ASSUME expression . AND expression
-    (15) expression -> expression . PLUS expression
-    (16) expression -> expression . MINUS expression
-    (17) expression -> expression . STAR expression
-    (18) expression -> expression . DIVIDE expression
-
-    AND             shift and go to state 31
-    PLUS            shift and go to state 32
-    MINUS           shift and go to state 33
-    STAR            shift and go to state 34
-    DIVIDE          shift and go to state 35
-
-
-state 24
-
-    (19) expression -> set_membership .
-
-    AND             reduce using rule 19 (expression -> set_membership .)
-    PLUS            reduce using rule 19 (expression -> set_membership .)
-    MINUS           reduce using rule 19 (expression -> set_membership .)
-    STAR            reduce using rule 19 (expression -> set_membership .)
-    DIVIDE          reduce using rule 19 (expression -> set_membership .)
-    RIGHT_PAREN     reduce using rule 19 (expression -> set_membership .)
-    CONSTANTS       reduce using rule 19 (expression -> set_membership .)
-    VARIABLES       reduce using rule 19 (expression -> set_membership .)
-    ASSUME          reduce using rule 19 (expression -> set_membership .)
-    $end            reduce using rule 19 (expression -> set_membership .)
-
-
-state 25
-
-    (20) expression -> comparison .
-
-    AND             reduce using rule 20 (expression -> comparison .)
-    PLUS            reduce using rule 20 (expression -> comparison .)
-    MINUS           reduce using rule 20 (expression -> comparison .)
-    STAR            reduce using rule 20 (expression -> comparison .)
-    DIVIDE          reduce using rule 20 (expression -> comparison .)
-    RIGHT_PAREN     reduce using rule 20 (expression -> comparison .)
-    CONSTANTS       reduce using rule 20 (expression -> comparison .)
-    VARIABLES       reduce using rule 20 (expression -> comparison .)
-    ASSUME          reduce using rule 20 (expression -> comparison .)
-    $end            reduce using rule 20 (expression -> comparison .)
-
-
-state 26
-
-    (21) expression -> attribute .
-    (30) set_membership -> attribute . IN_A_SET Nat
-    (24) comparison -> attribute . comparison_rule NUMBER_LITERAL
-    (25) comparison -> attribute . comparison_rule attribute
-    (26) comparison_rule -> . GREATER_OR_EQ
-    (27) comparison_rule -> . LESS_OR_EQ
-    (28) comparison_rule -> . GREATER_THAN
-    (29) comparison_rule -> . LESS_THAN
-
-    AND             reduce using rule 21 (expression -> attribute .)
-    PLUS            reduce using rule 21 (expression -> attribute .)
-    MINUS           reduce using rule 21 (expression -> attribute .)
-    STAR            reduce using rule 21 (expression -> attribute .)
-    DIVIDE          reduce using rule 21 (expression -> attribute .)
-    RIGHT_PAREN     reduce using rule 21 (expression -> attribute .)
-    CONSTANTS       reduce using rule 21 (expression -> attribute .)
-    VARIABLES       reduce using rule 21 (expression -> attribute .)
-    ASSUME          reduce using rule 21 (expression -> attribute .)
-    $end            reduce using rule 21 (expression -> attribute .)
-    IN_A_SET        shift and go to state 36
-    GREATER_OR_EQ   shift and go to state 38
-    LESS_OR_EQ      shift and go to state 39
-    GREATER_THAN    shift and go to state 40
-    LESS_THAN       shift and go to state 41
-
-    comparison_rule                shift and go to state 37
-
-state 27
-
-    (22) expression -> NUMBER_LITERAL .
-
-    AND             reduce using rule 22 (expression -> NUMBER_LITERAL .)
-    PLUS            reduce using rule 22 (expression -> NUMBER_LITERAL .)
-    MINUS           reduce using rule 22 (expression -> NUMBER_LITERAL .)
-    STAR            reduce using rule 22 (expression -> NUMBER_LITERAL .)
-    DIVIDE          reduce using rule 22 (expression -> NUMBER_LITERAL .)
-    RIGHT_PAREN     reduce using rule 22 (expression -> NUMBER_LITERAL .)
-    CONSTANTS       reduce using rule 22 (expression -> NUMBER_LITERAL .)
-    VARIABLES       reduce using rule 22 (expression -> NUMBER_LITERAL .)
-    ASSUME          reduce using rule 22 (expression -> NUMBER_LITERAL .)
-    $end            reduce using rule 22 (expression -> NUMBER_LITERAL .)
-
-
-state 28
-
-    (23) expression -> STRING_LITERAL .
-
-    AND             reduce using rule 23 (expression -> STRING_LITERAL .)
-    PLUS            reduce using rule 23 (expression -> STRING_LITERAL .)
-    MINUS           reduce using rule 23 (expression -> STRING_LITERAL .)
-    STAR            reduce using rule 23 (expression -> STRING_LITERAL .)
-    DIVIDE          reduce using rule 23 (expression -> STRING_LITERAL .)
-    RIGHT_PAREN     reduce using rule 23 (expression -> STRING_LITERAL .)
-    CONSTANTS       reduce using rule 23 (expression -> STRING_LITERAL .)
-    VARIABLES       reduce using rule 23 (expression -> STRING_LITERAL .)
-    ASSUME          reduce using rule 23 (expression -> STRING_LITERAL .)
-    $end            reduce using rule 23 (expression -> STRING_LITERAL .)
 
 
 state 29
 
-    (36) expression -> LEFT_PAREN . expression RIGHT_PAREN
-    (15) expression -> . expression PLUS expression
-    (16) expression -> . expression MINUS expression
-    (17) expression -> . expression STAR expression
-    (18) expression -> . expression DIVIDE expression
-    (19) expression -> . set_membership
-    (20) expression -> . comparison
-    (21) expression -> . attribute
-    (22) expression -> . NUMBER_LITERAL
-    (23) expression -> . STRING_LITERAL
-    (36) expression -> . LEFT_PAREN expression RIGHT_PAREN
-    (30) set_membership -> . attribute IN_A_SET Nat
-    (24) comparison -> . attribute comparison_rule NUMBER_LITERAL
-    (25) comparison -> . attribute comparison_rule attribute
-    (3) attribute -> . ATTRIBUTE
+    (15) constants_statement -> CONSTANTS names .
+    (5) names -> names . COMMA attribute
 
-    NUMBER_LITERAL  shift and go to state 27
-    STRING_LITERAL  shift and go to state 28
-    LEFT_PAREN      shift and go to state 29
-    ATTRIBUTE       shift and go to state 5
+    CONSTANTS       reduce using rule 15 (constants_statement -> CONSTANTS names .)
+    VARIABLES       reduce using rule 15 (constants_statement -> CONSTANTS names .)
+    ASSUME          reduce using rule 15 (constants_statement -> CONSTANTS names .)
+    INIT            reduce using rule 15 (constants_statement -> CONSTANTS names .)
+    ATTRIBUTE       reduce using rule 15 (constants_statement -> CONSTANTS names .)
+    $end            reduce using rule 15 (constants_statement -> CONSTANTS names .)
+    COMMA           shift and go to state 42
 
-    expression                     shift and go to state 42
-    set_membership                 shift and go to state 24
-    comparison                     shift and go to state 25
-    attribute                      shift and go to state 26
 
 state 30
+
+    (16) variables_statement -> VARIABLES names .
+    (5) names -> names . COMMA attribute
+
+    CONSTANTS       reduce using rule 16 (variables_statement -> VARIABLES names .)
+    VARIABLES       reduce using rule 16 (variables_statement -> VARIABLES names .)
+    ASSUME          reduce using rule 16 (variables_statement -> VARIABLES names .)
+    INIT            reduce using rule 16 (variables_statement -> VARIABLES names .)
+    ATTRIBUTE       reduce using rule 16 (variables_statement -> VARIABLES names .)
+    $end            reduce using rule 16 (variables_statement -> VARIABLES names .)
+    COMMA           shift and go to state 42
+
+
+state 31
+
+    (17) assume_statement -> ASSUME expression . AND expression
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . STAR expression
+    (21) expression -> expression . DIVIDE expression
+
+    AND             shift and go to state 43
+    PLUS            shift and go to state 44
+    MINUS           shift and go to state 45
+    STAR            shift and go to state 46
+    DIVIDE          shift and go to state 47
+
+
+state 32
+
+    (22) expression -> set_membership .
+
+    AND             reduce using rule 22 (expression -> set_membership .)
+    PLUS            reduce using rule 22 (expression -> set_membership .)
+    MINUS           reduce using rule 22 (expression -> set_membership .)
+    STAR            reduce using rule 22 (expression -> set_membership .)
+    DIVIDE          reduce using rule 22 (expression -> set_membership .)
+    CONSTANTS       reduce using rule 22 (expression -> set_membership .)
+    VARIABLES       reduce using rule 22 (expression -> set_membership .)
+    ASSUME          reduce using rule 22 (expression -> set_membership .)
+    INIT            reduce using rule 22 (expression -> set_membership .)
+    ATTRIBUTE       reduce using rule 22 (expression -> set_membership .)
+    $end            reduce using rule 22 (expression -> set_membership .)
+    RIGHT_PAREN     reduce using rule 22 (expression -> set_membership .)
+
+
+state 33
+
+    (23) expression -> comparison .
+
+    AND             reduce using rule 23 (expression -> comparison .)
+    PLUS            reduce using rule 23 (expression -> comparison .)
+    MINUS           reduce using rule 23 (expression -> comparison .)
+    STAR            reduce using rule 23 (expression -> comparison .)
+    DIVIDE          reduce using rule 23 (expression -> comparison .)
+    CONSTANTS       reduce using rule 23 (expression -> comparison .)
+    VARIABLES       reduce using rule 23 (expression -> comparison .)
+    ASSUME          reduce using rule 23 (expression -> comparison .)
+    INIT            reduce using rule 23 (expression -> comparison .)
+    ATTRIBUTE       reduce using rule 23 (expression -> comparison .)
+    $end            reduce using rule 23 (expression -> comparison .)
+    RIGHT_PAREN     reduce using rule 23 (expression -> comparison .)
+
+
+state 34
+
+    (24) expression -> attribute .
+    (36) set_membership -> attribute . IN_A_SET Nat
+    (30) comparison -> attribute . comparison_rule NUMBER_LITERAL
+    (31) comparison -> attribute . comparison_rule attribute
+    (28) type_invariant_expression -> attribute . IN_A_SET attribute
+    (32) comparison_rule -> . GREATER_OR_EQ
+    (33) comparison_rule -> . LESS_OR_EQ
+    (34) comparison_rule -> . GREATER_THAN
+    (35) comparison_rule -> . LESS_THAN
+
+    AND             reduce using rule 24 (expression -> attribute .)
+    PLUS            reduce using rule 24 (expression -> attribute .)
+    MINUS           reduce using rule 24 (expression -> attribute .)
+    STAR            reduce using rule 24 (expression -> attribute .)
+    DIVIDE          reduce using rule 24 (expression -> attribute .)
+    CONSTANTS       reduce using rule 24 (expression -> attribute .)
+    VARIABLES       reduce using rule 24 (expression -> attribute .)
+    ASSUME          reduce using rule 24 (expression -> attribute .)
+    INIT            reduce using rule 24 (expression -> attribute .)
+    ATTRIBUTE       reduce using rule 24 (expression -> attribute .)
+    $end            reduce using rule 24 (expression -> attribute .)
+    RIGHT_PAREN     reduce using rule 24 (expression -> attribute .)
+    IN_A_SET        shift and go to state 48
+    GREATER_OR_EQ   shift and go to state 50
+    LESS_OR_EQ      shift and go to state 51
+    GREATER_THAN    shift and go to state 52
+    LESS_THAN       shift and go to state 53
+
+    comparison_rule                shift and go to state 49
+
+state 35
+
+    (25) expression -> type_invariant_expression .
+
+    AND             reduce using rule 25 (expression -> type_invariant_expression .)
+    PLUS            reduce using rule 25 (expression -> type_invariant_expression .)
+    MINUS           reduce using rule 25 (expression -> type_invariant_expression .)
+    STAR            reduce using rule 25 (expression -> type_invariant_expression .)
+    DIVIDE          reduce using rule 25 (expression -> type_invariant_expression .)
+    CONSTANTS       reduce using rule 25 (expression -> type_invariant_expression .)
+    VARIABLES       reduce using rule 25 (expression -> type_invariant_expression .)
+    ASSUME          reduce using rule 25 (expression -> type_invariant_expression .)
+    INIT            reduce using rule 25 (expression -> type_invariant_expression .)
+    ATTRIBUTE       reduce using rule 25 (expression -> type_invariant_expression .)
+    $end            reduce using rule 25 (expression -> type_invariant_expression .)
+    RIGHT_PAREN     reduce using rule 25 (expression -> type_invariant_expression .)
+
+
+state 36
+
+    (26) expression -> NUMBER_LITERAL .
+
+    AND             reduce using rule 26 (expression -> NUMBER_LITERAL .)
+    PLUS            reduce using rule 26 (expression -> NUMBER_LITERAL .)
+    MINUS           reduce using rule 26 (expression -> NUMBER_LITERAL .)
+    STAR            reduce using rule 26 (expression -> NUMBER_LITERAL .)
+    DIVIDE          reduce using rule 26 (expression -> NUMBER_LITERAL .)
+    CONSTANTS       reduce using rule 26 (expression -> NUMBER_LITERAL .)
+    VARIABLES       reduce using rule 26 (expression -> NUMBER_LITERAL .)
+    ASSUME          reduce using rule 26 (expression -> NUMBER_LITERAL .)
+    INIT            reduce using rule 26 (expression -> NUMBER_LITERAL .)
+    ATTRIBUTE       reduce using rule 26 (expression -> NUMBER_LITERAL .)
+    $end            reduce using rule 26 (expression -> NUMBER_LITERAL .)
+    RIGHT_PAREN     reduce using rule 26 (expression -> NUMBER_LITERAL .)
+
+
+state 37
+
+    (27) expression -> STRING_LITERAL .
+
+    AND             reduce using rule 27 (expression -> STRING_LITERAL .)
+    PLUS            reduce using rule 27 (expression -> STRING_LITERAL .)
+    MINUS           reduce using rule 27 (expression -> STRING_LITERAL .)
+    STAR            reduce using rule 27 (expression -> STRING_LITERAL .)
+    DIVIDE          reduce using rule 27 (expression -> STRING_LITERAL .)
+    CONSTANTS       reduce using rule 27 (expression -> STRING_LITERAL .)
+    VARIABLES       reduce using rule 27 (expression -> STRING_LITERAL .)
+    ASSUME          reduce using rule 27 (expression -> STRING_LITERAL .)
+    INIT            reduce using rule 27 (expression -> STRING_LITERAL .)
+    ATTRIBUTE       reduce using rule 27 (expression -> STRING_LITERAL .)
+    $end            reduce using rule 27 (expression -> STRING_LITERAL .)
+    RIGHT_PAREN     reduce using rule 27 (expression -> STRING_LITERAL .)
+
+
+state 38
+
+    (49) expression -> LEFT_PAREN . expression RIGHT_PAREN
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression STAR expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . set_membership
+    (23) expression -> . comparison
+    (24) expression -> . attribute
+    (25) expression -> . type_invariant_expression
+    (26) expression -> . NUMBER_LITERAL
+    (27) expression -> . STRING_LITERAL
+    (49) expression -> . LEFT_PAREN expression RIGHT_PAREN
+    (36) set_membership -> . attribute IN_A_SET Nat
+    (30) comparison -> . attribute comparison_rule NUMBER_LITERAL
+    (31) comparison -> . attribute comparison_rule attribute
+    (3) attribute -> . ATTRIBUTE
+    (28) type_invariant_expression -> . attribute IN_A_SET attribute
+
+    NUMBER_LITERAL  shift and go to state 36
+    STRING_LITERAL  shift and go to state 37
+    LEFT_PAREN      shift and go to state 38
+    ATTRIBUTE       shift and go to state 5
+
+    expression                     shift and go to state 54
+    set_membership                 shift and go to state 32
+    comparison                     shift and go to state 33
+    attribute                      shift and go to state 34
+    type_invariant_expression      shift and go to state 35
+
+state 39
+
+    (45) init -> INIT equals . attribute IN_A_SET init_set_statement
+    (3) attribute -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 5
+
+    attribute                      shift and go to state 55
+
+state 40
+
+    (44) type_invariant -> attribute equals expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . STAR expression
+    (21) expression -> expression . DIVIDE expression
+
+    CONSTANTS       reduce using rule 44 (type_invariant -> attribute equals expression .)
+    VARIABLES       reduce using rule 44 (type_invariant -> attribute equals expression .)
+    ASSUME          reduce using rule 44 (type_invariant -> attribute equals expression .)
+    INIT            reduce using rule 44 (type_invariant -> attribute equals expression .)
+    ATTRIBUTE       reduce using rule 44 (type_invariant -> attribute equals expression .)
+    $end            reduce using rule 44 (type_invariant -> attribute equals expression .)
+    PLUS            shift and go to state 44
+    MINUS           shift and go to state 45
+    STAR            shift and go to state 46
+    DIVIDE          shift and go to state 47
+
+
+state 41
+
+    (39) set_definition -> attribute equals LEFT_SQR_BRACKET . set_info RIGHT_SQR_BRACKET
+    (40) set_info -> . set_info COMMA set_individual_info
+    (41) set_info -> . set_individual_info
+    (42) set_individual_info -> . ATTRIBUTE COLON set_scope
+
+    ATTRIBUTE       shift and go to state 58
+
+    set_info                       shift and go to state 56
+    set_individual_info            shift and go to state 57
+
+state 42
 
     (5) names -> names COMMA . attribute
     (3) attribute -> . ATTRIBUTE
 
     ATTRIBUTE       shift and go to state 5
 
-    attribute                      shift and go to state 43
-
-state 31
-
-    (14) assume_statement -> ASSUME expression AND . expression
-    (15) expression -> . expression PLUS expression
-    (16) expression -> . expression MINUS expression
-    (17) expression -> . expression STAR expression
-    (18) expression -> . expression DIVIDE expression
-    (19) expression -> . set_membership
-    (20) expression -> . comparison
-    (21) expression -> . attribute
-    (22) expression -> . NUMBER_LITERAL
-    (23) expression -> . STRING_LITERAL
-    (36) expression -> . LEFT_PAREN expression RIGHT_PAREN
-    (30) set_membership -> . attribute IN_A_SET Nat
-    (24) comparison -> . attribute comparison_rule NUMBER_LITERAL
-    (25) comparison -> . attribute comparison_rule attribute
-    (3) attribute -> . ATTRIBUTE
-
-    NUMBER_LITERAL  shift and go to state 27
-    STRING_LITERAL  shift and go to state 28
-    LEFT_PAREN      shift and go to state 29
-    ATTRIBUTE       shift and go to state 5
-
-    expression                     shift and go to state 44
-    set_membership                 shift and go to state 24
-    comparison                     shift and go to state 25
-    attribute                      shift and go to state 26
-
-state 32
-
-    (15) expression -> expression PLUS . expression
-    (15) expression -> . expression PLUS expression
-    (16) expression -> . expression MINUS expression
-    (17) expression -> . expression STAR expression
-    (18) expression -> . expression DIVIDE expression
-    (19) expression -> . set_membership
-    (20) expression -> . comparison
-    (21) expression -> . attribute
-    (22) expression -> . NUMBER_LITERAL
-    (23) expression -> . STRING_LITERAL
-    (36) expression -> . LEFT_PAREN expression RIGHT_PAREN
-    (30) set_membership -> . attribute IN_A_SET Nat
-    (24) comparison -> . attribute comparison_rule NUMBER_LITERAL
-    (25) comparison -> . attribute comparison_rule attribute
-    (3) attribute -> . ATTRIBUTE
-
-    NUMBER_LITERAL  shift and go to state 27
-    STRING_LITERAL  shift and go to state 28
-    LEFT_PAREN      shift and go to state 29
-    ATTRIBUTE       shift and go to state 5
-
-    expression                     shift and go to state 45
-    set_membership                 shift and go to state 24
-    comparison                     shift and go to state 25
-    attribute                      shift and go to state 26
-
-state 33
-
-    (16) expression -> expression MINUS . expression
-    (15) expression -> . expression PLUS expression
-    (16) expression -> . expression MINUS expression
-    (17) expression -> . expression STAR expression
-    (18) expression -> . expression DIVIDE expression
-    (19) expression -> . set_membership
-    (20) expression -> . comparison
-    (21) expression -> . attribute
-    (22) expression -> . NUMBER_LITERAL
-    (23) expression -> . STRING_LITERAL
-    (36) expression -> . LEFT_PAREN expression RIGHT_PAREN
-    (30) set_membership -> . attribute IN_A_SET Nat
-    (24) comparison -> . attribute comparison_rule NUMBER_LITERAL
-    (25) comparison -> . attribute comparison_rule attribute
-    (3) attribute -> . ATTRIBUTE
-
-    NUMBER_LITERAL  shift and go to state 27
-    STRING_LITERAL  shift and go to state 28
-    LEFT_PAREN      shift and go to state 29
-    ATTRIBUTE       shift and go to state 5
-
-    expression                     shift and go to state 46
-    set_membership                 shift and go to state 24
-    comparison                     shift and go to state 25
-    attribute                      shift and go to state 26
-
-state 34
-
-    (17) expression -> expression STAR . expression
-    (15) expression -> . expression PLUS expression
-    (16) expression -> . expression MINUS expression
-    (17) expression -> . expression STAR expression
-    (18) expression -> . expression DIVIDE expression
-    (19) expression -> . set_membership
-    (20) expression -> . comparison
-    (21) expression -> . attribute
-    (22) expression -> . NUMBER_LITERAL
-    (23) expression -> . STRING_LITERAL
-    (36) expression -> . LEFT_PAREN expression RIGHT_PAREN
-    (30) set_membership -> . attribute IN_A_SET Nat
-    (24) comparison -> . attribute comparison_rule NUMBER_LITERAL
-    (25) comparison -> . attribute comparison_rule attribute
-    (3) attribute -> . ATTRIBUTE
-
-    NUMBER_LITERAL  shift and go to state 27
-    STRING_LITERAL  shift and go to state 28
-    LEFT_PAREN      shift and go to state 29
-    ATTRIBUTE       shift and go to state 5
-
-    expression                     shift and go to state 47
-    set_membership                 shift and go to state 24
-    comparison                     shift and go to state 25
-    attribute                      shift and go to state 26
-
-state 35
-
-    (18) expression -> expression DIVIDE . expression
-    (15) expression -> . expression PLUS expression
-    (16) expression -> . expression MINUS expression
-    (17) expression -> . expression STAR expression
-    (18) expression -> . expression DIVIDE expression
-    (19) expression -> . set_membership
-    (20) expression -> . comparison
-    (21) expression -> . attribute
-    (22) expression -> . NUMBER_LITERAL
-    (23) expression -> . STRING_LITERAL
-    (36) expression -> . LEFT_PAREN expression RIGHT_PAREN
-    (30) set_membership -> . attribute IN_A_SET Nat
-    (24) comparison -> . attribute comparison_rule NUMBER_LITERAL
-    (25) comparison -> . attribute comparison_rule attribute
-    (3) attribute -> . ATTRIBUTE
-
-    NUMBER_LITERAL  shift and go to state 27
-    STRING_LITERAL  shift and go to state 28
-    LEFT_PAREN      shift and go to state 29
-    ATTRIBUTE       shift and go to state 5
-
-    expression                     shift and go to state 48
-    set_membership                 shift and go to state 24
-    comparison                     shift and go to state 25
-    attribute                      shift and go to state 26
-
-state 36
-
-    (30) set_membership -> attribute IN_A_SET . Nat
-
-    Nat             shift and go to state 49
-
-
-state 37
-
-    (24) comparison -> attribute comparison_rule . NUMBER_LITERAL
-    (25) comparison -> attribute comparison_rule . attribute
-    (3) attribute -> . ATTRIBUTE
-
-    NUMBER_LITERAL  shift and go to state 51
-    ATTRIBUTE       shift and go to state 5
-
-    attribute                      shift and go to state 50
-
-state 38
-
-    (26) comparison_rule -> GREATER_OR_EQ .
-
-    NUMBER_LITERAL  reduce using rule 26 (comparison_rule -> GREATER_OR_EQ .)
-    ATTRIBUTE       reduce using rule 26 (comparison_rule -> GREATER_OR_EQ .)
-
-
-state 39
-
-    (27) comparison_rule -> LESS_OR_EQ .
-
-    NUMBER_LITERAL  reduce using rule 27 (comparison_rule -> LESS_OR_EQ .)
-    ATTRIBUTE       reduce using rule 27 (comparison_rule -> LESS_OR_EQ .)
-
-
-state 40
-
-    (28) comparison_rule -> GREATER_THAN .
-
-    NUMBER_LITERAL  reduce using rule 28 (comparison_rule -> GREATER_THAN .)
-    ATTRIBUTE       reduce using rule 28 (comparison_rule -> GREATER_THAN .)
-
-
-state 41
-
-    (29) comparison_rule -> LESS_THAN .
-
-    NUMBER_LITERAL  reduce using rule 29 (comparison_rule -> LESS_THAN .)
-    ATTRIBUTE       reduce using rule 29 (comparison_rule -> LESS_THAN .)
-
-
-state 42
-
-    (36) expression -> LEFT_PAREN expression . RIGHT_PAREN
-    (15) expression -> expression . PLUS expression
-    (16) expression -> expression . MINUS expression
-    (17) expression -> expression . STAR expression
-    (18) expression -> expression . DIVIDE expression
-
-    RIGHT_PAREN     shift and go to state 52
-    PLUS            shift and go to state 32
-    MINUS           shift and go to state 33
-    STAR            shift and go to state 34
-    DIVIDE          shift and go to state 35
-
+    attribute                      shift and go to state 59
 
 state 43
+
+    (17) assume_statement -> ASSUME expression AND . expression
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression STAR expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . set_membership
+    (23) expression -> . comparison
+    (24) expression -> . attribute
+    (25) expression -> . type_invariant_expression
+    (26) expression -> . NUMBER_LITERAL
+    (27) expression -> . STRING_LITERAL
+    (49) expression -> . LEFT_PAREN expression RIGHT_PAREN
+    (36) set_membership -> . attribute IN_A_SET Nat
+    (30) comparison -> . attribute comparison_rule NUMBER_LITERAL
+    (31) comparison -> . attribute comparison_rule attribute
+    (3) attribute -> . ATTRIBUTE
+    (28) type_invariant_expression -> . attribute IN_A_SET attribute
+
+    NUMBER_LITERAL  shift and go to state 36
+    STRING_LITERAL  shift and go to state 37
+    LEFT_PAREN      shift and go to state 38
+    ATTRIBUTE       shift and go to state 5
+
+    expression                     shift and go to state 60
+    set_membership                 shift and go to state 32
+    comparison                     shift and go to state 33
+    attribute                      shift and go to state 34
+    type_invariant_expression      shift and go to state 35
+
+state 44
+
+    (18) expression -> expression PLUS . expression
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression STAR expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . set_membership
+    (23) expression -> . comparison
+    (24) expression -> . attribute
+    (25) expression -> . type_invariant_expression
+    (26) expression -> . NUMBER_LITERAL
+    (27) expression -> . STRING_LITERAL
+    (49) expression -> . LEFT_PAREN expression RIGHT_PAREN
+    (36) set_membership -> . attribute IN_A_SET Nat
+    (30) comparison -> . attribute comparison_rule NUMBER_LITERAL
+    (31) comparison -> . attribute comparison_rule attribute
+    (3) attribute -> . ATTRIBUTE
+    (28) type_invariant_expression -> . attribute IN_A_SET attribute
+
+    NUMBER_LITERAL  shift and go to state 36
+    STRING_LITERAL  shift and go to state 37
+    LEFT_PAREN      shift and go to state 38
+    ATTRIBUTE       shift and go to state 5
+
+    expression                     shift and go to state 61
+    set_membership                 shift and go to state 32
+    comparison                     shift and go to state 33
+    attribute                      shift and go to state 34
+    type_invariant_expression      shift and go to state 35
+
+state 45
+
+    (19) expression -> expression MINUS . expression
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression STAR expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . set_membership
+    (23) expression -> . comparison
+    (24) expression -> . attribute
+    (25) expression -> . type_invariant_expression
+    (26) expression -> . NUMBER_LITERAL
+    (27) expression -> . STRING_LITERAL
+    (49) expression -> . LEFT_PAREN expression RIGHT_PAREN
+    (36) set_membership -> . attribute IN_A_SET Nat
+    (30) comparison -> . attribute comparison_rule NUMBER_LITERAL
+    (31) comparison -> . attribute comparison_rule attribute
+    (3) attribute -> . ATTRIBUTE
+    (28) type_invariant_expression -> . attribute IN_A_SET attribute
+
+    NUMBER_LITERAL  shift and go to state 36
+    STRING_LITERAL  shift and go to state 37
+    LEFT_PAREN      shift and go to state 38
+    ATTRIBUTE       shift and go to state 5
+
+    expression                     shift and go to state 62
+    set_membership                 shift and go to state 32
+    comparison                     shift and go to state 33
+    attribute                      shift and go to state 34
+    type_invariant_expression      shift and go to state 35
+
+state 46
+
+    (20) expression -> expression STAR . expression
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression STAR expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . set_membership
+    (23) expression -> . comparison
+    (24) expression -> . attribute
+    (25) expression -> . type_invariant_expression
+    (26) expression -> . NUMBER_LITERAL
+    (27) expression -> . STRING_LITERAL
+    (49) expression -> . LEFT_PAREN expression RIGHT_PAREN
+    (36) set_membership -> . attribute IN_A_SET Nat
+    (30) comparison -> . attribute comparison_rule NUMBER_LITERAL
+    (31) comparison -> . attribute comparison_rule attribute
+    (3) attribute -> . ATTRIBUTE
+    (28) type_invariant_expression -> . attribute IN_A_SET attribute
+
+    NUMBER_LITERAL  shift and go to state 36
+    STRING_LITERAL  shift and go to state 37
+    LEFT_PAREN      shift and go to state 38
+    ATTRIBUTE       shift and go to state 5
+
+    expression                     shift and go to state 63
+    set_membership                 shift and go to state 32
+    comparison                     shift and go to state 33
+    attribute                      shift and go to state 34
+    type_invariant_expression      shift and go to state 35
+
+state 47
+
+    (21) expression -> expression DIVIDE . expression
+    (18) expression -> . expression PLUS expression
+    (19) expression -> . expression MINUS expression
+    (20) expression -> . expression STAR expression
+    (21) expression -> . expression DIVIDE expression
+    (22) expression -> . set_membership
+    (23) expression -> . comparison
+    (24) expression -> . attribute
+    (25) expression -> . type_invariant_expression
+    (26) expression -> . NUMBER_LITERAL
+    (27) expression -> . STRING_LITERAL
+    (49) expression -> . LEFT_PAREN expression RIGHT_PAREN
+    (36) set_membership -> . attribute IN_A_SET Nat
+    (30) comparison -> . attribute comparison_rule NUMBER_LITERAL
+    (31) comparison -> . attribute comparison_rule attribute
+    (3) attribute -> . ATTRIBUTE
+    (28) type_invariant_expression -> . attribute IN_A_SET attribute
+
+    NUMBER_LITERAL  shift and go to state 36
+    STRING_LITERAL  shift and go to state 37
+    LEFT_PAREN      shift and go to state 38
+    ATTRIBUTE       shift and go to state 5
+
+    expression                     shift and go to state 64
+    set_membership                 shift and go to state 32
+    comparison                     shift and go to state 33
+    attribute                      shift and go to state 34
+    type_invariant_expression      shift and go to state 35
+
+state 48
+
+    (36) set_membership -> attribute IN_A_SET . Nat
+    (28) type_invariant_expression -> attribute IN_A_SET . attribute
+    (3) attribute -> . ATTRIBUTE
+
+    Nat             shift and go to state 66
+    ATTRIBUTE       shift and go to state 5
+
+    attribute                      shift and go to state 65
+
+state 49
+
+    (30) comparison -> attribute comparison_rule . NUMBER_LITERAL
+    (31) comparison -> attribute comparison_rule . attribute
+    (3) attribute -> . ATTRIBUTE
+
+    NUMBER_LITERAL  shift and go to state 68
+    ATTRIBUTE       shift and go to state 5
+
+    attribute                      shift and go to state 67
+
+state 50
+
+    (32) comparison_rule -> GREATER_OR_EQ .
+
+    NUMBER_LITERAL  reduce using rule 32 (comparison_rule -> GREATER_OR_EQ .)
+    ATTRIBUTE       reduce using rule 32 (comparison_rule -> GREATER_OR_EQ .)
+
+
+state 51
+
+    (33) comparison_rule -> LESS_OR_EQ .
+
+    NUMBER_LITERAL  reduce using rule 33 (comparison_rule -> LESS_OR_EQ .)
+    ATTRIBUTE       reduce using rule 33 (comparison_rule -> LESS_OR_EQ .)
+
+
+state 52
+
+    (34) comparison_rule -> GREATER_THAN .
+
+    NUMBER_LITERAL  reduce using rule 34 (comparison_rule -> GREATER_THAN .)
+    ATTRIBUTE       reduce using rule 34 (comparison_rule -> GREATER_THAN .)
+
+
+state 53
+
+    (35) comparison_rule -> LESS_THAN .
+
+    NUMBER_LITERAL  reduce using rule 35 (comparison_rule -> LESS_THAN .)
+    ATTRIBUTE       reduce using rule 35 (comparison_rule -> LESS_THAN .)
+
+
+state 54
+
+    (49) expression -> LEFT_PAREN expression . RIGHT_PAREN
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . STAR expression
+    (21) expression -> expression . DIVIDE expression
+
+    RIGHT_PAREN     shift and go to state 69
+    PLUS            shift and go to state 44
+    MINUS           shift and go to state 45
+    STAR            shift and go to state 46
+    DIVIDE          shift and go to state 47
+
+
+state 55
+
+    (45) init -> INIT equals attribute . IN_A_SET init_set_statement
+
+    IN_A_SET        shift and go to state 70
+
+
+state 56
+
+    (39) set_definition -> attribute equals LEFT_SQR_BRACKET set_info . RIGHT_SQR_BRACKET
+    (40) set_info -> set_info . COMMA set_individual_info
+
+    RIGHT_SQR_BRACKET shift and go to state 71
+    COMMA           shift and go to state 72
+
+
+state 57
+
+    (41) set_info -> set_individual_info .
+
+    RIGHT_SQR_BRACKET reduce using rule 41 (set_info -> set_individual_info .)
+    COMMA           reduce using rule 41 (set_info -> set_individual_info .)
+
+
+state 58
+
+    (42) set_individual_info -> ATTRIBUTE . COLON set_scope
+
+    COLON           shift and go to state 73
+
+
+state 59
 
     (5) names -> names COMMA attribute .
 
@@ -829,187 +1164,491 @@ state 43
     CONSTANTS       reduce using rule 5 (names -> names COMMA attribute .)
     VARIABLES       reduce using rule 5 (names -> names COMMA attribute .)
     ASSUME          reduce using rule 5 (names -> names COMMA attribute .)
+    INIT            reduce using rule 5 (names -> names COMMA attribute .)
+    ATTRIBUTE       reduce using rule 5 (names -> names COMMA attribute .)
     $end            reduce using rule 5 (names -> names COMMA attribute .)
 
 
-state 44
+state 60
 
-    (14) assume_statement -> ASSUME expression AND expression .
-    (15) expression -> expression . PLUS expression
-    (16) expression -> expression . MINUS expression
-    (17) expression -> expression . STAR expression
-    (18) expression -> expression . DIVIDE expression
+    (17) assume_statement -> ASSUME expression AND expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . STAR expression
+    (21) expression -> expression . DIVIDE expression
 
-    CONSTANTS       reduce using rule 14 (assume_statement -> ASSUME expression AND expression .)
-    VARIABLES       reduce using rule 14 (assume_statement -> ASSUME expression AND expression .)
-    ASSUME          reduce using rule 14 (assume_statement -> ASSUME expression AND expression .)
-    $end            reduce using rule 14 (assume_statement -> ASSUME expression AND expression .)
-    PLUS            shift and go to state 32
-    MINUS           shift and go to state 33
-    STAR            shift and go to state 34
-    DIVIDE          shift and go to state 35
-
-
-state 45
-
-    (15) expression -> expression PLUS expression .
-    (15) expression -> expression . PLUS expression
-    (16) expression -> expression . MINUS expression
-    (17) expression -> expression . STAR expression
-    (18) expression -> expression . DIVIDE expression
-
-    AND             reduce using rule 15 (expression -> expression PLUS expression .)
-    PLUS            reduce using rule 15 (expression -> expression PLUS expression .)
-    MINUS           reduce using rule 15 (expression -> expression PLUS expression .)
-    RIGHT_PAREN     reduce using rule 15 (expression -> expression PLUS expression .)
-    CONSTANTS       reduce using rule 15 (expression -> expression PLUS expression .)
-    VARIABLES       reduce using rule 15 (expression -> expression PLUS expression .)
-    ASSUME          reduce using rule 15 (expression -> expression PLUS expression .)
-    $end            reduce using rule 15 (expression -> expression PLUS expression .)
-    STAR            shift and go to state 34
-    DIVIDE          shift and go to state 35
-
-  ! STAR            [ reduce using rule 15 (expression -> expression PLUS expression .) ]
-  ! DIVIDE          [ reduce using rule 15 (expression -> expression PLUS expression .) ]
-  ! PLUS            [ shift and go to state 32 ]
-  ! MINUS           [ shift and go to state 33 ]
+    CONSTANTS       reduce using rule 17 (assume_statement -> ASSUME expression AND expression .)
+    VARIABLES       reduce using rule 17 (assume_statement -> ASSUME expression AND expression .)
+    ASSUME          reduce using rule 17 (assume_statement -> ASSUME expression AND expression .)
+    INIT            reduce using rule 17 (assume_statement -> ASSUME expression AND expression .)
+    ATTRIBUTE       reduce using rule 17 (assume_statement -> ASSUME expression AND expression .)
+    $end            reduce using rule 17 (assume_statement -> ASSUME expression AND expression .)
+    PLUS            shift and go to state 44
+    MINUS           shift and go to state 45
+    STAR            shift and go to state 46
+    DIVIDE          shift and go to state 47
 
 
-state 46
+state 61
 
-    (16) expression -> expression MINUS expression .
-    (15) expression -> expression . PLUS expression
-    (16) expression -> expression . MINUS expression
-    (17) expression -> expression . STAR expression
-    (18) expression -> expression . DIVIDE expression
+    (18) expression -> expression PLUS expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . STAR expression
+    (21) expression -> expression . DIVIDE expression
 
-    AND             reduce using rule 16 (expression -> expression MINUS expression .)
-    PLUS            reduce using rule 16 (expression -> expression MINUS expression .)
-    MINUS           reduce using rule 16 (expression -> expression MINUS expression .)
-    RIGHT_PAREN     reduce using rule 16 (expression -> expression MINUS expression .)
-    CONSTANTS       reduce using rule 16 (expression -> expression MINUS expression .)
-    VARIABLES       reduce using rule 16 (expression -> expression MINUS expression .)
-    ASSUME          reduce using rule 16 (expression -> expression MINUS expression .)
-    $end            reduce using rule 16 (expression -> expression MINUS expression .)
-    STAR            shift and go to state 34
-    DIVIDE          shift and go to state 35
+    AND             reduce using rule 18 (expression -> expression PLUS expression .)
+    PLUS            reduce using rule 18 (expression -> expression PLUS expression .)
+    MINUS           reduce using rule 18 (expression -> expression PLUS expression .)
+    CONSTANTS       reduce using rule 18 (expression -> expression PLUS expression .)
+    VARIABLES       reduce using rule 18 (expression -> expression PLUS expression .)
+    ASSUME          reduce using rule 18 (expression -> expression PLUS expression .)
+    INIT            reduce using rule 18 (expression -> expression PLUS expression .)
+    ATTRIBUTE       reduce using rule 18 (expression -> expression PLUS expression .)
+    $end            reduce using rule 18 (expression -> expression PLUS expression .)
+    RIGHT_PAREN     reduce using rule 18 (expression -> expression PLUS expression .)
+    STAR            shift and go to state 46
+    DIVIDE          shift and go to state 47
 
-  ! STAR            [ reduce using rule 16 (expression -> expression MINUS expression .) ]
-  ! DIVIDE          [ reduce using rule 16 (expression -> expression MINUS expression .) ]
-  ! PLUS            [ shift and go to state 32 ]
-  ! MINUS           [ shift and go to state 33 ]
-
-
-state 47
-
-    (17) expression -> expression STAR expression .
-    (15) expression -> expression . PLUS expression
-    (16) expression -> expression . MINUS expression
-    (17) expression -> expression . STAR expression
-    (18) expression -> expression . DIVIDE expression
-
-    AND             reduce using rule 17 (expression -> expression STAR expression .)
-    PLUS            reduce using rule 17 (expression -> expression STAR expression .)
-    MINUS           reduce using rule 17 (expression -> expression STAR expression .)
-    STAR            reduce using rule 17 (expression -> expression STAR expression .)
-    DIVIDE          reduce using rule 17 (expression -> expression STAR expression .)
-    RIGHT_PAREN     reduce using rule 17 (expression -> expression STAR expression .)
-    CONSTANTS       reduce using rule 17 (expression -> expression STAR expression .)
-    VARIABLES       reduce using rule 17 (expression -> expression STAR expression .)
-    ASSUME          reduce using rule 17 (expression -> expression STAR expression .)
-    $end            reduce using rule 17 (expression -> expression STAR expression .)
-
-  ! PLUS            [ shift and go to state 32 ]
-  ! MINUS           [ shift and go to state 33 ]
-  ! STAR            [ shift and go to state 34 ]
-  ! DIVIDE          [ shift and go to state 35 ]
+  ! STAR            [ reduce using rule 18 (expression -> expression PLUS expression .) ]
+  ! DIVIDE          [ reduce using rule 18 (expression -> expression PLUS expression .) ]
+  ! PLUS            [ shift and go to state 44 ]
+  ! MINUS           [ shift and go to state 45 ]
 
 
-state 48
+state 62
 
-    (18) expression -> expression DIVIDE expression .
-    (15) expression -> expression . PLUS expression
-    (16) expression -> expression . MINUS expression
-    (17) expression -> expression . STAR expression
-    (18) expression -> expression . DIVIDE expression
+    (19) expression -> expression MINUS expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . STAR expression
+    (21) expression -> expression . DIVIDE expression
 
-    AND             reduce using rule 18 (expression -> expression DIVIDE expression .)
-    PLUS            reduce using rule 18 (expression -> expression DIVIDE expression .)
-    MINUS           reduce using rule 18 (expression -> expression DIVIDE expression .)
-    STAR            reduce using rule 18 (expression -> expression DIVIDE expression .)
-    DIVIDE          reduce using rule 18 (expression -> expression DIVIDE expression .)
-    RIGHT_PAREN     reduce using rule 18 (expression -> expression DIVIDE expression .)
-    CONSTANTS       reduce using rule 18 (expression -> expression DIVIDE expression .)
-    VARIABLES       reduce using rule 18 (expression -> expression DIVIDE expression .)
-    ASSUME          reduce using rule 18 (expression -> expression DIVIDE expression .)
-    $end            reduce using rule 18 (expression -> expression DIVIDE expression .)
+    AND             reduce using rule 19 (expression -> expression MINUS expression .)
+    PLUS            reduce using rule 19 (expression -> expression MINUS expression .)
+    MINUS           reduce using rule 19 (expression -> expression MINUS expression .)
+    CONSTANTS       reduce using rule 19 (expression -> expression MINUS expression .)
+    VARIABLES       reduce using rule 19 (expression -> expression MINUS expression .)
+    ASSUME          reduce using rule 19 (expression -> expression MINUS expression .)
+    INIT            reduce using rule 19 (expression -> expression MINUS expression .)
+    ATTRIBUTE       reduce using rule 19 (expression -> expression MINUS expression .)
+    $end            reduce using rule 19 (expression -> expression MINUS expression .)
+    RIGHT_PAREN     reduce using rule 19 (expression -> expression MINUS expression .)
+    STAR            shift and go to state 46
+    DIVIDE          shift and go to state 47
 
-  ! PLUS            [ shift and go to state 32 ]
-  ! MINUS           [ shift and go to state 33 ]
-  ! STAR            [ shift and go to state 34 ]
-  ! DIVIDE          [ shift and go to state 35 ]
-
-
-state 49
-
-    (30) set_membership -> attribute IN_A_SET Nat .
-
-    AND             reduce using rule 30 (set_membership -> attribute IN_A_SET Nat .)
-    PLUS            reduce using rule 30 (set_membership -> attribute IN_A_SET Nat .)
-    MINUS           reduce using rule 30 (set_membership -> attribute IN_A_SET Nat .)
-    STAR            reduce using rule 30 (set_membership -> attribute IN_A_SET Nat .)
-    DIVIDE          reduce using rule 30 (set_membership -> attribute IN_A_SET Nat .)
-    RIGHT_PAREN     reduce using rule 30 (set_membership -> attribute IN_A_SET Nat .)
-    CONSTANTS       reduce using rule 30 (set_membership -> attribute IN_A_SET Nat .)
-    VARIABLES       reduce using rule 30 (set_membership -> attribute IN_A_SET Nat .)
-    ASSUME          reduce using rule 30 (set_membership -> attribute IN_A_SET Nat .)
-    $end            reduce using rule 30 (set_membership -> attribute IN_A_SET Nat .)
+  ! STAR            [ reduce using rule 19 (expression -> expression MINUS expression .) ]
+  ! DIVIDE          [ reduce using rule 19 (expression -> expression MINUS expression .) ]
+  ! PLUS            [ shift and go to state 44 ]
+  ! MINUS           [ shift and go to state 45 ]
 
 
-state 50
+state 63
 
-    (25) comparison -> attribute comparison_rule attribute .
+    (20) expression -> expression STAR expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . STAR expression
+    (21) expression -> expression . DIVIDE expression
 
-    AND             reduce using rule 25 (comparison -> attribute comparison_rule attribute .)
-    PLUS            reduce using rule 25 (comparison -> attribute comparison_rule attribute .)
-    MINUS           reduce using rule 25 (comparison -> attribute comparison_rule attribute .)
-    STAR            reduce using rule 25 (comparison -> attribute comparison_rule attribute .)
-    DIVIDE          reduce using rule 25 (comparison -> attribute comparison_rule attribute .)
-    RIGHT_PAREN     reduce using rule 25 (comparison -> attribute comparison_rule attribute .)
-    CONSTANTS       reduce using rule 25 (comparison -> attribute comparison_rule attribute .)
-    VARIABLES       reduce using rule 25 (comparison -> attribute comparison_rule attribute .)
-    ASSUME          reduce using rule 25 (comparison -> attribute comparison_rule attribute .)
-    $end            reduce using rule 25 (comparison -> attribute comparison_rule attribute .)
+    AND             reduce using rule 20 (expression -> expression STAR expression .)
+    PLUS            reduce using rule 20 (expression -> expression STAR expression .)
+    MINUS           reduce using rule 20 (expression -> expression STAR expression .)
+    STAR            reduce using rule 20 (expression -> expression STAR expression .)
+    DIVIDE          reduce using rule 20 (expression -> expression STAR expression .)
+    CONSTANTS       reduce using rule 20 (expression -> expression STAR expression .)
+    VARIABLES       reduce using rule 20 (expression -> expression STAR expression .)
+    ASSUME          reduce using rule 20 (expression -> expression STAR expression .)
+    INIT            reduce using rule 20 (expression -> expression STAR expression .)
+    ATTRIBUTE       reduce using rule 20 (expression -> expression STAR expression .)
+    $end            reduce using rule 20 (expression -> expression STAR expression .)
+    RIGHT_PAREN     reduce using rule 20 (expression -> expression STAR expression .)
 
-
-state 51
-
-    (24) comparison -> attribute comparison_rule NUMBER_LITERAL .
-
-    AND             reduce using rule 24 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
-    PLUS            reduce using rule 24 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
-    MINUS           reduce using rule 24 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
-    STAR            reduce using rule 24 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
-    DIVIDE          reduce using rule 24 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
-    RIGHT_PAREN     reduce using rule 24 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
-    CONSTANTS       reduce using rule 24 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
-    VARIABLES       reduce using rule 24 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
-    ASSUME          reduce using rule 24 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
-    $end            reduce using rule 24 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
+  ! PLUS            [ shift and go to state 44 ]
+  ! MINUS           [ shift and go to state 45 ]
+  ! STAR            [ shift and go to state 46 ]
+  ! DIVIDE          [ shift and go to state 47 ]
 
 
-state 52
+state 64
 
-    (36) expression -> LEFT_PAREN expression RIGHT_PAREN .
+    (21) expression -> expression DIVIDE expression .
+    (18) expression -> expression . PLUS expression
+    (19) expression -> expression . MINUS expression
+    (20) expression -> expression . STAR expression
+    (21) expression -> expression . DIVIDE expression
 
-    AND             reduce using rule 36 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
-    PLUS            reduce using rule 36 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
-    MINUS           reduce using rule 36 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
-    STAR            reduce using rule 36 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
-    DIVIDE          reduce using rule 36 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
-    RIGHT_PAREN     reduce using rule 36 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
-    CONSTANTS       reduce using rule 36 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
-    VARIABLES       reduce using rule 36 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
-    ASSUME          reduce using rule 36 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
-    $end            reduce using rule 36 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    AND             reduce using rule 21 (expression -> expression DIVIDE expression .)
+    PLUS            reduce using rule 21 (expression -> expression DIVIDE expression .)
+    MINUS           reduce using rule 21 (expression -> expression DIVIDE expression .)
+    STAR            reduce using rule 21 (expression -> expression DIVIDE expression .)
+    DIVIDE          reduce using rule 21 (expression -> expression DIVIDE expression .)
+    CONSTANTS       reduce using rule 21 (expression -> expression DIVIDE expression .)
+    VARIABLES       reduce using rule 21 (expression -> expression DIVIDE expression .)
+    ASSUME          reduce using rule 21 (expression -> expression DIVIDE expression .)
+    INIT            reduce using rule 21 (expression -> expression DIVIDE expression .)
+    ATTRIBUTE       reduce using rule 21 (expression -> expression DIVIDE expression .)
+    $end            reduce using rule 21 (expression -> expression DIVIDE expression .)
+    RIGHT_PAREN     reduce using rule 21 (expression -> expression DIVIDE expression .)
+
+  ! PLUS            [ shift and go to state 44 ]
+  ! MINUS           [ shift and go to state 45 ]
+  ! STAR            [ shift and go to state 46 ]
+  ! DIVIDE          [ shift and go to state 47 ]
+
+
+state 65
+
+    (28) type_invariant_expression -> attribute IN_A_SET attribute .
+
+    AND             reduce using rule 28 (type_invariant_expression -> attribute IN_A_SET attribute .)
+    PLUS            reduce using rule 28 (type_invariant_expression -> attribute IN_A_SET attribute .)
+    MINUS           reduce using rule 28 (type_invariant_expression -> attribute IN_A_SET attribute .)
+    STAR            reduce using rule 28 (type_invariant_expression -> attribute IN_A_SET attribute .)
+    DIVIDE          reduce using rule 28 (type_invariant_expression -> attribute IN_A_SET attribute .)
+    CONSTANTS       reduce using rule 28 (type_invariant_expression -> attribute IN_A_SET attribute .)
+    VARIABLES       reduce using rule 28 (type_invariant_expression -> attribute IN_A_SET attribute .)
+    ASSUME          reduce using rule 28 (type_invariant_expression -> attribute IN_A_SET attribute .)
+    INIT            reduce using rule 28 (type_invariant_expression -> attribute IN_A_SET attribute .)
+    ATTRIBUTE       reduce using rule 28 (type_invariant_expression -> attribute IN_A_SET attribute .)
+    $end            reduce using rule 28 (type_invariant_expression -> attribute IN_A_SET attribute .)
+    RIGHT_PAREN     reduce using rule 28 (type_invariant_expression -> attribute IN_A_SET attribute .)
+
+
+state 66
+
+    (36) set_membership -> attribute IN_A_SET Nat .
+
+    AND             reduce using rule 36 (set_membership -> attribute IN_A_SET Nat .)
+    PLUS            reduce using rule 36 (set_membership -> attribute IN_A_SET Nat .)
+    MINUS           reduce using rule 36 (set_membership -> attribute IN_A_SET Nat .)
+    STAR            reduce using rule 36 (set_membership -> attribute IN_A_SET Nat .)
+    DIVIDE          reduce using rule 36 (set_membership -> attribute IN_A_SET Nat .)
+    CONSTANTS       reduce using rule 36 (set_membership -> attribute IN_A_SET Nat .)
+    VARIABLES       reduce using rule 36 (set_membership -> attribute IN_A_SET Nat .)
+    ASSUME          reduce using rule 36 (set_membership -> attribute IN_A_SET Nat .)
+    INIT            reduce using rule 36 (set_membership -> attribute IN_A_SET Nat .)
+    ATTRIBUTE       reduce using rule 36 (set_membership -> attribute IN_A_SET Nat .)
+    $end            reduce using rule 36 (set_membership -> attribute IN_A_SET Nat .)
+    RIGHT_PAREN     reduce using rule 36 (set_membership -> attribute IN_A_SET Nat .)
+
+
+state 67
+
+    (31) comparison -> attribute comparison_rule attribute .
+
+    AND             reduce using rule 31 (comparison -> attribute comparison_rule attribute .)
+    PLUS            reduce using rule 31 (comparison -> attribute comparison_rule attribute .)
+    MINUS           reduce using rule 31 (comparison -> attribute comparison_rule attribute .)
+    STAR            reduce using rule 31 (comparison -> attribute comparison_rule attribute .)
+    DIVIDE          reduce using rule 31 (comparison -> attribute comparison_rule attribute .)
+    CONSTANTS       reduce using rule 31 (comparison -> attribute comparison_rule attribute .)
+    VARIABLES       reduce using rule 31 (comparison -> attribute comparison_rule attribute .)
+    ASSUME          reduce using rule 31 (comparison -> attribute comparison_rule attribute .)
+    INIT            reduce using rule 31 (comparison -> attribute comparison_rule attribute .)
+    ATTRIBUTE       reduce using rule 31 (comparison -> attribute comparison_rule attribute .)
+    $end            reduce using rule 31 (comparison -> attribute comparison_rule attribute .)
+    RIGHT_PAREN     reduce using rule 31 (comparison -> attribute comparison_rule attribute .)
+
+
+state 68
+
+    (30) comparison -> attribute comparison_rule NUMBER_LITERAL .
+
+    AND             reduce using rule 30 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
+    PLUS            reduce using rule 30 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
+    MINUS           reduce using rule 30 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
+    STAR            reduce using rule 30 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
+    DIVIDE          reduce using rule 30 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
+    CONSTANTS       reduce using rule 30 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
+    VARIABLES       reduce using rule 30 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
+    ASSUME          reduce using rule 30 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
+    INIT            reduce using rule 30 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
+    ATTRIBUTE       reduce using rule 30 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
+    $end            reduce using rule 30 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
+    RIGHT_PAREN     reduce using rule 30 (comparison -> attribute comparison_rule NUMBER_LITERAL .)
+
+
+state 69
+
+    (49) expression -> LEFT_PAREN expression RIGHT_PAREN .
+
+    AND             reduce using rule 49 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    PLUS            reduce using rule 49 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    MINUS           reduce using rule 49 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    STAR            reduce using rule 49 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    DIVIDE          reduce using rule 49 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    CONSTANTS       reduce using rule 49 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    VARIABLES       reduce using rule 49 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    ASSUME          reduce using rule 49 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    INIT            reduce using rule 49 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    ATTRIBUTE       reduce using rule 49 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    $end            reduce using rule 49 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+    RIGHT_PAREN     reduce using rule 49 (expression -> LEFT_PAREN expression RIGHT_PAREN .)
+
+
+state 70
+
+    (45) init -> INIT equals attribute IN_A_SET . init_set_statement
+    (46) init_set_statement -> . LEFT_BRACE attribute IN_A_SET attribute COLON order
+
+    LEFT_BRACE      shift and go to state 75
+
+    init_set_statement             shift and go to state 74
+
+state 71
+
+    (39) set_definition -> attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET .
+
+    CONSTANTS       reduce using rule 39 (set_definition -> attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET .)
+    VARIABLES       reduce using rule 39 (set_definition -> attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET .)
+    ASSUME          reduce using rule 39 (set_definition -> attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET .)
+    INIT            reduce using rule 39 (set_definition -> attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET .)
+    ATTRIBUTE       reduce using rule 39 (set_definition -> attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET .)
+    $end            reduce using rule 39 (set_definition -> attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET .)
+
+
+state 72
+
+    (40) set_info -> set_info COMMA . set_individual_info
+    (42) set_individual_info -> . ATTRIBUTE COLON set_scope
+
+    ATTRIBUTE       shift and go to state 58
+
+    set_individual_info            shift and go to state 76
+
+state 73
+
+    (42) set_individual_info -> ATTRIBUTE COLON . set_scope
+    (43) set_scope -> . NUMBER_LITERAL DOT DOT attribute
+
+    NUMBER_LITERAL  shift and go to state 78
+
+    set_scope                      shift and go to state 77
+
+state 74
+
+    (45) init -> INIT equals attribute IN_A_SET init_set_statement .
+
+    CONSTANTS       reduce using rule 45 (init -> INIT equals attribute IN_A_SET init_set_statement .)
+    VARIABLES       reduce using rule 45 (init -> INIT equals attribute IN_A_SET init_set_statement .)
+    ASSUME          reduce using rule 45 (init -> INIT equals attribute IN_A_SET init_set_statement .)
+    INIT            reduce using rule 45 (init -> INIT equals attribute IN_A_SET init_set_statement .)
+    ATTRIBUTE       reduce using rule 45 (init -> INIT equals attribute IN_A_SET init_set_statement .)
+    $end            reduce using rule 45 (init -> INIT equals attribute IN_A_SET init_set_statement .)
+
+
+state 75
+
+    (46) init_set_statement -> LEFT_BRACE . attribute IN_A_SET attribute COLON order
+    (3) attribute -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 5
+
+    attribute                      shift and go to state 79
+
+state 76
+
+    (40) set_info -> set_info COMMA set_individual_info .
+
+    RIGHT_SQR_BRACKET reduce using rule 40 (set_info -> set_info COMMA set_individual_info .)
+    COMMA           reduce using rule 40 (set_info -> set_info COMMA set_individual_info .)
+
+
+state 77
+
+    (42) set_individual_info -> ATTRIBUTE COLON set_scope .
+
+    RIGHT_SQR_BRACKET reduce using rule 42 (set_individual_info -> ATTRIBUTE COLON set_scope .)
+    COMMA           reduce using rule 42 (set_individual_info -> ATTRIBUTE COLON set_scope .)
+
+
+state 78
+
+    (43) set_scope -> NUMBER_LITERAL . DOT DOT attribute
+
+    DOT             shift and go to state 80
+
+
+state 79
+
+    (46) init_set_statement -> LEFT_BRACE attribute . IN_A_SET attribute COLON order
+
+    IN_A_SET        shift and go to state 81
+
+
+state 80
+
+    (43) set_scope -> NUMBER_LITERAL DOT . DOT attribute
+
+    DOT             shift and go to state 82
+
+
+state 81
+
+    (46) init_set_statement -> LEFT_BRACE attribute IN_A_SET . attribute COLON order
+    (3) attribute -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 5
+
+    attribute                      shift and go to state 83
+
+state 82
+
+    (43) set_scope -> NUMBER_LITERAL DOT DOT . attribute
+    (3) attribute -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 5
+
+    attribute                      shift and go to state 84
+
+state 83
+
+    (46) init_set_statement -> LEFT_BRACE attribute IN_A_SET attribute . COLON order
+
+    COLON           shift and go to state 85
+
+
+state 84
+
+    (43) set_scope -> NUMBER_LITERAL DOT DOT attribute .
+
+    RIGHT_SQR_BRACKET reduce using rule 43 (set_scope -> NUMBER_LITERAL DOT DOT attribute .)
+    COMMA           reduce using rule 43 (set_scope -> NUMBER_LITERAL DOT DOT attribute .)
+
+
+state 85
+
+    (46) init_set_statement -> LEFT_BRACE attribute IN_A_SET attribute COLON . order
+    (47) order -> . attribute DOT attribute PLUS attribute DOT attribute range_of_values
+    (3) attribute -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 5
+
+    attribute                      shift and go to state 86
+    order                          shift and go to state 87
+
+state 86
+
+    (47) order -> attribute . DOT attribute PLUS attribute DOT attribute range_of_values
+
+    DOT             shift and go to state 88
+
+
+state 87
+
+    (46) init_set_statement -> LEFT_BRACE attribute IN_A_SET attribute COLON order .
+
+    CONSTANTS       reduce using rule 46 (init_set_statement -> LEFT_BRACE attribute IN_A_SET attribute COLON order .)
+    VARIABLES       reduce using rule 46 (init_set_statement -> LEFT_BRACE attribute IN_A_SET attribute COLON order .)
+    ASSUME          reduce using rule 46 (init_set_statement -> LEFT_BRACE attribute IN_A_SET attribute COLON order .)
+    INIT            reduce using rule 46 (init_set_statement -> LEFT_BRACE attribute IN_A_SET attribute COLON order .)
+    ATTRIBUTE       reduce using rule 46 (init_set_statement -> LEFT_BRACE attribute IN_A_SET attribute COLON order .)
+    $end            reduce using rule 46 (init_set_statement -> LEFT_BRACE attribute IN_A_SET attribute COLON order .)
+
+
+state 88
+
+    (47) order -> attribute DOT . attribute PLUS attribute DOT attribute range_of_values
+    (3) attribute -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 5
+
+    attribute                      shift and go to state 89
+
+state 89
+
+    (47) order -> attribute DOT attribute . PLUS attribute DOT attribute range_of_values
+
+    PLUS            shift and go to state 90
+
+
+state 90
+
+    (47) order -> attribute DOT attribute PLUS . attribute DOT attribute range_of_values
+    (3) attribute -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 5
+
+    attribute                      shift and go to state 91
+
+state 91
+
+    (47) order -> attribute DOT attribute PLUS attribute . DOT attribute range_of_values
+
+    DOT             shift and go to state 92
+
+
+state 92
+
+    (47) order -> attribute DOT attribute PLUS attribute DOT . attribute range_of_values
+    (3) attribute -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 5
+
+    attribute                      shift and go to state 93
+
+state 93
+
+    (47) order -> attribute DOT attribute PLUS attribute DOT attribute . range_of_values
+    (48) range_of_values -> . attribute DOT DOT attribute NUMBER_LITERAL
+    (3) attribute -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 5
+
+    attribute                      shift and go to state 94
+    range_of_values                shift and go to state 95
+
+state 94
+
+    (48) range_of_values -> attribute . DOT DOT attribute NUMBER_LITERAL
+
+    DOT             shift and go to state 96
+
+
+state 95
+
+    (47) order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values .
+
+    CONSTANTS       reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values .)
+    VARIABLES       reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values .)
+    ASSUME          reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values .)
+    INIT            reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values .)
+    ATTRIBUTE       reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values .)
+    $end            reduce using rule 47 (order -> attribute DOT attribute PLUS attribute DOT attribute range_of_values .)
+
+
+state 96
+
+    (48) range_of_values -> attribute DOT . DOT attribute NUMBER_LITERAL
+
+    DOT             shift and go to state 97
+
+
+state 97
+
+    (48) range_of_values -> attribute DOT DOT . attribute NUMBER_LITERAL
+    (3) attribute -> . ATTRIBUTE
+
+    ATTRIBUTE       shift and go to state 5
+
+    attribute                      shift and go to state 98
+
+state 98
+
+    (48) range_of_values -> attribute DOT DOT attribute . NUMBER_LITERAL
+
+    NUMBER_LITERAL  shift and go to state 99
+
+
+state 99
+
+    (48) range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL .
+
+    CONSTANTS       reduce using rule 48 (range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL .)
+    VARIABLES       reduce using rule 48 (range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL .)
+    ASSUME          reduce using rule 48 (range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL .)
+    INIT            reduce using rule 48 (range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL .)
+    ATTRIBUTE       reduce using rule 48 (range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL .)
+    $end            reduce using rule 48 (range_of_values -> attribute DOT DOT attribute NUMBER_LITERAL .)
 
