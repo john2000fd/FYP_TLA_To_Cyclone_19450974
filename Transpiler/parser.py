@@ -3,6 +3,12 @@ from tokenizer import tokens
 from tokenizer import tla_code
 
 
+
+
+
+
+
+
 # Placeholder for storing parsed module information
 parsed_data = {}
 
@@ -38,9 +44,13 @@ def p_module(p):
 
 
 def p_attribute(p):
-    'attribute : ATTRIBUTE'
+    '''attribute : ATTRIBUTE'''
     p[0] = p[1]  
 
+
+def p_dot_access(p):
+    '''dot_access : attribute DOT attribute'''
+    p[0] = AttributeDotAccessNode(p[1], p[3])
 
 def p_extends(p):
     '''extends : EXTENDS names'''
@@ -52,10 +62,12 @@ def p_names(p):
     '''names : names COMMA attribute
              | attribute'''
     if len(p) == 4:
-        p[0] = p[1] + [p[3]]
+        p[0] = p[1] + [p[3]]                                    #if-else statement used to handle multiple names seperated by a comma
+         
     else:
         p[0] = [p[1]]
-
+       
+        
 
 #This section deals with the parsing of various declarations, this includes keywords, variables, constants etc
 
@@ -79,6 +91,8 @@ def p_statement(p):
                    | assume_statement
                    | type_invariant
                    | set_definition
+                   | bean_value_count
+                   | function_declaration
                    | init'''
     p[0] = p[1]
 
@@ -191,12 +205,9 @@ def p_init_set_statement(p):
 
 
 def p_order(p):
-    '''order : attribute DOT attribute PLUS attribute DOT attribute IN_A_SET range_of_values'''
-    left_plus = PlusNode(AttributeNode(p[1]), AttributeNode(p[3]))                         #These nodes deal with the individual parts of our addition operation, and the final addition value
-    right_plus = PlusNode(AttributeNode(p[5]), AttributeNode(p[7]))
-    addition_result = AdditionResultNode(left_plus, right_plus)
-
-
+    '''order : dot_access PLUS dot_access IN_A_SET range_of_values'''
+    addition_result = PlusNode(p[1], p[3])
+    p[0] = SetValueNode(addition_result, p[5])
 
 
 def p_range_of_values(p):
@@ -205,7 +216,69 @@ def p_range_of_values(p):
 
 
 
+def p_bean_value_count(p):
+    '''bean_value_count : attribute equals bean_equation'''
+    p[0] = BeanValueCountNode(p[1], p[3])
 
+
+
+def p_bean_equation(p):
+    '''bean_equation : dot_access PLUS dot_access'''          #This node represents the equation of two c.black + c.white values  
+    p[0] = AdditionResultNode(p[1], p[3])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#CURRENT WORKING SECTION~~~~~~~~~~~~~~~~~~~~~~
+
+
+# TO-DO: fix syntax error: Syntax error at token 'AND', value: '/\', line: 116, position: 682
+#Error context:
+#, put one black bean in
+#PickSameColorBlack ==
+#    /\ BeanCou
+
+
+
+#Rule handling all of our funcions in TLA, for example for this: picking two black beans, removing them, then replacing with one black bean
+def p_function_declaration(p):
+    '''function_declaration : attribute equals function_conditions except_section'''
+    p[0] = FunctionDeclarationNode(p[1], p[3], p[4])
+
+
+def p_function_conditions(p):
+    '''function_conditions : function_condition
+                           | function_conditions AND function_condition'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[3]]
+        
+
+
+def p_function_condition(p):
+    '''function_condition : attribute comparison_rule NUMBER_LITERAL
+                          | attribute DOT attribute comparison_rule NUMBER_LITERAL'''
+    if len(p) == 4:
+        p[0] = FunctionConditionNoDotNode(p[1], p[2], p[3])
+    else:
+        p[0] = FunctionConditionDotNode(p[1], p[2], p[3], p[4], p[5])
+
+    
+def p_except_section(p):
+    '''except_section : '''
 
 
 
@@ -232,7 +305,7 @@ def p_error(p):
     if p:
         print(f"Syntax error at token '{p.type}', value: '{p.value}', line: {p.lineno}, position: {p.lexpos}")
         # Optionally, print a few tokens leading up to the error for context
-        context = max(0, p.lexpos - 10)  # Adjust as needed for context size
+        context = max(0, p.lexpos - 50)  # Adjust as needed for context size
         print("Error context:")
         print(tla_code[context:p.lexpos + 10])  # Adjust slicing as needed
     else:
@@ -254,7 +327,13 @@ class ModuleNode(ASTNode):
 class AttributeNode(ASTNode):
     def __init__(self, attribute_name):
         self.attribute_name = attribute_name
+
         
+class AttributeDotAccessNode(ASTNode):
+    def __init__(self, attribute_before_dot, attribute_after_dot):
+        self.attribute_before_dot = attribute_before_dot
+        self.attribute_after_dot = attribute_after_dot
+
 
 class ExtendsNode(ASTNode):
     def __init__(self, extended_modules):
@@ -330,11 +409,17 @@ class InitSetStatementNode(ASTNode):
 
 
 
-
 class PlusNode(ASTNode):
     def __init__(self, attribute_1_left, attribute_2_right):
         self.attribute_1_left = attribute_1_left
         self.attribute_2_right = attribute_2_right
+
+
+class SetValueNode(ASTNode):
+    def __init__(self, addition_result, range_of_values):
+        self.addition_result = addition_result
+        self.range_of_values = range_of_values
+
         
 
 
@@ -350,6 +435,78 @@ class InitSetRangeOfValuesNode(ASTNode):
     def __init__(self, start_of_range, end_of_range):
         self.start_of_range = start_of_range
         self.end_of_range = end_of_range
+
+
+
+class BeanValueCountNode(ASTNode):
+    def __init__(self, attribute, bean_equation):
+        self.attribute = attribute
+        self.bean_equation = bean_equation
+
+
+
+
+
+
+class FunctionDeclarationNode(ASTNode):
+    def __init__(self, attribute, conditions, except_section):
+        self.attribute = attribute
+        self.conditions = conditions 
+        self.except_section = except_section
+
+
+class FunctionConditionNoDotNode(ASTNode):
+    def __init__(self, attribute, comparison_rule, number):
+        self.attribute = attribute
+        self.comparison_rule = comparison_rule
+        self.number = number
+
+
+
+class FunctionConditionDotNode(ASTNode):
+    def __init__(self, attribute_before_dot, dot, attribute_after_dot, comparison_rule, number):
+        self.attribute_before_dot = attribute_before_dot
+        self.dot = dot
+        self.attribute_after_dot = attribute_after_dot
+        self.comparison_rule = comparison_rule
+        self.number = number
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
