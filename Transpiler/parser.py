@@ -4,11 +4,6 @@ from tokenizer import tla_code
 
 
 
-
-
-
-
-
 # Placeholder for storing parsed module information
 parsed_data = {}
 
@@ -24,10 +19,6 @@ precedence = (
     #('right', 'UMINUS'),  # Unary minus operator
     ('nonassoc', 'LEFT_PAREN', 'RIGHT_PAREN'),  # Parentheses for grouping
 )
-
-
-
-
 
 
 
@@ -93,6 +84,7 @@ def p_statement(p):
                    | set_definition
                    | bean_value_count
                    | function_declaration
+                   | termination_statement
                    | init'''
     p[0] = p[1]
 
@@ -254,13 +246,14 @@ def p_bean_equation(p):
 
 #Rule handling all of our funcions in TLA, for example for this: picking two black beans, removing them, then replacing with one black bean
 def p_function_declaration(p):
-    '''function_declaration : attribute equals function_conditions except_section'''
-    p[0] = FunctionDeclarationNode(p[1], p[3], p[4])
+    '''function_declaration : attribute equals AND function_conditions except_section'''
+    p[0] = FunctionDeclarationNode(p[1], p[3], p[4], p[5])
 
 
 def p_function_conditions(p):
     '''function_conditions : function_condition
-                           | function_conditions AND function_condition'''
+                           | function_conditions AND function_condition
+                           | function_conditions OR function_condition'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -270,18 +263,44 @@ def p_function_conditions(p):
 
 def p_function_condition(p):
     '''function_condition : attribute comparison_rule NUMBER_LITERAL
+                          | attribute equals NUMBER_LITERAL
+                          | UNCHANGED attribute
+                          | attribute
                           | attribute DOT attribute comparison_rule NUMBER_LITERAL'''
     if len(p) == 4:
         p[0] = FunctionConditionNoDotNode(p[1], p[2], p[3])
+    elif len(p) == 3:
+        p[0] = FunctionUNCHANGEDNode(p[1], p[2])
+    elif len(p) == 2:
+        p[0] = FunctionNameNode(p[1])
     else:
         p[0] = FunctionConditionDotNode(p[1], p[2], p[3], p[4], p[5])
 
     
-def p_except_section(p):
-    '''except_section : '''
+def p_except_section(p):     #This handles our transition function
+    '''except_section : AND NEXT_VALUE_OF_ATTRIBUTE equals except_clause'''
+    p[0] = ExceptSectionNode(p[2], p[3], p[4])
+
+
+def p_except_clause(p):      #This handles our except clause section
+    '''except_clause : LEFT_SQR_BRACKET attribute EXCEPT EXCLAMATION_MARK DOT attribute equals AT MINUS NUMBER_LITERAL RIGHT_SQR_BRACKET
+                     | LEFT_SQR_BRACKET attribute EXCEPT EXCLAMATION_MARK DOT attribute equals AT PLUS NUMBER_LITERAL COMMA EXCLAMATION_MARK DOT attribute equals AT MINUS NUMBER_LITERAL RIGHT_SQR_BRACKET'''
+    if len(p) == 12:
+        p[0] = ExceptClauseNode(p[2], p[4], p[5], p[6], p[8], p[9], p[10])
+    else:
+        p[0] = MultipleExceptClauseNode(p[2], p[4], p[5], p[6], p[8], p[9], p[10], p[12], p[13], p[14], p[16], p[17], p[18])    
+
+    
+
+def p_termination_statement(p):
+    '''termination_statement : attribute equals AND function_conditions'''
+    p[0] = TerminationStatementNode(p[1], p[3], p[4])
 
 
 
+def p_next_state_relation(p):
+    '''next_state_relation : NEXT equals OR function_conditions'''
+    p[0] = NextStateRelationNode(p[1], p[3], p[4])
 
 
 
@@ -449,8 +468,9 @@ class BeanValueCountNode(ASTNode):
 
 
 class FunctionDeclarationNode(ASTNode):
-    def __init__(self, attribute, conditions, except_section):
+    def __init__(self, attribute, AND, conditions, except_section):
         self.attribute = attribute
+        self.AND = AND
         self.conditions = conditions 
         self.except_section = except_section
 
@@ -461,7 +481,16 @@ class FunctionConditionNoDotNode(ASTNode):
         self.comparison_rule = comparison_rule
         self.number = number
 
+class FunctionUNCHANGEDNode(ASTNode):
+    def __init__(self, unchanged, attribute):
+        self.unchanged = unchanged
+        self.attribute = attribute
+        
 
+class FunctionNameNode(ASTNode):
+    def __init__(self, name):
+        self.name = name
+        
 
 class FunctionConditionDotNode(ASTNode):
     def __init__(self, attribute_before_dot, dot, attribute_after_dot, comparison_rule, number):
@@ -473,17 +502,58 @@ class FunctionConditionDotNode(ASTNode):
 
 
 
+class ExceptSectionNode(ASTNode):
+    def __init__(self, next_value_attribute, equals, except_node):
+        self.next_value_attribute = next_value_attribute
+        self.equals = equals
+        self.except_node = except_node
 
 
 
+class ExceptClauseNode(ASTNode):
+    def __init__(self, attribute_1, exclamation_mark, dot, attribute_2, at, operator, number):
+        self.attribute_1 = attribute_1
+        self.exclamation_mark = exclamation_mark                                                              #implement dot_access here
+        self.dot = dot
+        self.attribute_2 = attribute_2
+        self.at = at
+        self.operator = operator
+        self.number = number
 
 
+class MultipleExceptClauseNode(ASTNode):
+    def __init__(self, attribute_1, exclamation_mark_1, dot_1, attribute_2, at_1, operator_1, number_1, exclamation_mark_2, dot_2, attribute_3, at_2, operator_2, number_2):
+        self.attribute_1 = attribute_1
+        self.exclamation_mark_1 = exclamation_mark_1
+        self.dot_1 = dot_1
+        self.attribute_2 = attribute_2
+        self.at_1= at_1
+        self.operator_1 = operator_1
+        self.number_1 = number_1
+        self.exclamation_mark_2 = exclamation_mark_2
+        self.dot_2 = dot_2
+        self.attribute_3 = attribute_3
+        self.at_2 = at_2
+        self.operator_2 = operator_2
+        self.number_2 = number_2
 
 
+class TerminationStatementNode(ASTNode):
+    def __init__(self, attribute, AND, conditions):
+        self.attribute = attribute
+        self.AND = AND
+        self.conditions = conditions
+        
+
+        
 
 
-
-
+class NextStateRelationNode(ASTNode):
+    def __init__(self, next, OR, conditions):
+        self.next = next
+        self.OR = OR
+        self.conditions  = conditions
+        
 
 
 

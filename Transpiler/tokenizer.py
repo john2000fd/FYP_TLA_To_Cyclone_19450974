@@ -63,6 +63,7 @@ tokens = (
     'THEN',
     'ELSE',
     'NEXT_VALUE_OF_ATTRIBUTE',
+    'EXCEPT',
     
 
 )
@@ -91,6 +92,8 @@ reserved = {
     'IF' : 'IF',
     'THEN' : 'THEN',
     'ELSE' : 'ELSE',
+    'EXCEPT' : 'EXCEPT',
+   
     
 }
 
@@ -141,6 +144,7 @@ t_IN_A_SET = r'\\in'
 def t_NEXT_VALUE_OF_ATTRIBUTE(t):
     r'[A-Za-z_][A-Za-z0-9_]*\''  # Same regex as the ATTRIBUTE regex, except we want to catch the (') at the end of an attribute that denotes its next value
     return t
+
 
 # Define 'Attribute' as the default token, this handles part of the code such as module name, variable name etc
 def t_ATTRIBUTE(t):
