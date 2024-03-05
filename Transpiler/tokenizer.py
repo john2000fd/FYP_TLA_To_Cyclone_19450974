@@ -15,7 +15,6 @@ tokens = (
     'VARIABLE_NAME',
     'CONSTANTS',
     'INIT',
-    'NEXT',
     'SPEC',
     'INVARIANT',
     'GOAL',
@@ -64,6 +63,8 @@ tokens = (
     'ELSE',
     'NEXT_VALUE_OF_ATTRIBUTE',
     'EXCEPT',
+    'ATTRIBUTE_MAY_CHANGE',
+    
     
 
 )
@@ -82,7 +83,7 @@ reserved = {
     'VARIABLE_NAME': 'VARIABLE_NAME',
     'CONSTANTS' : 'CONSTANTS',
     'Init': 'INIT',
-    'Next': 'NEXT',
+    #'Next': 'NEXT',
     'Spec': 'SPEC',
     'GOAL': 'GOAL',
     'CHECK': 'CHECK',
@@ -107,6 +108,7 @@ t_RIGHT_PAREN = r'\)'
 t_LEFT_BRACE = r'\{'
 t_RIGHT_BRACE = r'\}'
 t_STAR = r'\*'
+t_OR = r'\\/'   # Correct way to handle OR (logical disjunction)
 t_BACK_SLASH = r'\\'
 t_FORWARD_SLASH = r'\/'
 t_LESS_THAN = r'\<'
@@ -120,7 +122,6 @@ t_DIVIDE = r'div'
 t_COMMA = r'\,'
 t_UNDERSCORE = r'\_'
 t_AND = r'/\\'  # Correct way to handle AND (logical conjunction)
-t_OR = r'\\/'   # Correct way to handle OR (logical disjunction)
 t_COLON = r'\:'
 t_MODULUS = r'\%'
 t_EQUALS_DEFINITIONS = r'\=='
@@ -138,8 +139,9 @@ t_IN_A_SET = r'\\in'
 #t_END_OF_FILE = r'\================================'
 #t_COMMENT =  r'\([^)]*\)'
 
-
-
+def t_ATTRIBUTE_MAY_CHANGE(t):
+    r'\_[A-Za-z_][A-Za-z0-9_]*'   # Regex that identifies code like '_can' that notates execution of the system at every step where that attribute may change
+    return t
 
 def t_NEXT_VALUE_OF_ATTRIBUTE(t):
     r'[A-Za-z_][A-Za-z0-9_]*\''  # Same regex as the ATTRIBUTE regex, except we want to catch the (') at the end of an attribute that denotes its next value
@@ -252,7 +254,7 @@ Termination ==
     /\ BeanCount = 1
     /\ UNCHANGED can
 
-\* Next-state relation: what actions can be taken?
+\* Next-state relation: what actions can be taken
 Next ==
     \/ PickSameColorWhite
     \/ PickSameColorBlack

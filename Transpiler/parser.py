@@ -9,7 +9,7 @@ parsed_data = {}
 
 #This precedence table determines the precedence of operators in the parser, this will contain the number of shift/reduce conflicts 
 precedence = (
-    ('left', 'OR'),  # Logical OR
+    #('left', 'OR'),  # Logical OR
     ('left', 'AND'),  # Logical AND
     ('nonassoc', 'EQUALS_DEFINITIONS', 'NOT_EQUALS'),  # Equality and inequality
     ('nonassoc', 'LESS_THAN', 'LESS_OR_EQ', 'GREATER_THAN', 'GREATER_OR_EQ'),  # Relational operators
@@ -85,6 +85,8 @@ def p_statement(p):
                    | bean_value_count
                    | function_declaration
                    | termination_statement
+                   | next_state_relation
+                   | action_formula_definition
                    | init'''
     p[0] = p[1]
 
@@ -273,7 +275,7 @@ def p_function_condition(p):
         p[0] = FunctionUNCHANGEDNode(p[1], p[2])
     elif len(p) == 2:
         p[0] = FunctionNameNode(p[1])
-    else:
+    elif len(p) == 5:
         p[0] = FunctionConditionDotNode(p[1], p[2], p[3], p[4], p[5])
 
     
@@ -299,9 +301,25 @@ def p_termination_statement(p):
 
 
 def p_next_state_relation(p):
-    '''next_state_relation : NEXT equals OR function_conditions'''
+    '''next_state_relation : attribute equals OR function_conditions'''
     p[0] = NextStateRelationNode(p[1], p[3], p[4])
 
+
+
+def p_action_formula_definition(p): 
+    '''action_formula_definition : attribute equals action_formula'''
+    p[0] = ActionFormulaDefinitionNode(p[1], p[3])
+
+
+def p_action_formula(p):
+    '''action_formula : LEFT_SQR_BRACKET RIGHT_SQR_BRACKET LEFT_SQR_BRACKET formula_details RIGHT_SQR_BRACKET ATTRIBUTE_MAY_CHANGE'''
+    p[0] = ActionFormulaNode(p[1], p[2], p[3], p[4], p[5], p[6])
+
+
+
+def p_action_details(p): 
+    '''formula_details : NEXT_VALUE_OF_ATTRIBUTE LESS_THAN attribute'''
+    p[0] = ActionFormulaDetailsNode(p[1], p[2], p[3])
 
 
 
@@ -549,20 +567,36 @@ class TerminationStatementNode(ASTNode):
 
 
 class NextStateRelationNode(ASTNode):
-    def __init__(self, next, OR, conditions):
-        self.next = next
+    def __init__(self, next_declaration, OR, conditions):
+        self.next_declaration = next_declaration
         self.OR = OR
         self.conditions  = conditions
         
 
 
+class ActionFormulaDefinitionNode(ASTNode):
+    def __init__(self, attribute, action_formula):
+        self.attribute = attribute
+        self.action_formula = action_formula
+        
+        
+
+class ActionFormulaNode(ASTNode):
+    def __init__(self, LEFT_SQR_BRACKET_1, RIGHT_SQR_BRACKET_1, LEFT_SQR_BRACKET_2, formula_details, RIGHT_SQR_BRACKET_2, ATTRIBUTE_MAY_CHANGE):
+        self.LEFT_SQR_BRACKET_1 = LEFT_SQR_BRACKET_1
+        self.RIGHT_SQR_BRACKET_1 = RIGHT_SQR_BRACKET_1
+        self.LEFT_SQR_BRACKET_2 = LEFT_SQR_BRACKET_2
+        self.formula_details = formula_details
+        self.RIGHT_SQR_BRACKET_2 = RIGHT_SQR_BRACKET_2
+        self.ATTRIBUTE_MAY_CHANGE = ATTRIBUTE_MAY_CHANGE
 
 
 
-
-
-
-
+class ActionFormulaDetailsNode(ASTNode):
+    def __init__(self, NEXT_VALUE_OF_ATTRIBUTE, LESS_THAN, attribute):
+        self.NEXT_VALUE_OF_ATTRIBUTE = NEXT_VALUE_OF_ATTRIBUTE
+        self.LESS_THAN = LESS_THAN
+        self.attribute = attribute
 
 
 
@@ -672,7 +706,7 @@ class SpecNode(ASTNode):
 
 
 # Build the parser
-parser = yacc.yacc()
+parser = yacc.yacc(debug=True)
 
 
 result = parser.parse(tla_code)
