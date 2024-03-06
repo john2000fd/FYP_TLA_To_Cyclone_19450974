@@ -10,7 +10,7 @@ parsed_data = {}
 #This precedence table determines the precedence of operators in the parser, this will contain the number of shift/reduce conflicts 
 precedence = (
     #('left', 'OR'),  # Logical OR
-    ('left', 'EQUIVALENCE_OPERATOR')
+    ('left', 'EQUIVALENCE_OPERATOR'),
     ('left', 'AND'),  # Logical AND
     ('nonassoc', 'EQUALS_DEFINITIONS', 'NOT_EQUALS'),  # Equality and inequality
     ('nonassoc', 'LESS_THAN', 'LESS_OR_EQ', 'GREATER_THAN', 'GREATER_OR_EQ'),  # Relational operators
@@ -41,7 +41,8 @@ def p_attribute(p):
 
 
 def p_dot_access(p):
-    '''dot_access : attribute DOT attribute'''
+    '''dot_access : attribute DOT attribute
+                  | NEXT_VALUE_OF_ATTRIBUTE DOT attribute'''
     p[0] = AttributeDotAccessNode(p[1], p[3])
 
 def p_extends(p):
@@ -303,14 +304,11 @@ def p_action_formula(p):
 
 def p_formula_details(p): 
     '''formula_details : NEXT_VALUE_OF_ATTRIBUTE LESS_THAN attribute
-                       | dot_access MODULUS expression equals NUMBER_LITERAL  '''
-    p[0] = ActionFormulaDetailsNode(p[1], p[2], p[3])
-
-
-
-
-
-
+                       | dot_access MODULUS expression equals NUMBER_LITERAL EQUIVALENCE_OPERATOR dot_access MODULUS expression equals NUMBER_LITERAL'''
+    if len(p) == 4:
+         p[0] = ActionFormulaDetailsNode(p[1], p[2], p[3])
+    else:
+         p[0] = InvariantFormulaNode(p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11])
 
 
 
@@ -334,6 +332,8 @@ def p_loop_invariant(p):
 
 
 
+def p_termination_hypothesis(p):
+    '''termination_hypothesis : attribute equals '''
 
 
 
@@ -639,6 +639,21 @@ class LoopInvariantNode(ASTNode):
         self.attribute = attribute
         self.invariant_details = invariant_details
        
+
+class InvariantFormulaNode(ASTNode):
+    def __init__(self, dot_access_1, MODULUS_1, expression_1, equals_1, NUMBER_LITERAL_1, EQUIVALENCE_OPERATOR, dot_access_2, MODULUS_2, expression_2, equals_2, NUMBER_LITERAL_2):
+        self.dot_access_1 = dot_access_1
+        self.MODULUS_1 = MODULUS_1
+        self.expression_1 = expression_1
+        self.equals_1 = equals_1
+        self.NUMBER_LITERAL_1 = NUMBER_LITERAL_1
+        self.EQUIVALENCE_OPERATOR = EQUIVALENCE_OPERATOR
+        self.dot_access_2 = dot_access_2
+        self.MODULUS_2 = MODULUS_2
+        self.expression_2 = expression_2
+        self.equals_2 = equals_2
+        self.NUMBER_LITERAL_2 = NUMBER_LITERAL_2
+
 
 
 

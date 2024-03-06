@@ -66,7 +66,7 @@ tokens = (
     'ATTRIBUTE_MAY_CHANGE',
     'EVENTUALLY',
     'ENABLED',
-    'EQUIVALENCE_OPERATOR'
+    'EQUIVALENCE_OPERATOR',
     
     
 
@@ -138,6 +138,7 @@ t_DOT = r'\.'
 t_EXCLAMATION_MARK = r'\!'
 t_AT = r'\@'
 t_IN_A_SET = r'\\in'
+t_EQUIVALENCE_OPERATOR = r'\<=>'
 
 
 
