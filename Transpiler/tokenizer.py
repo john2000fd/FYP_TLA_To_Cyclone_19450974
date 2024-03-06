@@ -64,6 +64,9 @@ tokens = (
     'NEXT_VALUE_OF_ATTRIBUTE',
     'EXCEPT',
     'ATTRIBUTE_MAY_CHANGE',
+    'EVENTUALLY',
+    'ENABLED',
+    'EQUIVALENCE_OPERATOR'
     
     
 
@@ -94,6 +97,7 @@ reserved = {
     'THEN' : 'THEN',
     'ELSE' : 'ELSE',
     'EXCEPT' : 'EXCEPT',
+    'ENABLED' : 'ENABLED',
    
     
 }
@@ -111,6 +115,7 @@ t_STAR = r'\*'
 t_OR = r'\\/'   # Correct way to handle OR (logical disjunction)
 t_BACK_SLASH = r'\\'
 t_FORWARD_SLASH = r'\/'
+t_EVENTUALLY = r'\<>'
 t_LESS_THAN = r'\<'
 t_GREATER_THAN = r'\>'
 t_LEFT_SQR_BRACKET = r'\['
@@ -136,8 +141,7 @@ t_IN_A_SET = r'\\in'
 
 
 
-#t_END_OF_FILE = r'\================================'
-#t_COMMENT =  r'\([^)]*\)'
+
 
 def t_ATTRIBUTE_MAY_CHANGE(t):
     r'\_[A-Za-z_][A-Za-z0-9_]*'   # Regex that identifies code like '_can' that notates execution of the system at every step where that attribute may change

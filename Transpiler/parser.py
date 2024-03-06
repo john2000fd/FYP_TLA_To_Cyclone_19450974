@@ -10,6 +10,7 @@ parsed_data = {}
 #This precedence table determines the precedence of operators in the parser, this will contain the number of shift/reduce conflicts 
 precedence = (
     #('left', 'OR'),  # Logical OR
+    ('left', 'EQUIVALENCE_OPERATOR')
     ('left', 'AND'),  # Logical AND
     ('nonassoc', 'EQUALS_DEFINITIONS', 'NOT_EQUALS'),  # Equality and inequality
     ('nonassoc', 'LESS_THAN', 'LESS_OR_EQ', 'GREATER_THAN', 'GREATER_OR_EQ'),  # Relational operators
@@ -87,6 +88,7 @@ def p_statement(p):
                    | termination_statement
                    | next_state_relation
                    | action_formula_definition
+                   | liveness_property
                    | init'''
     p[0] = p[1]
 
@@ -228,24 +230,6 @@ def p_bean_equation(p):
 
 
 
-
-
-
-
-
-
-
-#CURRENT WORKING SECTION~~~~~~~~~~~~~~~~~~~~~~
-
-
-# TO-DO: fix syntax error: Syntax error at token 'AND', value: '/\', line: 116, position: 682
-#Error context:
-#, put one black bean in
-#PickSameColorBlack ==
-#    /\ BeanCou
-
-
-
 #Rule handling all of our funcions in TLA, for example for this: picking two black beans, removing them, then replacing with one black bean
 def p_function_declaration(p):
     '''function_declaration : attribute equals AND function_conditions except_section'''
@@ -317,9 +301,43 @@ def p_action_formula(p):
 
 
 
-def p_action_details(p): 
-    '''formula_details : NEXT_VALUE_OF_ATTRIBUTE LESS_THAN attribute'''
+def p_formula_details(p): 
+    '''formula_details : NEXT_VALUE_OF_ATTRIBUTE LESS_THAN attribute
+                       | dot_access MODULUS expression equals NUMBER_LITERAL  '''
     p[0] = ActionFormulaDetailsNode(p[1], p[2], p[3])
+
+
+
+
+
+
+
+
+
+def p_liveness_property(p):
+    '''liveness_property : attribute equals property_details'''
+    p[0] = LivenessPropertyNode(p[1], p[3])
+
+
+
+def p_property_details(p):
+    '''property_details : EVENTUALLY LEFT_PAREN ENABLED attribute RIGHT_PAREN'''
+    p[0] = PropertyDetailsNode(p[1], p[3], p[4])
+
+
+
+#CURRENT WORKING SECTION~~~~~~~~~~~~~~~~~~~~~~
+
+def p_loop_invariant(p):
+    '''loop_invariant : attribute equals action_formula'''
+    p[0] = LoopInvariantNode(p[1], p[3])
+
+
+
+
+
+
+
 
 
 
@@ -600,13 +618,27 @@ class ActionFormulaDetailsNode(ASTNode):
 
 
 
+class LivenessPropertyNode(ASTNode):
+    def __init__(self, attribute, hypothesis_details):
+        self.attribute = attribute
+        self.hypothesis_details = hypothesis_details
+       
 
 
 
+class PropertyDetailsNode(ASTNode):
+    def __init__(self, eventually, enabled, attribute):
+        self.eventually = eventually
+        self.enabled = enabled
+        self.attribute = attribute
+        
 
 
-
-
+class LoopInvariantNode(ASTNode):
+    def __init__(self, attribute, invariant_details):
+        self.attribute = attribute
+        self.invariant_details = invariant_details
+       
 
 
 
