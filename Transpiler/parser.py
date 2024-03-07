@@ -333,15 +333,23 @@ def p_loop_invariant(p):
 
 
 
-#def p_termination_hypothesis(p):
- #   '''termination_hypothesis : attribute equals if_statement then_statement else_statement'''
-  #  p[0] = TerminationHypothesisNode(p[1], p[3], p[4], p[5])
+def p_termination_hypothesis(p):
+    '''termination_hypothesis : attribute equals conditional_statements'''
+    p[0] = TerminationHypothesisNode(p[1], p[3])
 
 
 
-#def p_if_statement()
+def p_conditional_statements(p):
+    '''if_statement : IF conditional_statement
+                    | THEN conditional_statement
+                    | ELSE conditional_statement'''
+    p[0] = ConditionalStatementNode(p[1], p[2])
 
 
+
+def p_conditional_statement(p):
+    '''conditional_statement : dot_access MODULUS NUMBER_LITERAL equals NUMBER_LITERAL
+                             | EVENTUALLY LEFT_PAREN dot_access equals NUMBER_LITERAL '''
 
 
 
@@ -349,7 +357,7 @@ def p_loop_invariant(p):
 
 #Grouping expressions
 def p_expression_group(p):
-    'expression : LEFT_PAREN expression RIGHT_PAREN'
+    'expression : LEFT_PAREN expression RIGHT_PAREN' 
     p[0] = p[2]  # Grouped expression, no node needed
 
 
