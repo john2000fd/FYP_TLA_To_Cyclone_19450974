@@ -91,6 +91,9 @@ def p_statement(p):
                    | action_formula_definition
                    | liveness_property
                    | loop_invariant
+                   | termination_hypothesis
+                   | spec_definition
+                   | theorem_definition
                    | init'''
     p[0] = p[1]
 
@@ -253,7 +256,13 @@ def p_function_condition(p):
     '''function_condition : attribute comparison_rule NUMBER_LITERAL
                           | attribute equals NUMBER_LITERAL
                           | UNCHANGED attribute
+                          | LEFT_SQR_BRACKET RIGHT_SQR_BRACKET LEFT_SQR_BRACKET attribute RIGHT_SQR_BRACKET ATTRIBUTE_MAY_CHANGE
+                          | WEAK_FAIRNESS ATTRIBUTE_MAY_CHANGE LEFT_PAREN attribute RIGHT_PAREN
                           | attribute
+                          | INIT
+                          | EventuallyTerminates
+                          | LoopInvariant
+                          | TerminationHypothesis
                           | attribute DOT attribute comparison_rule NUMBER_LITERAL'''
     if len(p) == 4:
         p[0] = FunctionConditionNoDotNode(p[1], p[2], p[3])
@@ -314,7 +323,7 @@ def p_formula_details(p):
 
 
 def p_liveness_property(p):
-    '''liveness_property : attribute equals property_details'''
+    '''liveness_property : EventuallyTerminates equals property_details'''
     p[0] = LivenessPropertyNode(p[1], p[3])
 
 
@@ -326,30 +335,56 @@ def p_property_details(p):
 
 
 #CURRENT WORKING SECTION~~~~~~~~~~~~~~~~~~~~~~
-#issue is due to loop_inavraint and action_formula_definition having the same definition
+
 def p_loop_invariant(p):
-    '''loop_invariant : attribute equals action_formula'''
+    '''loop_invariant : LoopInvariant equals action_formula'''
     p[0] = LoopInvariantNode(p[1], p[3])
 
 
 
+
+
+
+#termination hypothesis section
 def p_termination_hypothesis(p):
-    '''termination_hypothesis : attribute equals conditional_statements'''
+    '''termination_hypothesis : TerminationHypothesis equals conditional_statements'''
     p[0] = TerminationHypothesisNode(p[1], p[3])
 
 
 
 def p_conditional_statements(p):
-    '''if_statement : IF conditional_statement
-                    | THEN conditional_statement
-                    | ELSE conditional_statement'''
-    p[0] = ConditionalStatementNode(p[1], p[2])
+    '''conditional_statements : IF conditional_statement THEN conditional_statement ELSE conditional_statement'''
+    p[0] = ConditionalStatementInfoNode(p[1], p[2], p[3], p[4], p[5], p[6])
 
 
 
 def p_conditional_statement(p):
     '''conditional_statement : dot_access MODULUS NUMBER_LITERAL equals NUMBER_LITERAL
-                             | EVENTUALLY LEFT_PAREN dot_access equals NUMBER_LITERAL '''
+                             | EVENTUALLY LEFT_PAREN dot_access equals NUMBER_LITERAL AND dot_access equals NUMBER_LITERAL RIGHT_PAREN'''
+    if len(p) == 6:
+        p[0] = Conditional_IF_Node(p[1], p[2], p[3], p[4], p[5])
+    elif len(p) == 11:
+        p[0] = ConditionalStatementNode(p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10])
+
+
+
+
+
+
+#Spec section
+        
+def p_spec_definition(p):
+    '''spec_definition : SPEC equals AND function_conditions'''        
+    p[0] = SpecDefinitionNode(p[1], p[2], p[3], p[4])
+
+
+
+
+def p_theorem_definition(p):
+    '''theorem_definition : THEOREM SPEC IMPLIES AND function_conditions'''
+    p[0] = TheoremDefinitionNode(p[1], p[2], p[3], p[4], p[5])
+
+
 
 
 
@@ -388,6 +423,16 @@ class ModuleNode(ASTNode):
         self.name = name
         self.extends = extends
         self.declarations = declarations
+
+    def __str__(self):
+        extends_str = f", extends={self.extends}" if self.extends else ""
+        return f"ModuleNode(name={self.name}{extends_str}, declarations={self.declarations})"
+
+    
+
+
+
+
 
 class AttributeNode(ASTNode):
     def __init__(self, attribute_name):
@@ -667,11 +712,73 @@ class InvariantFormulaDetailsNode(ASTNode):
 
 
 class TerminationHypothesisNode(ASTNode):
-    def __init__(self, attribute, if_statement, then_statement, else_statement):
-        self.attribute = attribute
-        self.if_statement = if_statement
-        self.then_statement = then_statement
-        self.else_statement = else_statement
+    def __init__(self, operator, statement):
+        self.operator = operator
+        self.statement = statement
+
+
+
+
+
+
+class ConditionalStatementInfoNode(ASTNode):    #the condtional statement operator information
+    def __init__(self, IF, conditional_statement_if, THEN, conditional_statement_then, ELSE, conditional_statement_else):
+        self.IF = IF
+        self.conditional_statement_if = conditional_statement_if
+        self.THEN = THEN
+        self.conditional_statement_then = conditional_statement_then
+        self.ELSE = ELSE
+        self.conditional_statement_else = conditional_statement_else
+       
+        
+
+class Conditional_IF_Node(ASTNode):
+    def __init__(self, dot_access, MODULUS, NUMBER_LITERAL_1, equals, NUMBER_LITERAL_2):
+        self.dot_access = dot_access
+        self.MODULUS = MODULUS
+        self.NUMBER_LITERAL_1 = NUMBER_LITERAL_1
+        self.equals = equals
+        self.NUMBER_LITERAL_2 = NUMBER_LITERAL_2
+
+
+        
+
+class ConditionalStatementNode(ASTNode):     #the context of the conditional operator
+    def __init__(self, EVENTUALLY, LEFT_PAREN, dot_access_1, equals_1, NUMBER_LITERAL_1, AND, dot_access, equals, NUMBER_LITERAL, RIGHT_PAREN):
+        self.EVENTUALLY = EVENTUALLY
+        self.LEFT_PAREN = LEFT_PAREN
+        self.dot_access_1 = dot_access_1
+        self.equals_1 = equals_1
+        self.NUMBER_LITERAL_1 = NUMBER_LITERAL_1
+        self.AND = AND
+        self.dot_access = dot_access
+        self.equals = equals
+        self.NUMBER_LITERAL = NUMBER_LITERAL
+        self.RIGHT_PAREN = RIGHT_PAREN
+
+
+
+class SpecDefinitionNode(ASTNode):
+    def __init__(self, SPEC, equals, AND, function_conditions):
+        self.SPEC = SPEC
+        self.equals = equals
+        self.AND = AND
+        self.function_conditions = function_conditions
+
+
+
+class TheoremDefinitionNode(ASTNode):
+    def __init__(self, THEOREM, SPEC, IMPLIES, AND, function_conditions):
+        self.THEOREM = THEOREM
+        self.SPEC = SPEC
+        self.IMPLIES = IMPLIES
+        self.AND = AND
+        self.function_conditions = function_conditions
+
+
+
+
+
 
 
 
@@ -775,3 +882,5 @@ parser = yacc.yacc(debug=True)
 result = parser.parse(tla_code)
 print(result)
 print(parsed_data)
+module_node = ModuleNode("CoffeeCan", None, ["Variable can", "Constant MaxBeanCount"])
+print(module_node)

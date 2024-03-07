@@ -67,6 +67,12 @@ tokens = (
     'EVENTUALLY',
     'ENABLED',
     'EQUIVALENCE_OPERATOR',
+    'TerminationHypothesis',
+    'LoopInvariant',
+    'WEAK_FAIRNESS',
+    'THEOREM',
+    'IMPLIES',
+    'EventuallyTerminates',
     
     
 
@@ -98,6 +104,12 @@ reserved = {
     'ELSE' : 'ELSE',
     'EXCEPT' : 'EXCEPT',
     'ENABLED' : 'ENABLED',
+    'TerminationHypothesis' : 'TerminationHypothesis',
+    'LoopInvariant' : 'LoopInvariant',
+    'THEOREM' : 'THEOREM',
+    'EventuallyTerminates' : 'EventuallyTerminates',
+    
+    
    
     
 }
@@ -139,10 +151,14 @@ t_EXCLAMATION_MARK = r'\!'
 t_AT = r'\@'
 t_IN_A_SET = r'\\in'
 t_EQUIVALENCE_OPERATOR = r'\<=>'
+t_IMPLIES = r'\=>'
 
 
 
 
+def t_WEAK_FAIRNESS(t):
+    r'WF'
+    return t
 
 def t_ATTRIBUTE_MAY_CHANGE(t):
     r'\_[A-Za-z_][A-Za-z0-9_]*'   # Regex that identifies code like '_can' that notates execution of the system at every step where that attribute may change
