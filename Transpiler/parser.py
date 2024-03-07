@@ -90,6 +90,7 @@ def p_statement(p):
                    | next_state_relation
                    | action_formula_definition
                    | liveness_property
+                   | loop_invariant
                    | init'''
     p[0] = p[1]
 
@@ -293,7 +294,7 @@ def p_next_state_relation(p):
 
 def p_action_formula_definition(p): 
     '''action_formula_definition : attribute equals action_formula'''
-    p[0] = ActionFormulaDefinitionNode(p[1], p[3])
+    p[0] = FormulaDefinitionNode(p[1], p[3])
 
 
 def p_action_formula(p):
@@ -308,7 +309,7 @@ def p_formula_details(p):
     if len(p) == 4:
          p[0] = ActionFormulaDetailsNode(p[1], p[2], p[3])
     else:
-         p[0] = InvariantFormulaNode(p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11])
+         p[0] = InvariantFormulaDetailsNode(p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11])
 
 
 
@@ -325,19 +326,20 @@ def p_property_details(p):
 
 
 #CURRENT WORKING SECTION~~~~~~~~~~~~~~~~~~~~~~
-
+#issue is due to loop_inavraint and action_formula_definition having the same definition
 def p_loop_invariant(p):
     '''loop_invariant : attribute equals action_formula'''
     p[0] = LoopInvariantNode(p[1], p[3])
 
 
 
-def p_termination_hypothesis(p):
-    '''termination_hypothesis : attribute equals '''
+#def p_termination_hypothesis(p):
+ #   '''termination_hypothesis : attribute equals if_statement then_statement else_statement'''
+  #  p[0] = TerminationHypothesisNode(p[1], p[3], p[4], p[5])
 
 
 
-
+#def p_if_statement()
 
 
 
@@ -592,7 +594,7 @@ class NextStateRelationNode(ASTNode):
         
 
 
-class ActionFormulaDefinitionNode(ASTNode):
+class FormulaDefinitionNode(ASTNode):
     def __init__(self, attribute, action_formula):
         self.attribute = attribute
         self.action_formula = action_formula
@@ -640,7 +642,7 @@ class LoopInvariantNode(ASTNode):
         self.invariant_details = invariant_details
        
 
-class InvariantFormulaNode(ASTNode):
+class InvariantFormulaDetailsNode(ASTNode):
     def __init__(self, dot_access_1, MODULUS_1, expression_1, equals_1, NUMBER_LITERAL_1, EQUIVALENCE_OPERATOR, dot_access_2, MODULUS_2, expression_2, equals_2, NUMBER_LITERAL_2):
         self.dot_access_1 = dot_access_1
         self.MODULUS_1 = MODULUS_1
@@ -656,6 +658,12 @@ class InvariantFormulaNode(ASTNode):
 
 
 
+class TerminationHypothesisNode(ASTNode):
+    def __init__(self, attribute, if_statement, then_statement, else_statement):
+        self.attribute = attribute
+        self.if_statement = if_statement
+        self.then_statement = then_statement
+        self.else_statement = else_statement
 
 
 
