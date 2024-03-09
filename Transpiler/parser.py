@@ -732,6 +732,13 @@ class MultipleExceptClauseNode(ASTNode):
         self.number_2 = number_2
 
 
+
+
+    def __str__(self):
+        return f"MultipleExceptClauseNode = (first attribute = {self.attribute_1}, first exclamation mark = {self.exclamation_mark_1}, first dot = {self.dot_1}, second attribute = {self.attribute_2}, first AT = {self.at_1}, first operator = {self.operator_1}, first number = {self.number_1}, second exclamation mark = {self.exclamation_mark_2}, second dot = {self.dot_2}, third attribute = {self.attribute_3} second AT = {self.at_2} second operator = {self.operator_2} second number = {self.number_2})"
+
+
+
 class TerminationStatementNode(ASTNode):
     def __init__(self, attribute, AND, conditions):
         self.attribute = attribute
@@ -739,6 +746,8 @@ class TerminationStatementNode(ASTNode):
         self.conditions = conditions
         
 
+    def __str__(self):
+        return f"TerminationStatementNode = (attribute = {self.attribute}, AND = {self.AND}, conditions = {self.conditions})"
         
 
 
@@ -750,12 +759,19 @@ class NextStateRelationNode(ASTNode):
         
 
 
+    def __str__(self):
+        return f"NextStateRelationNode = (next declaration = {self.next_declaration}, OR = {self.OR}, conditions = {self.conditions})"
+
+
 class FormulaDefinitionNode(ASTNode):
     def __init__(self, attribute, action_formula):
         self.attribute = attribute
         self.action_formula = action_formula
         
-        
+
+
+    def __str__(self):
+        return f"FormulaDefinitionNode = (attribute = {self.attribute}, action formula = {self.action_formula})"    
 
 class ActionFormulaNode(ASTNode):
     def __init__(self, LEFT_SQR_BRACKET_1, RIGHT_SQR_BRACKET_1, LEFT_SQR_BRACKET_2, formula_details, RIGHT_SQR_BRACKET_2, ATTRIBUTE_MAY_CHANGE):
@@ -768,6 +784,10 @@ class ActionFormulaNode(ASTNode):
 
 
 
+    def __str__(self):
+        return f"ActionFormulaNode(left square bracket 1 = {self.LEFT_SQR_BRACKET_1}, right square bracket 1 = {self.RIGHT_SQR_BRACKET_1}, left square bracket 2 {self.LEFT_SQR_BRACKET_2}, formula details = {self.formula_details}, right square bracket 2 = {self.RIGHT_SQR_BRACKET_2}, attribute may change = {self.ATTRIBUTE_MAY_CHANGE})"
+
+
 class ActionFormulaDetailsNode(ASTNode):
     def __init__(self, NEXT_VALUE_OF_ATTRIBUTE, LESS_THAN, attribute):
         self.NEXT_VALUE_OF_ATTRIBUTE = NEXT_VALUE_OF_ATTRIBUTE
@@ -776,11 +796,21 @@ class ActionFormulaDetailsNode(ASTNode):
 
 
 
+    def __str__(self):
+        return f"ActionFormulaDetailsNode = (next value of attribute = {self.NEXT_VALUE_OF_ATTRIBUTE}, less than = {self.LESS_THAN}, attribute = {self.attribute})"
+
+
+
+
 class LivenessPropertyNode(ASTNode):
     def __init__(self, attribute, hypothesis_details):
         self.attribute = attribute
         self.hypothesis_details = hypothesis_details
-       
+
+
+
+    def __str__(self):
+        return f"LivenessPropertyNode = (attribute = {self.attribute}, hypothesis details = {self.hypothesis_details})"   
 
 
 
@@ -792,11 +822,21 @@ class PropertyDetailsNode(ASTNode):
         
 
 
+    def __str__(self):
+        return f"PropertyDetailsNode = (eventually = {self.eventually}, enabled = {self.enabled}, attribute = {self.attribute})"
+
+
+
 class LoopInvariantNode(ASTNode):
     def __init__(self, attribute, invariant_details):
         self.attribute = attribute
         self.invariant_details = invariant_details
-       
+
+
+
+    def __str__(self):
+        return f"LoopInvarantNode = (attribute = {self.attribute}, invariant details = {self.invariant_details})"
+
 
 class InvariantFormulaDetailsNode(ASTNode):
     def __init__(self, dot_access_1, MODULUS_1, expression_1, equals_1, NUMBER_LITERAL_1, EQUIVALENCE_OPERATOR, dot_access_2, MODULUS_2, expression_2, equals_2, NUMBER_LITERAL_2):
@@ -814,12 +854,21 @@ class InvariantFormulaDetailsNode(ASTNode):
 
 
 
+    def __str__(self):
+        return f"InvariantFormulaDetailsNode = (first dot access = {self.dot_access_1}, first modulus = {self.MODULUS_1}, first expression = {self.expression_1}, first equals = {self.equals_1}, first number literal = {self.NUMBER_LITERAL_1}, equivalece operator = {self.EQUIVALENCE_OPERATOR}, second dot access = {self.dot_access_2}, second modulus = {self.MODULUS_2}, second expression = {self.expression_2}, second equals = {self.equals_2}, second number literal = {self.NUMBER_LITERAL_2})"
+
+
+
+
 class TerminationHypothesisNode(ASTNode):
     def __init__(self, operator, statement):
         self.operator = operator
         self.statement = statement
 
 
+
+    def __str__(self):
+        return f"TerminationHypothesisNode = (operator = {self.operator}, statement = {self.statement})"
 
 
 
@@ -835,6 +884,12 @@ class ConditionalStatementInfoNode(ASTNode):    #the condtional statement operat
        
         
 
+
+    def __str__(self):
+        return f"ConditionalStatementInfoNode = (If = {self.IF}, if conditional statement = {self.conditional_statement_if}, then = {self.THEN}, then conditional statement = {self.conditional_statement_then}, else = {self.ELSE}, else conditional statement = {self.conditional_statement_else})"
+
+
+
 class Conditional_IF_Node(ASTNode):
     def __init__(self, dot_access, MODULUS, NUMBER_LITERAL_1, equals, NUMBER_LITERAL_2):
         self.dot_access = dot_access
@@ -843,6 +898,10 @@ class Conditional_IF_Node(ASTNode):
         self.equals = equals
         self.NUMBER_LITERAL_2 = NUMBER_LITERAL_2
 
+
+
+    def __str__(self):
+        return f"Conditional_IF_Node = (dot access = {self.dot_access}, modulus = {self.MODULUS}, first number literal = {self.NUMBER_LITERAL_1}, equals = {self.equals}, second number literal = {self.NUMBER_LITERAL_2})"
 
         
 
@@ -861,12 +920,21 @@ class ConditionalStatementNode(ASTNode):     #the context of the conditional ope
 
 
 
+    def __str__(self):
+        return f"ConditionalStatementNode = (eventually = {self.EVENTUALLY}, left parenthesis = {self.LEFT_PAREN}, first dot access = {self.dot_access_1}, first equals = {self.equals_1}, first number literal = {self.NUMBER_LITERAL_1}, and = {self.AND}, second dot access = {self.dot_access}, second equals = {self.equals}, second number literal = {self.NUMBER_LITERAL}, right parenthesis = {self.RIGHT_PAREN})"
+
+
 class SpecDefinitionNode(ASTNode):
     def __init__(self, SPEC, equals, AND, function_conditions):
         self.SPEC = SPEC
         self.equals = equals
         self.AND = AND
         self.function_conditions = function_conditions
+
+
+
+    def __str__(self):
+        return f"SpecDefinitionNode = (spec = {self.SPEC}, equals = {self.equals}, and = {self.AND}, function conditions = {self.function_conditions})"
 
 
 
@@ -879,6 +947,9 @@ class TheoremDefinitionNode(ASTNode):
         self.function_conditions = function_conditions
 
 
+
+    def __str__(self):
+        return f"TheoremDefinitionNode = (theorem = {self.THEOREM}, spec = {self.SPEC}, implies = {self.IMPLIES}, and = {self.AND}, function conditions = {self.function_conditions})"
 
 
 
@@ -986,4 +1057,4 @@ result = parser.parse(tla_code)
 print(result)
 print(parsed_data)
 module_node = ModuleNode("CoffeeCan", None, ["Variable can", "Constant MaxBeanCount"])
-print(module_node)
+print(ModuleNode)
