@@ -30,9 +30,9 @@ def p_module(p):
     '''module : MODULE_WRAPPER MODULE attribute MODULE_WRAPPER extends statements
               | MODULE_WRAPPER MODULE attribute MODULE_WRAPPER statements'''
     if len(p) == 7:
-        p[0] = ModuleNode(name=p[3], extends=p[5], declarations=p[6])
+        p[0] = ModuleNode(name=p[3], extends=p[5], statements=p[6])
     else:
-        p[0] = ModuleNode(name=p[3], extends=None, declarations=p[5])
+        p[0] = ModuleNode(name=p[3], extends=None, statements=p[5])
 
 
 def p_attribute(p):
@@ -62,7 +62,7 @@ def p_names(p):
        
         
 
-#This section deals with the parsing of various declarations, this includes keywords, variables, constants etc
+#This section deals with the parsing of various statements, this includes keywords, variables, constants etc
 
 def p_statements(p):
     '''statements : statements statement
@@ -75,7 +75,7 @@ def p_statements(p):
 
 
    
-# Define rules for `statement`, `variable_declaration`, `constants_declaration`, etc.
+# Define rules for `variable_statement`, `constants_statement`, etc.
 
 
 def p_statement(p):
@@ -295,6 +295,7 @@ def p_termination_statement(p):
 
 
 
+
 def p_next_state_relation(p):
     '''next_state_relation : attribute equals OR function_conditions'''
     p[0] = NextStateRelationNode(p[1], p[3], p[4])
@@ -419,14 +420,15 @@ class ASTNode:     #AST classes
     pass
 
 class ModuleNode(ASTNode):
-    def __init__(self, name, extends, declarations):
+    def __init__(self, name, extends, statements):
         self.name = name
         self.extends = extends
-        self.declarations = declarations
+        self.statements = statements
 
     def __str__(self):
         extends_string = f", extends={self.extends}" if self.extends else ""
-        return f"ModuleNode(name={self.name}{extends_string}, declarations={self.declarations})"
+        statements_str = ', '.join(str(statement) for statement in self.statements)
+        return f"ModuleNode(name={self.name}{extends_string}, declarations=[{statements_str}])"
 
     
 
@@ -437,7 +439,7 @@ class AttributeNode(ASTNode):
         
     def __str__(self):
         attribute_name_string = f", attribute name ={self.attribute_name}" if self.attribute_name else ""
-        return f"AttributeNode(name={attribute_name_string})"
+        return f"AttributeNode(name={str(attribute_name_string)})"
 
 
 
@@ -447,8 +449,7 @@ class AttributeDotAccessNode(ASTNode):
         self.attribute_after_dot = attribute_after_dot
 
     def __str__(self):
-        dot_access_string = f", attribute before dot ={self.attribute_before_dot}, attribute after dot {self.attribute_after_dot}" if self.attribute_before_dot and self.attribute_after_dot else ""
-        return f"AttributeDotAccessNode(attribute before dot = {self.attribute_before_dot}, attribute after dot = {self.attribute_after_dot})"
+        return f"AttributeDotAccessNode(attribute before dot = {str(self.attribute_before_dot)}, attribute after dot = {str(self.attribute_after_dot)}"
 
 
 
@@ -459,7 +460,7 @@ class ExtendsNode(ASTNode):
 
     def __str__(self):
         extended_class_string = f", extends={self.extended_modules}" if self.extended_modules else ""
-        return f"ExtendsNode = (extended modules = {extended_class_string})"
+        return f"ExtendsNode = (extended modules = {str(extended_class_string)}"
     
 
 
@@ -469,7 +470,7 @@ class ConstantsNode(ASTNode):
 
     def __str__(self):
         constants_string = f", constants={self.constants}" if self.constants else ""
-        return f"ConstantsNode = (constants = {constants_string})"
+        return f"ConstantsNode = (constants = {str(constants_string)}"
 
 class VariablesNode(ASTNode):
     def __init__(self, variables):
@@ -477,7 +478,7 @@ class VariablesNode(ASTNode):
 
     def __str__(self):
         variables_string = f", constants={self.variables}" if self.variables else ""
-        return f"VariablesNode = (variables = {variables_string})"
+        return f"VariablesNode = (variables = {str(variables_string)}"
     
 
 class AssumeNode(ASTNode):
@@ -486,7 +487,7 @@ class AssumeNode(ASTNode):
        self.expression_2 = expression_2
 
     def __str__(self):
-        return f"AssumeNode = (first expression = {self.expression_1}, second expression = {self.expression_2})"
+        return f"AssumeNode = (first expression = {str(self.expression_1)}, second expression = {str(self.expression_2)})"
        
 
 
@@ -498,7 +499,7 @@ class ComparisonNode(ASTNode):
 
 
     def __str__(self):
-        return f"ComparisonNode = (left side of operator = {self.left}, operator = {self.operator}, right side of operator = {self.right})"    
+        return f"ComparisonNode = (left side of operator = {str(self.left)}, operator = {str(self.operator)}, right side of operator = {str(self.right)})"    
 
 
 class SetIndividualInfoNode(ASTNode):
@@ -508,7 +509,7 @@ class SetIndividualInfoNode(ASTNode):
 
 
     def __str__(self):
-        return f"SetIndividualInfoNode = (attribute = {self.attribute}, scope = {self.scope})"
+        return f"SetIndividualInfoNode = (attribute = {str(self.attribute)}, scope = {str(self.scope)})"
     
 class SetScopeNode(ASTNode):
     def __init__(self,start_value,end_value):
@@ -517,7 +518,7 @@ class SetScopeNode(ASTNode):
     
 
     def __str__(self):
-        return f"SetScopeNode = (start value = {self.start_value}, end value + {self.end_value})"
+        return f"SetScopeNode = (start value = {str(self.start_value)}, end value + {str(self.end_value)})"
 
 
 
@@ -528,7 +529,7 @@ class SetDefinitionNode(ASTNode):
 
 
     def __str__(self):
-        return f"SetDefinitionNode = (set attribute = {self.set_attribute}, set of records = {self.set_of_records})"
+        return f"SetDefinitionNode = (set attribute = {str(self.set_attribute)}, set of records = {str(self.set_of_records)})"
 
 
 class TypeInvariantNode(ASTNode):
@@ -539,7 +540,7 @@ class TypeInvariantNode(ASTNode):
        
 
     def __str__(self):
-        return f"TypeInvariantNode = (name = {self.name}, equals type = {self.equals_type}, expression = {self.expression})"
+        return f"TypeInvariantNode = (name = {str(self.name)}, equals type = {str(self.equals_type)}, expression = {str(self.expression)})"
 
 
 
@@ -551,7 +552,7 @@ class TypeInvariantExpressionNode(ASTNode):
 
 
     def __str__(self):
-        return f"TypeInvariantExpressionNode = (first attribute = {self.attribute1}, in a set value = {self.in_a_set_value}, second attribute = {self.attribute2})"
+        return f"TypeInvariantExpressionNode = (first attribute = {str(self.attribute1)}, in a set value = {str(self.in_a_set_value)}, second attribute = {str(self.attribute2)})"
 
 
 
@@ -562,7 +563,7 @@ class InitNode(ASTNode):
 
 
     def __str__(self):
-        return f"InitNode = (init = {self.init}, init set = {self.init_set})"
+        return f"InitNode = (init = {str(self.init)}, init set = {str(self.init_set)})"
 
 
 
@@ -574,7 +575,7 @@ class InitSetStatementNode(ASTNode):
 
 
     def __str__(self):
-        return f"InitSetStatementNode = (first attribute = {self.attribute1}, attribute 2 = {self.attribute2}, order = {self.order})"
+        return f"InitSetStatementNode = (first attribute = {str(self.attribute1)}, attribute 2 = {str(self.attribute2)}, order = {str(self.order)})"
 
 
 class PlusNode(ASTNode):
@@ -584,7 +585,7 @@ class PlusNode(ASTNode):
 
 
     def __str__(self):
-        return f"PlusNode = (left attribute = {self.attribute_1_left}, right attribute = {self.attribute_2_right})"
+        return f"PlusNode = (left attribute = {str(self.attribute_1_left)}, right attribute = {str(self.attribute_2_right)})"
 
 
 class SetValueNode(ASTNode):
@@ -594,7 +595,7 @@ class SetValueNode(ASTNode):
 
         
     def __str__(self):
-        return f"SetValueNode = (addition result = {self.addition_result}, range of values = {self.range_of_values})"
+        return f"SetValueNode = (addition result = {str(self.addition_result)}, range of values = {str(self.range_of_values)})"
 
 
 class AdditionResultNode(ASTNode):
@@ -605,7 +606,7 @@ class AdditionResultNode(ASTNode):
 
 
     def __str__(self):
-        return f"AdditionResultNoe = (left value = {self.left_value}, right value = {self.right_value})"
+        return f"AdditionResultNoe = (left value = {str(self.left_value)}, right value = {str(self.right_value)})"
 
 
 
@@ -617,7 +618,7 @@ class InitSetRangeOfValuesNode(ASTNode):
 
 
     def __str__(self):
-        return f"InitSetRangeOfValuesNode = (start of range = {self.start_of_range}, end of range = {self.end_of_range})"
+        return f"InitSetRangeOfValuesNode = (start of range = {str(self.start_of_range)}, end of range = {str(self.end_of_range)})"
 
 
 class BeanValueCountNode(ASTNode):
@@ -627,7 +628,7 @@ class BeanValueCountNode(ASTNode):
 
 
     def __str__(self):
-        return f"BeanValueCountNode = (attribute = {self.attribute}, bean equation = {self.bean_equation})"
+        return f"BeanValueCountNode = (attribute = {str(self.attribute)}, bean equation = {str(self.bean_equation)})"
 
 
 
@@ -640,7 +641,8 @@ class FunctionDeclarationNode(ASTNode):
 
 
     def __str__(self):
-        return f"FunctionDeclarationNode = (attribute = {self.attribute}, and ={self.AND}, conditions = {self.conditions}, except section = {self.except_section})"
+        conditions_str = ',\n    '.join(str(condition) for condition in self.conditions)
+        return f"FunctionDeclarationNode = (attribute = {str(self.attribute)}, and ={str(self.AND)}, conditions = [\n{conditions_str}\n], except section = {str(self.except_section)})"
 
 
 class FunctionConditionNoDotNode(ASTNode):
@@ -651,7 +653,7 @@ class FunctionConditionNoDotNode(ASTNode):
 
 
     def __str__(self):
-        return f"FunctionConditionNoDotNode = (attribute = {self.attribute}, comparison rule = {self.comparison_rule}, number = {self.number})"
+        return f"FunctionConditionNoDotNode = (attribute = {str(self.attribute)}, comparison rule = {str(self.comparison_rule)}, number = {str(self.number)})"
 
 
 class FunctionUNCHANGEDNode(ASTNode):
@@ -661,7 +663,7 @@ class FunctionUNCHANGEDNode(ASTNode):
         
 
     def __str__(self):
-        return f"FunctionUNCHANGEDNode = (unchanged = {self.unchanged}, attribute = {self.attribute})"
+        return f"FunctionUNCHANGEDNode = (unchanged = {str(self.unchanged)}, attribute = {str(self.attribute)})"
 
 
 class FunctionNameNode(ASTNode):
@@ -670,7 +672,7 @@ class FunctionNameNode(ASTNode):
         
 
     def __str__(self):
-        return f"FunctionNameNode = (name = {self.name})"
+        return f"FunctionNameNode = (name = {str(self.name)})"
 
 class FunctionConditionDotNode(ASTNode):
     def __init__(self, attribute_before_dot, dot, attribute_after_dot, comparison_rule, number):
@@ -683,7 +685,7 @@ class FunctionConditionDotNode(ASTNode):
 
 
     def __str__(self):
-        return f"FunctionConditionDotNode = (attribute before dot = {self.attribute_before_dot}, dot = {self.dot}, attribute after dot = {self.attribute_after_dot}, comparison rule = {self.comparison_rule}, number = {self.number})"
+        return f"FunctionConditionDotNode = (attribute before dot = {str(self.attribute_before_dot)}, dot = {str(self.dot)}, attribute after dot = {str(self.attribute_after_dot)}, comparison rule = {str(self.comparison_rule)}, number = {str(self.number)})"
 
 
 
@@ -696,7 +698,7 @@ class ExceptSectionNode(ASTNode):
 
 
     def __str__(self):
-        return f"ExceptSectionNode = (next value attribute = {self.next_value_attribute}, equals = {self.equals}, except node = {self.except_node})"
+        return f"ExceptSectionNode = (next value attribute = {str(self.next_value_attribute)}, equals = {str(self.equals)}, except node = {str(self.except_node)})"
 
 
 class ExceptClauseNode(ASTNode):
@@ -712,7 +714,7 @@ class ExceptClauseNode(ASTNode):
 
 
     def __str__(self):
-        return f"ExceptClauseNode = (first attribute = {self.attribute_1}, exclamation mark = {self.exclamation_mark}, dot = {self.dot}, second attribute = {self.attribute_2}, at = {self.at},)"
+        return f"ExceptClauseNode = (first attribute = {str(self.attribute_1)}, exclamation mark = {str(self.exclamation_mark)}, dot = {str(self.dot)}, second attribute = {str(self.attribute_2)}, at = {str(self.at)},)"
 
 
 class MultipleExceptClauseNode(ASTNode):
@@ -735,7 +737,7 @@ class MultipleExceptClauseNode(ASTNode):
 
 
     def __str__(self):
-        return f"MultipleExceptClauseNode = (first attribute = {self.attribute_1}, first exclamation mark = {self.exclamation_mark_1}, first dot = {self.dot_1}, second attribute = {self.attribute_2}, first AT = {self.at_1}, first operator = {self.operator_1}, first number = {self.number_1}, second exclamation mark = {self.exclamation_mark_2}, second dot = {self.dot_2}, third attribute = {self.attribute_3} second AT = {self.at_2} second operator = {self.operator_2} second number = {self.number_2})"
+        return f"MultipleExceptClauseNode = (first attribute = {str(self.attribute_1)}, first exclamation mark = {str(self.exclamation_mark_1)}, first dot = {str(self.dot_1)}, second attribute = {str(self.attribute_2)}, first AT = {str(self.at_1)}, first operator = {str(self.operator_1)}, first number = {str(self.number_1)}, second exclamation mark = {str(self.exclamation_mark_2)}, second dot = {str(self.dot_2)}, third attribute = {str(self.attribute_3)} second AT = {str(self.at_2)} second operator = {str(self.operator_2)} second number = {str(self.number_2)})"
 
 
 
@@ -747,7 +749,7 @@ class TerminationStatementNode(ASTNode):
         
 
     def __str__(self):
-        return f"TerminationStatementNode = (attribute = {self.attribute}, AND = {self.AND}, conditions = {self.conditions})"
+        return f"TerminationStatementNode = (attribute = {str(self.attribute)}, AND = {str(self.AND)}, conditions = {str(self.conditions)})"
         
 
 
@@ -760,7 +762,7 @@ class NextStateRelationNode(ASTNode):
 
 
     def __str__(self):
-        return f"NextStateRelationNode = (next declaration = {self.next_declaration}, OR = {self.OR}, conditions = {self.conditions})"
+        return f"NextStateRelationNode = (next declaration = {str(self.next_declaration)}, OR = {str(self.OR)}, conditions = {str(self.conditions)})"
 
 
 class FormulaDefinitionNode(ASTNode):
@@ -771,7 +773,7 @@ class FormulaDefinitionNode(ASTNode):
 
 
     def __str__(self):
-        return f"FormulaDefinitionNode = (attribute = {self.attribute}, action formula = {self.action_formula})"    
+        return f"FormulaDefinitionNode = (attribute = {str(self.attribute)}, action formula = {str(self.action_formula)})"    
 
 class ActionFormulaNode(ASTNode):
     def __init__(self, LEFT_SQR_BRACKET_1, RIGHT_SQR_BRACKET_1, LEFT_SQR_BRACKET_2, formula_details, RIGHT_SQR_BRACKET_2, ATTRIBUTE_MAY_CHANGE):
@@ -785,7 +787,7 @@ class ActionFormulaNode(ASTNode):
 
 
     def __str__(self):
-        return f"ActionFormulaNode(left square bracket 1 = {self.LEFT_SQR_BRACKET_1}, right square bracket 1 = {self.RIGHT_SQR_BRACKET_1}, left square bracket 2 {self.LEFT_SQR_BRACKET_2}, formula details = {self.formula_details}, right square bracket 2 = {self.RIGHT_SQR_BRACKET_2}, attribute may change = {self.ATTRIBUTE_MAY_CHANGE})"
+        return f"ActionFormulaNode(left square bracket 1 = {str(self.LEFT_SQR_BRACKET_1)}, right square bracket 1 = {str(self.RIGHT_SQR_BRACKET_1)}, left square bracket 2 {str(self.LEFT_SQR_BRACKET_2)}, formula details = {str(self.formula_details)}, right square bracket 2 = {str(self.RIGHT_SQR_BRACKET_2)}, attribute may change = {str(self.ATTRIBUTE_MAY_CHANGE)})"
 
 
 class ActionFormulaDetailsNode(ASTNode):
@@ -797,7 +799,7 @@ class ActionFormulaDetailsNode(ASTNode):
 
 
     def __str__(self):
-        return f"ActionFormulaDetailsNode = (next value of attribute = {self.NEXT_VALUE_OF_ATTRIBUTE}, less than = {self.LESS_THAN}, attribute = {self.attribute})"
+        return f"ActionFormulaDetailsNode = (next value of attribute = {str(self.NEXT_VALUE_OF_ATTRIBUTE)}, less than = {str(self.LESS_THAN)}, attribute = {str(self.attribute)})"
 
 
 
@@ -810,7 +812,7 @@ class LivenessPropertyNode(ASTNode):
 
 
     def __str__(self):
-        return f"LivenessPropertyNode = (attribute = {self.attribute}, hypothesis details = {self.hypothesis_details})"   
+        return f"LivenessPropertyNode = (attribute = {str(self.attribute)}, hypothesis details = {str(self.hypothesis_details)})"   
 
 
 
@@ -823,7 +825,7 @@ class PropertyDetailsNode(ASTNode):
 
 
     def __str__(self):
-        return f"PropertyDetailsNode = (eventually = {self.eventually}, enabled = {self.enabled}, attribute = {self.attribute})"
+        return f"PropertyDetailsNode = (eventually = {str(self.eventually)}, enabled = {str(self.enabled)}, attribute = {str(self.attribute)})"
 
 
 
@@ -835,7 +837,7 @@ class LoopInvariantNode(ASTNode):
 
 
     def __str__(self):
-        return f"LoopInvarantNode = (attribute = {self.attribute}, invariant details = {self.invariant_details})"
+        return f"LoopInvarantNode = (attribute = {str(self.attribute)}, invariant details = {str(self.invariant_details)})"
 
 
 class InvariantFormulaDetailsNode(ASTNode):
@@ -855,7 +857,7 @@ class InvariantFormulaDetailsNode(ASTNode):
 
 
     def __str__(self):
-        return f"InvariantFormulaDetailsNode = (first dot access = {self.dot_access_1}, first modulus = {self.MODULUS_1}, first expression = {self.expression_1}, first equals = {self.equals_1}, first number literal = {self.NUMBER_LITERAL_1}, equivalece operator = {self.EQUIVALENCE_OPERATOR}, second dot access = {self.dot_access_2}, second modulus = {self.MODULUS_2}, second expression = {self.expression_2}, second equals = {self.equals_2}, second number literal = {self.NUMBER_LITERAL_2})"
+        return f"InvariantFormulaDetailsNode = (first dot access = {str(self.dot_access_1)}, first modulus = {str(self.MODULUS_1)}, first expression = {str(self.expression_1)}, first equals = {str(self.equals_1)}, first number literal = {str(self.NUMBER_LITERAL_1)}, equivalece operator = {str(self.EQUIVALENCE_OPERATOR)}, second dot access = {str(self.dot_access_2)}, second modulus = {str(self.MODULUS_2)}, second expression = {str(self.expression_2)}, second equals = {str(self.equals_2)}, second number literal = {str(self.NUMBER_LITERAL_2)})"
 
 
 
@@ -868,7 +870,7 @@ class TerminationHypothesisNode(ASTNode):
 
 
     def __str__(self):
-        return f"TerminationHypothesisNode = (operator = {self.operator}, statement = {self.statement})"
+        return f"TerminationHypothesisNode = (operator = {str(self.operator)}, statement = {str(self.statement)})"
 
 
 
@@ -886,7 +888,7 @@ class ConditionalStatementInfoNode(ASTNode):    #the condtional statement operat
 
 
     def __str__(self):
-        return f"ConditionalStatementInfoNode = (If = {self.IF}, if conditional statement = {self.conditional_statement_if}, then = {self.THEN}, then conditional statement = {self.conditional_statement_then}, else = {self.ELSE}, else conditional statement = {self.conditional_statement_else})"
+        return f"ConditionalStatementInfoNode = (If = {str(self.IF)}, if conditional statement = {str(self.conditional_statement_if)}, then = {str(self.THEN)}, then conditional statement = {str(self.conditional_statement_then)}, else = {str(self.ELSE)}, else conditional statement = {str(self.conditional_statement_else)})"
 
 
 
@@ -901,7 +903,7 @@ class Conditional_IF_Node(ASTNode):
 
 
     def __str__(self):
-        return f"Conditional_IF_Node = (dot access = {self.dot_access}, modulus = {self.MODULUS}, first number literal = {self.NUMBER_LITERAL_1}, equals = {self.equals}, second number literal = {self.NUMBER_LITERAL_2})"
+        return f"Conditional_IF_Node = (dot access = {str(self.dot_access)}, modulus = {str(self.MODULUS)}, first number literal = {str(self.NUMBER_LITERAL_1)}, equals = {str(self.equals)}, second number literal = {str(self.NUMBER_LITERAL_2)})"
 
         
 
@@ -921,7 +923,7 @@ class ConditionalStatementNode(ASTNode):     #the context of the conditional ope
 
 
     def __str__(self):
-        return f"ConditionalStatementNode = (eventually = {self.EVENTUALLY}, left parenthesis = {self.LEFT_PAREN}, first dot access = {self.dot_access_1}, first equals = {self.equals_1}, first number literal = {self.NUMBER_LITERAL_1}, and = {self.AND}, second dot access = {self.dot_access}, second equals = {self.equals}, second number literal = {self.NUMBER_LITERAL}, right parenthesis = {self.RIGHT_PAREN})"
+        return f"ConditionalStatementNode = (eventually = {str(self.EVENTUALLY)}, left parenthesis = {str(self.LEFT_PAREN)}, first dot access = {str(self.dot_access_1)}, first equals = {str(self.equals_1)}, first number literal = {str(self.NUMBER_LITERAL_1)}, and = {str(self.AND)}, second dot access = {str(self.dot_access)}, second equals = {str(self.equals)}, second number literal = {str(self.NUMBER_LITERAL)}, right parenthesis = {str(self.RIGHT_PAREN)})"
 
 
 class SpecDefinitionNode(ASTNode):
@@ -934,7 +936,7 @@ class SpecDefinitionNode(ASTNode):
 
 
     def __str__(self):
-        return f"SpecDefinitionNode = (spec = {self.SPEC}, equals = {self.equals}, and = {self.AND}, function conditions = {self.function_conditions})"
+        return f"SpecDefinitionNode = (spec = {str(self.SPEC)}, equals = {str(self.equals)}, and = {str(self.AND)}, function conditions = {str(self.function_conditions)})"
 
 
 
@@ -949,7 +951,7 @@ class TheoremDefinitionNode(ASTNode):
 
 
     def __str__(self):
-        return f"TheoremDefinitionNode = (theorem = {self.THEOREM}, spec = {self.SPEC}, implies = {self.IMPLIES}, and = {self.AND}, function conditions = {self.function_conditions})"
+        return f"TheoremDefinitionNode = (theorem = {str(self.THEOREM)}, spec = {str(self.SPEC)}, implies = {str(self.IMPLIES)}, and = {str(self.AND)}, function conditions = {str(self.function_conditions)})"
 
 
 
@@ -983,6 +985,10 @@ class IdentifierNode(ASTNode):
 class NumberNode(ASTNode):
     def __init__(self, value):
         self.value = value
+    
+    def __str__(self):
+        return f"NumberNode = (value = {str(self.value)})"
+
 
 
 
@@ -1056,5 +1062,6 @@ parser = yacc.yacc(debug=True)
 result = parser.parse(tla_code)
 print(result)
 print(parsed_data)
-module_node = ModuleNode("CoffeeCan", None, ["Variable can", "Constant MaxBeanCount"])
+
+#module_node = ModuleNode("CoffeeCan", None, ["Variable can", "Constant MaxBeanCount"])
 print(ModuleNode)
