@@ -30,7 +30,7 @@ def p_module(p):
     '''module : MODULE_WRAPPER MODULE attribute MODULE_WRAPPER extends statements
               | MODULE_WRAPPER MODULE attribute MODULE_WRAPPER statements'''
     if len(p) == 7:
-        p[0] = ModuleNode(name=p[3], extends=p[5], statements=p[6])
+        p[0] = ModuleNode(p[3], extends=p[5], statements=p[6])
     else:
         p[0] = ModuleNode(name=p[3], extends=None, statements=p[5])
 
@@ -231,7 +231,7 @@ def p_bean_equation(p):
 
 
 
-
+############## simplify or fix this function section, causing issues#######################
 
 
 
