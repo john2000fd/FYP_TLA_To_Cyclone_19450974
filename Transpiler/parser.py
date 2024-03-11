@@ -109,8 +109,8 @@ def p_variables_statement(p):
 
 
 def p_assume_statement(p):
-    '''assume_statement : ASSUME expression AND expression'''
-    p[0] = AssumeNode(p[2], p[4])
+    '''assume_statement : ASSUME attribute IN_A_SET Nat AND attribute GREATER_OR_EQ NUMBER_LITERAL'''
+    p[0] = AssumeNode(p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8])
 
 
 
@@ -167,7 +167,7 @@ def p_equals(p):
 
 def p_set_definition(p):
     '''set_definition : attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET'''
-    p[0] = SetDefinitionNode(p[1], p[3])
+    p[0] = SetDefinitionNode(p[1], p[2], p[4])
 
 
 
@@ -197,18 +197,18 @@ def p_type_invariant(p):
 
 def p_init(p):
     '''init : INIT equals attribute IN_A_SET init_set_statement'''
-    p[0] = InitNode(p[1], p[5])
+    p[0] = InitNode(p[1], p[2], p[3], p[4], p[5])
 
 
 def p_init_set_statement(p):
     '''init_set_statement : LEFT_BRACE attribute IN_A_SET attribute COLON order'''
-    p[0] = InitSetStatementNode(p[2], p[4], p[6])
+    p[0] = InitSetStatementNode(p[2], p[3], p[4], p[5], p[6])
 
 
 def p_order(p):
     '''order : dot_access PLUS dot_access IN_A_SET range_of_values'''
-    addition_result = PlusNode(p[1], p[3])
-    p[0] = SetValueNode(addition_result, p[5])
+    #addition_result = PlusNode(p[1], p[3])
+    p[0] = SetValueNode(p[1], p[2], p[3], p[4], p[5])
 
 
 def p_range_of_values(p):
@@ -237,8 +237,23 @@ def p_bean_equation(p):
 
 #Rule handling all of our funcions in TLA, for example for this: picking two black beans, removing them, then replacing with one black bean
 def p_function_declaration(p):
-    '''function_declaration : attribute equals AND function_conditions except_section'''
-    p[0] = FunctionDeclarationNode(p[1], p[3], p[4], p[5])
+    '''function_declaration : attribute equals AND function_info AND function_info except_section
+                            | attribute equals AND function_info AND function_info AND function_info except_section'''
+    if len(p) == 8:
+        p[0] = FunctionDeclarationNode_1(p[1], p[2], p[3], p[4], p[5], p[6], p[7])
+    else:
+        p[0] = FunctionDeclarationNode_2(p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9])    
+
+
+
+def p_function_info(p):
+    '''function_info : attribute DOT attribute comparison_rule NUMBER_LITERAL
+                     | attribute comparison_rule NUMBER_LITERAL'''
+    if len(p) == 6:
+        p[0] = FunctionInfoNode(attribute_1 = p[1], dot = p[2], attribute_2 = p[3], comparison_rule = p[4], number = p[5])
+    else:
+        p[0] = FunctionInfoNode(attribute_1 = p[1], dot = None, attribute_2 = None, comparison_rule = p[2], number = p[3])   
+
 
 
 def p_function_conditions(p):
@@ -469,25 +484,31 @@ class ConstantsNode(ASTNode):
         self.constants = constants  # List of constant names
 
     def __str__(self):
-        constants_string = f", constants={self.constants}" if self.constants else ""
-        return f"ConstantsNode = (constants = {str(constants_string)}"
+        
+        return f"ConstantsNode = (constants = {str(self.constants)}"
 
 class VariablesNode(ASTNode):
     def __init__(self, variables):
         self.variables = variables  # List of variable names
 
     def __str__(self):
-        variables_string = f", constants={self.variables}" if self.variables else ""
-        return f"VariablesNode = (variables = {str(variables_string)}"
+        return f"VariablesNode = (variables = {str(self.variables)}"
     
 
 class AssumeNode(ASTNode):
-    def __init__(self, expression_1, expression_2):
-       self.expression_1 = expression_1
-       self.expression_2 = expression_2
+    def __init__(self, ASSUME, attribute_1, IN_A_SET, Nat, AND, attribute_2, GREATER_OR_EQ, NUMBER_LITERAL):
+       self.ASSUME = ASSUME
+       self.attribute_1 = attribute_1
+       self.IN_A_SET = IN_A_SET
+       self.Nat =  Nat
+       self.AND = AND
+       self.attribute_2 = attribute_2
+       self.GREATER_OR_EQ = GREATER_OR_EQ
+       self.NUMBER_LITERAL = NUMBER_LITERAL
+       
 
     def __str__(self):
-        return f"AssumeNode = (first expression = {str(self.expression_1)}, second expression = {str(self.expression_2)})"
+        return f"AssumeNode = (Assume = {str(self.ASSUME)}, first attribute = {str(self.attribute_1)}, in a set operator = {str(self.IN_A_SET)}, naturals = {str(self.Nat)}, And = {str(self.AND)}, second attribute = {str(self.attribute_2)}, greater or equal = {str(self.GREATER_OR_EQ)}, number = {str(self.NUMBER_LITERAL)})"
        
 
 
@@ -518,18 +539,20 @@ class SetScopeNode(ASTNode):
     
 
     def __str__(self):
-        return f"SetScopeNode = (start value = {str(self.start_value)}, end value + {str(self.end_value)})"
+        return f"SetScopeNode = (start value =  {str(self.start_value)}, end value =  {str(self.end_value)})"
 
 
 
 class SetDefinitionNode(ASTNode):
-    def __init__(self, set_attribute, set_of_records):
-        self.set_attribute = set_attribute
-        self.set_of_records = set_of_records   
+    def __init__(self, attribute, equals, set_info, ):
+        self.attribute = attribute
+        self.equals = equals
+        self.set_info = set_info
 
 
     def __str__(self):
-        return f"SetDefinitionNode = (set attribute = {str(self.set_attribute)}, set of records = {str(self.set_of_records)})"
+        set_info_str = ', '.join([str(info) for info in self.set_info])
+        return f"SetDefinitionNode = (set attribute = {str(self.attribute)}, equals = {str(self.equals)}, set of records = {str(set_info_str)})"
 
 
 class TypeInvariantNode(ASTNode):
@@ -557,25 +580,30 @@ class TypeInvariantExpressionNode(ASTNode):
 
 
 class InitNode(ASTNode):
-    def __init__(self, init, init_set):
+    def __init__(self, init, equals, attribute, IN_A_SET, init_set_statement):
         self.init = init
-        self.init_set = init_set  # List of conditions in the initial state
+        self.equals = equals
+        self.attribute = attribute
+        self.IN_A_SET = IN_A_SET
+        self.init_set = init_set_statement  # List of conditions in the initial state
 
 
     def __str__(self):
-        return f"InitNode = (init = {str(self.init)}, init set = {str(self.init_set)})"
+        return f"InitNode = (init = {str(self.init)}, equals = {str(self.equals)}, attribute = {str(self.attribute)}, in a set operator = {str(self.IN_A_SET)}, init set = {str(self.init_set)})"
 
 
 
 class InitSetStatementNode(ASTNode):
-    def __init__(self, attribute1, attribute2, order):
-        self.attribute1 = attribute1
-        self.attribute2 = attribute2
+    def __init__(self, attribute_1, IN_A_SET, attribute_2, COLON, order):
+        self.attribute_1 = attribute_1
+        self.IN_A_SET = IN_A_SET
+        self.attribute_2 = attribute_2
+        self.COLON = COLON
         self.order = order
 
 
     def __str__(self):
-        return f"InitSetStatementNode = (first attribute = {str(self.attribute1)}, attribute 2 = {str(self.attribute2)}, order = {str(self.order)})"
+        return f"InitSetStatementNode = (first attribute = {str(self.attribute_1)}, in a set operator = {str(self.IN_A_SET)}, attribute 2 = {str(self.attribute_2)}, colon = {str(self.COLON)}, order = {str(self.order)})"
 
 
 class PlusNode(ASTNode):
@@ -589,13 +617,16 @@ class PlusNode(ASTNode):
 
 
 class SetValueNode(ASTNode):
-    def __init__(self, addition_result, range_of_values):
-        self.addition_result = addition_result
+    def __init__(self, dot_access_1, plus, dot_access_2, IN_A_SET, range_of_values):
+        self.dot_access_1 = dot_access_1
+        self.plus = plus
+        self.dot_access_2 = dot_access_2
+        self.IN_A_SET = IN_A_SET
         self.range_of_values = range_of_values
 
         
     def __str__(self):
-        return f"SetValueNode = (addition result = {str(self.addition_result)}, range of values = {str(self.range_of_values)})"
+        return f"SetValueNode = (first dot variable = {str(self.dot_access_1)}, plus = {str(self.plus)}, second dot variable = {str(self.dot_access_2)}, in a set operator = {str(self.IN_A_SET)}, range of values = {str(self.range_of_values)})"
 
 
 class AdditionResultNode(ASTNode):
@@ -632,17 +663,53 @@ class BeanValueCountNode(ASTNode):
 
 
 
-class FunctionDeclarationNode(ASTNode):
-    def __init__(self, attribute, AND, conditions, except_section):
+class FunctionDeclarationNode_1(ASTNode):
+    def __init__(self, attribute, equals, AND, function_conditions, AND_1, function_conditions_1, except_section):
         self.attribute = attribute
+        self.equals = equals
         self.AND = AND
-        self.conditions = conditions 
+        self.function_conditions = function_conditions 
+        self.AND_1 = AND_1
+        self.function_conditions_1 = function_conditions_1 
         self.except_section = except_section
 
 
     def __str__(self):
-        conditions_str = ',\n    '.join(str(condition) for condition in self.conditions)
-        return f"FunctionDeclarationNode = (attribute = {str(self.attribute)}, and ={str(self.AND)}, conditions = [\n{conditions_str}\n], except section = {str(self.except_section)})"
+        return f"FunctionDeclarationNode_1 = (attribute = {str(self.attribute)}, equals = {str(self.equals)},  and = {str(self.AND)}, conditions = {str(self.function_conditions)}, and = {str(self.AND_1)}, conditions = {str(self.function_conditions_1)},  except section = {str(self.except_section)})"
+
+
+
+class FunctionDeclarationNode_2(ASTNode):
+    def __init__(self, attribute, equals, AND, function_conditions, AND_1, function_conditions_1, AND_2, function_conditions_2, except_section):
+        self.attribute = attribute
+        self.equals = equals
+        self.AND = AND
+        self.function_conditions = function_conditions 
+        self.AND_1 = AND_1
+        self.function_conditions_1 = function_conditions_1 
+        self.AND_2 = AND_2
+        self.function_conditions_2 = function_conditions_2
+        self.except_section = except_section
+
+
+    def __str__(self):
+        return f"FunctionDeclarationNode_2 = (attribute = {str(self.attribute)}, equals = {str(self.equals)},  and = {str(self.AND)}, conditions = {str(self.function_conditions)}, and = {str(self.AND_1)}, conditions = {str(self.function_conditions_1)}, and = {str(self.AND_2)}, conditions = {str(self.function_conditions_2)} except section = {str(self.except_section)})"
+
+
+
+
+class FunctionInfoNode(ASTNode):
+    def __init__(self, attribute_1, dot, attribute_2, comparison_rule, number):
+        self.attribute_1 = attribute_1
+        self.dot = dot
+        self.attribute_2 = attribute_2
+        self.comparison_rule = comparison_rule
+        self.number = number
+
+
+    def __str__(self):
+        return f"FunctionInfoNode = (attribute_1 = {str(self.attribute_1)}, dot = {str(self.dot)}, attribute_2 = {str(self.attribute_2)}, comparison rule = {str(self.comparison_rule)}, number = {str(self.number)})"   
+        
 
 
 class FunctionConditionNoDotNode(ASTNode):
@@ -936,7 +1003,8 @@ class SpecDefinitionNode(ASTNode):
 
 
     def __str__(self):
-        return f"SpecDefinitionNode = (spec = {str(self.SPEC)}, equals = {str(self.equals)}, and = {str(self.AND)}, function conditions = {str(self.function_conditions)})"
+        conditions_str = ',\n    '.join(str(condition) for condition in self.function_conditions)
+        return f"SpecDefinitionNode = (spec = {str(self.SPEC)}, equals = {str(self.equals)}, and = {str(self.AND)}, function conditions = {str(conditions_str)})"
 
 
 
