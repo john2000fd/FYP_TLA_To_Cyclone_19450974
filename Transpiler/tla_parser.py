@@ -1267,8 +1267,10 @@ parser = yacc.yacc(debug=True)
 
 
 result = parser.parse(tla_code)
-print(result)
-print(parsed_data)
 
-#module_node = ModuleNode("CoffeeCan", None, ["Variable can", "Constant MaxBeanCount"])
-print(ModuleNode)
+def parse_tla_to_ast(tla_code):
+    result = parser.parse(tla_code)
+    return result
+
+
+print(result)
