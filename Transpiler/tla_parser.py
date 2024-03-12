@@ -305,16 +305,32 @@ def p_except_clause(p):      #This handles our except clause section
     
 
 def p_termination_statement(p):
-    '''termination_statement : attribute equals AND function_conditions'''
-    p[0] = TerminationStatementNode(p[1], p[3], p[4])
+    '''termination_statement : attribute equals AND termination_info AND termination_info'''
+    p[0] = TerminationStatementNode(p[1], p[2], p[3], p[4], p[5], p[6])
+
+
+
+def p_termination_info(p):
+    '''termination_info : attribute equals NUMBER_LITERAL
+                        | UNCHANGED attribute'''
+    if len(p) == 4:
+        p[0] = TerminationInfoNode_1(p[1], p[2], p[3])
+    else:
+        p[0] = TerminationInfoNode_2(p[1], p[2])
+    
 
 
 
 
 def p_next_state_relation(p):
-    '''next_state_relation : attribute equals OR function_conditions'''
-    p[0] = NextStateRelationNode(p[1], p[3], p[4])
+    '''next_state_relation : attribute equals OR next_state_info OR next_state_info OR next_state_info OR next_state_info'''
+    p[0] = NextStateRelationNode(p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10])
 
+
+
+def p_next_state_info(p):
+    '''next_state_info : attribute'''
+    p[0] = NextStateNode(p[1])
 
 
 def p_action_formula_definition(p): 
@@ -390,16 +406,37 @@ def p_conditional_statement(p):
 #Spec section
         
 def p_spec_definition(p):
-    '''spec_definition : SPEC equals AND function_conditions'''        
-    p[0] = SpecDefinitionNode(p[1], p[2], p[3], p[4])
+    '''spec_definition : SPEC equals AND spec_info AND spec_info AND spec_info'''        
+    p[0] = SpecDefinitionNode(p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8])
+
+
+
+def p_spec_info(p):
+    '''spec_info : LEFT_SQR_BRACKET RIGHT_SQR_BRACKET LEFT_SQR_BRACKET attribute RIGHT_SQR_BRACKET ATTRIBUTE_MAY_CHANGE
+                 | WEAK_FAIRNESS ATTRIBUTE_MAY_CHANGE LEFT_PAREN attribute RIGHT_PAREN
+                 | INIT'''
+    if len(p) == 7:
+        p[0] = SpecInfoNode_1(p[1], p[2], p[3], p[4], p[5], p[6])
+    elif len(p) == 6:
+        p[0] = SpecInfoNode_2(p[1], p[2], p[3], p[4], p[5])
+    else:
+        p[0] = SpecInfoNode_3(p[1])
+
 
 
 
 
 def p_theorem_definition(p):
-    '''theorem_definition : THEOREM SPEC IMPLIES AND function_conditions'''
-    p[0] = TheoremDefinitionNode(p[1], p[2], p[3], p[4], p[5])
+    '''theorem_definition : THEOREM SPEC IMPLIES AND theorem_info AND theorem_info AND theorem_info AND theorem_info AND theorem_info'''
+    p[0] = TheoremDefinitionNode(p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13])
 
+
+def p_theorem_info(p):
+    '''theorem_info : EventuallyTerminates
+                    | attribute
+                    | LoopInvariant
+                    | TerminationHypothesis'''
+    p[0] = TheoremInfoNode(p[1])
 
 
 
@@ -809,27 +846,73 @@ class MultipleExceptClauseNode(ASTNode):
 
 
 class TerminationStatementNode(ASTNode):
-    def __init__(self, attribute, AND, conditions):
+    def __init__(self, attribute, equals, AND_1, termination_info_1, AND_2, termination_info_2):
         self.attribute = attribute
-        self.AND = AND
-        self.conditions = conditions
+        self.equals = equals
+        self.AND_1 = AND_1
+        self.termination_info_1 = termination_info_1
+        self.AND_2 = AND_2
+        self.termination_info_2 = termination_info_2
         
 
     def __str__(self):
-        return f"TerminationStatementNode = (attribute = {str(self.attribute)}, AND = {str(self.AND)}, conditions = {str(self.conditions)})"
+        return f"TerminationStatementNode = (attribute = {str(self.attribute)}, equals = {str(self.equals)}, AND = {str(self.AND_1)}, termination case 1 = {str(self.termination_info_1)}, and = {str(self.AND_2)}, termination case 2 {str(self.termination_info_2)})"
         
+
+class TerminationInfoNode_1(ASTNode):
+    def __init__(self, attribute, equals, NUMBER_LITERAL):
+       self.attribute = attribute
+       self.equals = equals
+       self.NUMBER_LITERAL = NUMBER_LITERAL
+       
+    def __str__(self):
+        return f"TerminationInfoNode_1 = (attribute = {str(self.attribute)}, equals = {str(self.equals)}, number = {str(self.NUMBER_LITERAL)})"
+
+
+
+
+class TerminationInfoNode_2(ASTNode):
+    def __init__(self, UNCHANGED, attribute):
+        self.UNCHANGED = UNCHANGED
+        self.attribute = attribute
+
+    def __str__(self):
+        return f"TerminationInfoNode_2 = (Unchanged = {str(self.UNCHANGED)}, attribute = {str(self.attribute)})"
+   
+        
+                  
 
 
 class NextStateRelationNode(ASTNode):
-    def __init__(self, next_declaration, OR, conditions):
-        self.next_declaration = next_declaration
-        self.OR = OR
-        self.conditions  = conditions
+    def __init__(self, attribute, equals, OR_1, next_state_info_1, OR_2, next_state_info_2, OR_3, next_state_info_3, OR_4, next_state_info_4):
+        self.attribute = attribute
+        self.equals = equals
+        self.OR_1 = OR_1
+        self.next_state_info_1 = next_state_info_1
+        self.OR_2 = OR_2
+        self.next_state_info_2 = next_state_info_2
+        self.OR_3 = OR_3
+        self.next_state_info_3 = next_state_info_3
+        self.OR_4 = OR_4
+        self.next_state_info_4 = next_state_info_4
         
 
 
     def __str__(self):
-        return f"NextStateRelationNode = (next declaration = {str(self.next_declaration)}, OR = {str(self.OR)}, conditions = {str(self.conditions)})"
+        return f"NextStateRelationNode = (attribute = {str(self.attribute)}, equals = {str(self.equals)}, or = {str(self.OR_1)}, next state info = {str(self.next_state_info_1)}, or = {str(self.OR_2)}, next state info = {str(self.next_state_info_2)}, or = {str(self.OR_3)}, next state info = {str(self.next_state_info_3)}, or = {str(self.OR_4)}, next state info = {str(self.next_state_info_4)})"
+        
+
+
+class NextStateNode(ASTNode):
+    def __init__(self, attribute):
+        self.attribute = attribute
+
+
+    def __str__(self):
+        return f"NextStateInfoNode = (attribute = {str(self.attribute)})"   
+        
+
+
 
 
 class FormulaDefinitionNode(ASTNode):
@@ -994,35 +1077,91 @@ class ConditionalStatementNode(ASTNode):     #the context of the conditional ope
 
 
 class SpecDefinitionNode(ASTNode):
-    def __init__(self, SPEC, equals, AND, function_conditions):
+    def __init__(self, SPEC, equals, AND_1, spec_info_1, AND_2, spec_info_2, AND_3, spec_info_3):
         self.SPEC = SPEC
         self.equals = equals
-        self.AND = AND
-        self.function_conditions = function_conditions
+        self.AND_1 = AND_1
+        self.spec_info_1 = spec_info_1
+        self.AND_2 = AND_2
+        self.spec_info_2 = spec_info_2
+        self.AND_3 = AND_3
+        self.spec_info_3 = spec_info_3
+
+
+    def __str__(self):
+        return f"SpecDefinitionNode = (spec = {str(self.SPEC)}, equals = {str(self.equals)}, and = {str(self.AND_1)}, spec info = {str(self.spec_info_1)}, and = {str(self.AND_2)}, spec info = {str(self.spec_info_2)}, and = {str(self.AND_3)}, spec info = {str(self.spec_info_3)})"
+
+
+
+class SpecInfoNode_1(ASTNode):
+    def __init__(self, LEFT_SQR_BRACKET_1, RIGHT_SQR_BRACKET_1, LEFT_SQR_BRACKET_2, attribute, RIGHT_SQR_BRACKET_2, ATTRIBUTE_MAY_CHANGE):
+        self.LEFT_SQR_BRACKET_1 = LEFT_SQR_BRACKET_1
+        self.RIGHT_SQR_BRACKET_1 = RIGHT_SQR_BRACKET_1
+        self. LEFT_SQR_BRACKET_2 =  LEFT_SQR_BRACKET_2
+        self.attribute = attribute
+        self.RIGHT_SQR_BRACKET_2 = RIGHT_SQR_BRACKET_2
+        self.ATTRIBUTE_MAY_CHANGE = ATTRIBUTE_MAY_CHANGE
+
+
+    def __str__(self):
+        return f"SpecInfoNode_1 = (left sqr bracket = {str(self.LEFT_SQR_BRACKET_1)}, right sqr bracket = {str(self.RIGHT_SQR_BRACKET_1)}, left sqr bracket = {str(self.LEFT_SQR_BRACKET_2)}, attribute = {str(self.attribute)}, right sqr bracket = {str(self.RIGHT_SQR_BRACKET_2)}, attribute may change = {str(self.ATTRIBUTE_MAY_CHANGE)})"  
+
+
+
+class SpecInfoNode_2(ASTNode):
+    def __init__(self, WEAK_FAIRNESS, ATTRIBUTE_MAY_CHANGE, LEFT_PAREN, attribute, RIGHT_PAREN):
+        self.WEAK_FAIRNESS = WEAK_FAIRNESS
+        self.ATTRIBUTE_MAY_CHANGE = ATTRIBUTE_MAY_CHANGE
+        self.LEFT_PAREN = LEFT_PAREN
+        self.attribute = attribute
+        self.RIGHT_PAREN = RIGHT_PAREN
 
 
 
     def __str__(self):
-        conditions_str = ',\n    '.join(str(condition) for condition in self.function_conditions)
-        return f"SpecDefinitionNode = (spec = {str(self.SPEC)}, equals = {str(self.equals)}, and = {str(self.AND)}, function conditions = {str(conditions_str)})"
+        return f"SpecInfoNode_2 = (weak fairness = {str(self.WEAK_FAIRNESS)}, attribute may chnage = {str(self.ATTRIBUTE_MAY_CHANGE)}, left paren = {str(self.LEFT_PAREN)}, attribute = {str(self.attribute)}, right paren = {str(self.RIGHT_PAREN)})"
+
+
+
+class SpecInfoNode_3(ASTNode):
+    def __init__(self, init):
+        self.init = init
+
+    def __str__(self):
+        return f"SpecInfoNode_3 = (attribute = {str(self.init)})"   
+        
 
 
 
 class TheoremDefinitionNode(ASTNode):
-    def __init__(self, THEOREM, SPEC, IMPLIES, AND, function_conditions):
+    def __init__(self, THEOREM, SPEC, IMPLIES, AND_1, theorem_info_1, AND_2, theorem_info_2, AND_3, theorem_info_3, AND_4, theorem_info_4, AND_5, theorem_info_5):
         self.THEOREM = THEOREM
         self.SPEC = SPEC
         self.IMPLIES = IMPLIES
-        self.AND = AND
-        self.function_conditions = function_conditions
+        self.AND_1 = AND_1
+        self.theorem_info_1 = theorem_info_1
+        self.AND_2 = AND_2
+        self.theorem_info_2 = theorem_info_2
+        self.AND_3 = AND_3
+        self.theorem_info_3 = theorem_info_3
+        self.AND_4 = AND_4
+        self.theorem_info_4 = theorem_info_4
+        self.AND_5 = AND_5
+        self.theorem_info_5 = theorem_info_5
 
 
 
     def __str__(self):
-        return f"TheoremDefinitionNode = (theorem = {str(self.THEOREM)}, spec = {str(self.SPEC)}, implies = {str(self.IMPLIES)}, and = {str(self.AND)}, function conditions = {str(self.function_conditions)})"
+        return f"TheoremDefinitionNode = (theorem = {str(self.THEOREM)}, spec = {str(self.SPEC)}, implies = {str(self.IMPLIES)}, and = {str(self.AND_1)}, theorem info = {str(self.theorem_info_1)}, and = {str(self.AND_2)}, theorem info = {str(self.theorem_info_2)}, and = {str(self.AND_3)}, theorem info = {str(self.theorem_info_3)}, and = {str(self.AND_4)}, theorem info = {str(self.theorem_info_4)}, and = {str(self.AND_5)}, theorem info = {str(self.theorem_info_5)})"
 
 
 
+class TheoremInfoNode(ASTNode):
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return f"TheoremInfoNode = (name = {str(self.name)})"
 
 
 
