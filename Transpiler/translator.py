@@ -1,6 +1,7 @@
-import tla_parser as parser
+from tla_parser import result
+from tla_parser import parse_tla_to_ast
 
-
+ast = parse_tla_to_ast(result)
 
 class CycloneTranslator: 
     def visit(self, node):     #here is our visitor pattern for the nodes 
@@ -9,27 +10,29 @@ class CycloneTranslator:
         return visitor(node)
 
     def generic_visit(self, node):
-        raise Exception(f'No visit_{type(node).__name__} method')
-
+        comment = f"# Skipping irrelevant node: {type(node).__name__}"
+        return comment
+    
     # Example visitor method for ModuleNode
     def visit_ModuleNode(self, node):
+        module_declaration = f"module {node.name}"
+
         translated_statements = [self.visit(statement) for statement in node.statements]
         return '\n'.join(translated_statements)
 
     # Add more visitor methods for other node types...
 
 
-    def visit_
+    def visit_ConstantsNode(self,node):
+        translated
 
 
 
 
-
-
-
-
-
-
+        
+translator = CycloneTranslator()
+cyclone_code = translator.translate(ast)
+print(cyclone_code)
 
 
 
@@ -69,10 +72,5 @@ def translate_type(tla_type):
 
 
 
-def translate_to_cyclone(ast_root):
-    translator = CycloneTranslator()
-    return translator.visit(ast_root)
 
-# Assuming `ast_root` is the root node of your AST
-cyclone_code = translate_to_cyclone(ast_root)
-print(cyclone_code)
+
