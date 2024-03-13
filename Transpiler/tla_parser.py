@@ -3,10 +3,6 @@ from tokenizer import tokens
 from tokenizer import tla_code
 
 
-
-# Placeholder for storing parsed module information
-parsed_data = {}
-
 #This precedence table determines the precedence of operators in the parser, this will contain the number of shift/reduce conflicts 
 precedence = (
     #('left', 'OR'),  # Logical OR
@@ -291,7 +287,7 @@ def p_function_condition(p):
     
 def p_except_section(p):     #This handles our transition function
     '''except_section : AND NEXT_VALUE_OF_ATTRIBUTE equals except_clause'''
-    p[0] = ExceptSectionNode(p[2], p[3], p[4])
+    p[0] = ExceptSectionNode(p[1],p[2], p[3], p[4])
 
 
 def p_except_clause(p):      #This handles our except clause section
@@ -794,7 +790,8 @@ class FunctionConditionDotNode(ASTNode):
 
 
 class ExceptSectionNode(ASTNode):
-    def __init__(self, next_value_attribute, equals, except_node):
+    def __init__(self, AND, next_value_attribute, equals, except_node):
+        self.AND = AND
         self.next_value_attribute = next_value_attribute
         self.equals = equals
         self.except_node = except_node
@@ -802,7 +799,7 @@ class ExceptSectionNode(ASTNode):
 
 
     def __str__(self):
-        return f"ExceptSectionNode = (next value attribute = {str(self.next_value_attribute)}, equals = {str(self.equals)}, except node = {str(self.except_node)})"
+        return f"ExceptSectionNode = (And = {str(self.AND)}, next value attribute = {str(self.next_value_attribute)}, equals = {str(self.equals)}, except node = {str(self.except_node)})"
 
 
 class ExceptClauseNode(ASTNode):
@@ -1165,100 +1162,12 @@ class TheoremInfoNode(ASTNode):
 
 
 
-
-
-
-
-
-class NextNode(ASTNode):
-    def __init__(self, transitions):
-        self.transitions = transitions  # List of state transitions
-
-class AssignmentNode(ASTNode):
-    def __init__(self, left, right):
-        self.left = left
-        self.right = right 
-
-class BinaryOperationNode(ASTNode):
-    def __init__(self, left, operator, right):
-        self.left = left
-        self.operator = operator
-        self.right = right
-
-class IdentifierNode(ASTNode):
-    def __init__(self, name):
-        self.name = name
-
 class NumberNode(ASTNode):
     def __init__(self, value):
         self.value = value
     
     def __str__(self):
         return f"NumberNode = (value = {str(self.value)})"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class GraphNode(ASTNode):
-    def __init__(self, identifier, body):
-        self.identifier = identifier  # The name of the graph
-        self.body = body  # List of graph statements (node and edge declarations)
-
-    def __repr__(self):
-        return f"Graph({self.identifier}, {self.body})"
-
-class NodeDeclaration(ASTNode):
-    def __init__(self, identifier):
-        self.identifier = identifier  # The name of the node
-
-    def __repr__(self):
-        return f"Node({self.identifier})"
-
-class EdgeDeclaration(ASTNode):
-    def __init__(self, from_node, to_node):
-        self.from_node = from_node  # Identifier of the starting node
-        self.to_node = to_node  # Identifier of the ending node
-
-    def __repr__(self):
-        return f"Edge({self.from_node} -> {self.to_node})"
-
-class InvariantNode(ASTNode):
-    def __init__(self, expression):
-        self.expression = expression  # The expression defining the invariant
-
-    def __repr__(self):
-        return f"Invariant({self.expression})"
-
-class PropertyGoalNode(ASTNode):
-    def __init__(self, expression):
-        self.expression = expression  # The expression defining the property goal
-
-    def __repr__(self):
-        return f"PropertyGoal({self.expression})"
-
-
-class SpecNode(ASTNode):
-    def __init__(self, init, next, invariant=None, property_goal=None):
-        self.init = init  # Initial state node
-        self.next = next  # Next state node
-        self.invariant = invariant  # Optional invariant node
-        self.property_goal = property_goal  # Optional property goal node
-
 
 
 

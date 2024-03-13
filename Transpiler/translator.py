@@ -1,7 +1,7 @@
 from tla_parser import result
-from tla_parser import parse_tla_to_ast
 
-ast = parse_tla_to_ast(result)
+
+#ast = parse_tla_to_ast(result)
 
 class CycloneTranslator: 
     def visit(self, node):     #here is our visitor pattern for the nodes 
@@ -15,23 +15,60 @@ class CycloneTranslator:
     
     # Example visitor method for ModuleNode
     def visit_ModuleNode(self, node):
-        module_declaration = f"module {node.name}"
-
+        module_declaration = f"Graph {node.name} {{"
         translated_statements = [self.visit(statement) for statement in node.statements]
-        return '\n'.join(translated_statements)
+        module_body = '\n'.join(translated_statements)
+        module_end = "}"
+        translation = f"{module_declaration}\n{module_body}\n{module_end}"
+        return translation
 
-    # Add more visitor methods for other node types...
+    def visit_SetDefinitionNode(self,node):
+        record_name = node.attribute
+        record_info = []   #temporary list to store the Cyclone code generated for a single field 
+
+        for SetIndividualInfoNode in node.set_info:
+            record_information = self.visit(SetIndividualInfoNode)  # Visit each field
+            record_info.append(record_information)
+        
+        record_definition = f"record {record_name}{{\n\t" + "\n\t".join(record_info) + "\n };"
+        return record_definition
 
 
-    def visit_ConstantsNode(self,node):
-        translated
+
+    def visit_SetIndividualInfoNode(self,node):
+        attribute_name = node.attribute
+        scopeinfo = node.scope
+        scope = scopeinfo.start_value
+
+        info = f"int {attribute_name} where {attribute_name} >= {scope}"
+        return info
+
+        
+
+    def visit_FunctionDeclarationNode_1(self,node):
+       function_info = []
+
+       for FunctionInfoNode in node.conditions:
+            function_information = self.visit(FunctionInfoNode)
+       
+       
+       function_declaration  = f"abstract start state Start {{}}\n normal state {node.attribute} {{" 
+
+
+
+
+
+
+
+
+
 
 
 
 
         
 translator = CycloneTranslator()
-cyclone_code = translator.translate(ast)
+cyclone_code = translator.visit(result)
 print(cyclone_code)
 
 
