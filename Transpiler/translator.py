@@ -37,8 +37,8 @@ class CycloneTranslator:
 
     def visit_SetIndividualInfoNode(self,node):
         attribute_name = node.attribute
-        scopeinfo = node.scope
-        scope = scopeinfo.start_value
+        scope_info = node.scope
+        scope = scope_info.start_value
 
         info = f"int {attribute_name} where {attribute_name} >= {scope}"
         return info
@@ -46,15 +46,24 @@ class CycloneTranslator:
         
 
     def visit_FunctionDeclarationNode_1(self,node):
+       function_declaration  = f"abstract start state Start {{}}\n normal state {node.attribute} {{" 
        function_info = []
 
-       for FunctionInfoNode in node.conditions:
-            function_information = self.visit(FunctionInfoNode)
+       for FunctionInfoNode in node.function_conditions:
+            function_visit = self.visit(FunctionInfoNode)
+            function_info.append(function_visit)
        
+       function_information = f"{function_declaration}\n\t" + "\n\t".join(function_info) + "\n}" + "\n abstract final state T{}"
+       return function_information
        
-       function_declaration  = f"abstract start state Start {{}}\n normal state {node.attribute} {{" 
 
+    def visit_FunctionInfoNode(self,node):
+        attribute_1 = node.attribute_1
+        dot = node.dot
+        attribute_2 = node.attribute_2
 
+        info = f"{attribute_1}{dot}{attribute_2} "
+        return info
 
 
 
