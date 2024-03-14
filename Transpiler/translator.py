@@ -46,16 +46,21 @@ class CycloneTranslator:
         
 
     def visit_FunctionDeclarationNode_1(self,node):
-       function_declaration  = f"abstract start state Start {{}}\n normal state {node.attribute} {{" 
-       function_info = []
+       function_start  = f" normal state {node.attribute} {{"         #abstract start state Start {{}}\n
+       function_info_list = []
+        
+        
+        # Check if there's an except_section to translate
+       if hasattr(node, 'except_section'):
+            except_translation = self.visit(node.except_section)
+            function_info_list += except_translation
+      
 
-       for FunctionInfoNode in node.function_conditions:
-            function_visit = self.visit(FunctionInfoNode)
-            function_info.append(function_visit)
+       function_information = f"{function_start}\n\n\t" + "\n\t".join(function_info_list) + "\n}"            #+ "\n abstract final state T{}"
+       function_information_altered = f"abstract start state Start {{}}\n" + function_information
+       return function_information_altered
        
-       function_information = f"{function_declaration}\n\t" + "\n\t".join(function_info) + "\n}" + "\n abstract final state T{}"
-       return function_information
-       
+
 
     def visit_FunctionInfoNode(self,node):
         attribute_1 = node.attribute_1
@@ -68,10 +73,49 @@ class CycloneTranslator:
 
 
 
+     #passes the except clause node back up to FunctionDeclarationNode_1
+    def visit_ExceptSectionNode(self,node):
+        translation = self.visit(node.except_node)
+        return translation
 
 
 
 
+
+    def visit_ExceptClauseNode(self, node):
+    
+
+        updates = []
+        if node.attribute_2 == 'black':
+            updates.append  (f"Can.black{node.operator}{node.number};")
+        elif node.attribute_2 == 'white':
+            updates.append(f"Can.white{node.operator}{node.number};")
+
+        # Assuming there's logic to handle operator and number to translate the operation correctly
+        # For example, "--" for decrement, "++" for increment, etc.
+
+        # Compile the updates into a single translation string
+        #translation = "\n".join(updates)
+        return updates
+
+
+
+
+
+    def visit_MultipleExceptClauseNode(self, node):
+        # Handle multiple operations
+        updates = []
+        # Assuming you have a way to iterate over operations in MultipleExceptClauseNode
+        # This is an example; adjust according to your actual data structure
+        #operations = [(node.attribute_1, node.operator_1, node.number_1),
+                    #(node.attribute_3, node.operator_2, node.number_2)]
+        
+        if node.attribute_2 == 'black':
+            updates.append(f"Can.black{node.operator_1}{node.number_1};\n" + "\t"f"Can.white{node.operator_2}{node.number_2};")
+            #updates.append(f"Can.white{node.operator_2}{node.number_2};")
+
+       
+        return updates
 
 
 
