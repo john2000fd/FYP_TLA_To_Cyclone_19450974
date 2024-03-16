@@ -62,6 +62,24 @@ class CycloneTranslator:
        
 
 
+
+    def visit_FunctionDeclarationNode_2(self,node):
+       function_start  = f" normal state {node.attribute} {{"         #abstract start state Start {{}}\n
+       function_info_list = []
+        
+        
+        # Check if there's an except_section to translate
+       if hasattr(node, 'except_section'):
+            except_translation = self.visit(node.except_section)
+            function_info_list += except_translation
+      
+
+       function_information = f"{function_start}\n\n\t" + "\n\t".join(function_info_list) + "\n}" + "\n\n abstract final state T{}"            #+ "\n abstract final state T{}"
+       #function_information_altered = f"abstract start state Start {{}}\n" + function_information
+       return function_information
+
+
+
     def visit_FunctionInfoNode(self,node):
         attribute_1 = node.attribute_1
         dot = node.dot
