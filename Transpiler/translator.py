@@ -1,7 +1,7 @@
 from tla_parser import result
 
 
-#ast = parse_tla_to_ast(result)
+
 
 class CycloneTranslator: 
     def visit(self, node):     #here is our visitor pattern for the nodes 
@@ -136,8 +136,37 @@ class CycloneTranslator:
         return updates
 
 
+    def visit_NextStateRelationNode(self, node):
+        translations = []
+        #we are checking for each individual next_state_info instance
+        if hasattr(node, 'next_state_info_1'):
+            translation = self.visit(node.next_state_info_1)
+            translations.append(translation)
 
-        
+        if hasattr(node, 'next_state_info_2'):
+            translation = self.visit(node.next_state_info_2)
+            translations.append(translation)
+
+        if hasattr(node, 'next_state_info_3'):
+            translation = self.visit(node.next_state_info_3)
+            translations.append(translation)
+
+        #if hasattr(node, 'next_state_info_4'):
+            #translation = self.visit(node.next_state_info_4)
+            #translations.append(translation)    
+
+        translation = "\n".join(translations)
+        return translation
+
+
+
+    
+    def visit_NextStateNode(self, node):
+        # This is a simplified example. Adjust the translation logic as needed.
+        translation = f"trans {{ Pick -> {node.attribute} }}\n" + f"trans {{ {node.attribute} ->  T where Can.white+Can.black==1;}}\n" + f"trans {{ {node.attribute} -> Pick }}\n"
+        return translation
+
+
 translator = CycloneTranslator()
 cyclone_code = translator.visit(result)
 print(cyclone_code)
