@@ -4,18 +4,21 @@ from tla_parser import result
 
 
 class CycloneTranslator: 
+    def __init__(self):
+        self.start_state_added = False   #our tracker to insert the start state in visit_FunctionDeclarationNode_1
+
     def visit(self, node):     #here is our visitor pattern for the nodes 
         method_name = 'visit_' + type(node).__name__
         visitor = getattr(self, method_name, self.generic_visit)
         return visitor(node)
 
     def generic_visit(self, node):
-        comment = f"# Skipping irrelevant node: {type(node).__name__}"
+        comment = f"  // Skipping irrelevant node: {type(node).__name__}"
         return comment
     
     # Example visitor method for ModuleNode
     def visit_ModuleNode(self, node):
-        module_declaration = f"Graph {node.name} {{"
+        module_declaration = f"graph {node.name} {{"
         translated_statements = [self.visit(statement) for statement in node.statements]
         module_body = '\n'.join(translated_statements)
         module_end = "}"
@@ -30,7 +33,7 @@ class CycloneTranslator:
             record_information = self.visit(SetIndividualInfoNode)  # Visit each field
             record_info.append(record_information)
         
-        record_definition = f"record {record_name}{{\n\t" + "\n\t".join(record_info) + "\n };"
+        record_definition = f"    record {record_name}{{\n    " + "\n    ".join(record_info) + "\n    };"
         return record_definition
 
 
@@ -40,31 +43,35 @@ class CycloneTranslator:
         scope_info = node.scope
         scope = scope_info.start_value
 
-        info = f"int {attribute_name} where {attribute_name} >= {scope}"
+        info = f"    int {attribute_name} where {attribute_name} >= {scope};"
         return info
 
         
 
     def visit_FunctionDeclarationNode_1(self,node):
-       function_start  = f" normal state {node.attribute} {{"         #abstract start state Start {{}}\n
+       function_start  = f"    normal state {node.attribute} {{"         
        function_info_list = []
         
-        
+       if not self.start_state_added:      # this section is used to handle the insertion of our start state, this is necessary due to this visit function being called twice, which inserted two start states
+            start_state_declaration = "    abstract start state Pick {}\n"
+            self.start_state_added = True  # changes the boolean to True when added
+       else:
+            start_state_declaration = ""
+
         # Check if there's an except_section to translate
        if hasattr(node, 'except_section'):
             except_translation = self.visit(node.except_section)
             function_info_list += except_translation
       
 
-       function_information = f"{function_start}\n\n\t" + "\n\t".join(function_info_list) + "\n}"            #+ "\n abstract final state T{}"
-       function_information_altered = f"abstract start state Start {{}}\n" + function_information
-       return function_information_altered
+       function_information = f"{start_state_declaration}\n\n{function_start}\n\n    " + "\n    ".join(function_info_list) + "\n    }"           
+       return function_information
        
 
 
 
     def visit_FunctionDeclarationNode_2(self,node):
-       function_start  = f" normal state {node.attribute} {{"         #abstract start state Start {{}}\n
+       function_start  = f"    normal state {node.attribute} {{"         #abstract start state Start {{}}\n
        function_info_list = []
         
         
@@ -74,7 +81,7 @@ class CycloneTranslator:
             function_info_list += except_translation
       
 
-       function_information = f"{function_start}\n\n\t" + "\n\t".join(function_info_list) + "\n}" + "\n\n abstract final state T{}"            #+ "\n abstract final state T{}"
+       function_information = f"{function_start}\n\n    " + "\n    ".join(function_info_list) + "\n    }" + "\n\n    abstract final state T{}"            #+ "\n abstract final state T{}"
        #function_information_altered = f"abstract start state Start {{}}\n" + function_information
        return function_information
 
@@ -105,9 +112,9 @@ class CycloneTranslator:
 
         updates = []
         if node.attribute_2 == 'black':
-            updates.append  (f"Can.black{node.operator}{node.number};")
+            updates.append  (f"    Can.black{node.operator}{node.operator};")
         elif node.attribute_2 == 'white':
-            updates.append(f"Can.white{node.operator}{node.number};")
+            updates.append(f"    Can.white{node.operator}{node.operator};")
 
         # Assuming there's logic to handle operator and number to translate the operation correctly
         # For example, "--" for decrement, "++" for increment, etc.
@@ -129,7 +136,7 @@ class CycloneTranslator:
                     #(node.attribute_3, node.operator_2, node.number_2)]
         
         if node.attribute_2 == 'black':
-            updates.append(f"Can.black{node.operator_1}{node.number_1};\n" + "\t"f"Can.white{node.operator_2}{node.number_2};")
+            updates.append(f"    Can.black{node.operator_1}{node.operator_1};\n" + "    "f"    Can.white{node.operator_2}={node.number_2};")
             #updates.append(f"Can.white{node.operator_2}{node.number_2};")
 
        
@@ -138,7 +145,7 @@ class CycloneTranslator:
 
     def visit_NextStateRelationNode(self, node):
         translations = []
-        #we are checking for each individual next_state_info instance
+        #we are checking for each individual next_state_info instance that is relevant for translation
         if hasattr(node, 'next_state_info_1'):
             translation = self.visit(node.next_state_info_1)
             translations.append(translation)
@@ -151,10 +158,6 @@ class CycloneTranslator:
             translation = self.visit(node.next_state_info_3)
             translations.append(translation)
 
-        #if hasattr(node, 'next_state_info_4'):
-            #translation = self.visit(node.next_state_info_4)
-            #translations.append(translation)    
-
         translation = "\n".join(translations)
         return translation
 
@@ -162,8 +165,53 @@ class CycloneTranslator:
 
     
     def visit_NextStateNode(self, node):
-        # This is a simplified example. Adjust the translation logic as needed.
-        translation = f"trans {{ Pick -> {node.attribute} }}\n" + f"trans {{ {node.attribute} ->  T where Can.white+Can.black==1;}}\n" + f"trans {{ {node.attribute} -> Pick }}\n"
+        translation = f"    trans {{ Pick -> {node.attribute} }}\n" + f"    trans {{ {node.attribute} ->  T where Can.white+Can.black==1;}}\n" + f"    trans {{ {node.attribute} -> Pick }}\n"
+        return translation
+
+
+
+
+    def visit_TerminationHypothesisNode(self,node):
+        translations = []
+        if hasattr(node, 'statement'):
+            translation = self.visit(node.statement)
+            translations.append(translation)
+
+        translation = "\n".join(translations)
+        return translation
+
+
+
+    def visit_ConditionalStatementInfoNode(self,node):
+        translations = []
+        if hasattr(node, 'conditional_statement_if'):
+            translation = self.visit(node.conditional_statement_if)
+            translations.append(translation)
+
+
+        if hasattr(node, 'conditional_statement_then'):
+            translation = self.visit(node.conditional_statement_then)
+            translations.append(translation)
+
+
+        if hasattr(node, 'conditional_statement_else'):
+            translation = self.visit(node.conditional_statement_else)
+            translations.append(translation)
+
+
+        translation = "\n".join(translations)    
+        return translation
+    
+
+
+    def visit_Conditional_IF_Node(self,node):
+        translation = self.visit(node.dot_access)
+        return translation
+
+
+    def visit_AttributeDotAccessNode(self,node):
+        
+        translation = f"      goal {{ \n        assert  !(((initial(Can.{node.attribute_after_dot}) % 2 == 0) => (Can.black == 1)) ||\n                " + f"((initial(Can.{node.attribute_after_dot}) % 2 != 0) =>  (Can.white==1)));\n\n" + "        check for 4" + "\n    }"
         return translation
 
 
