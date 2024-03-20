@@ -1182,4 +1182,4 @@ def parse_tla_to_ast(tla_code):
     return result
 
 
-print(result)
+#print(result)

@@ -1,0 +1,58 @@
+graph CoffeeCan {
+  // Skipping irrelevant node: ConstantsNode
+  // Skipping irrelevant node: AssumeNode
+  // Skipping irrelevant node: VariablesNode
+    record Can{
+        int black where black >= 0;
+        int white where white >= 0;
+    };
+  // Skipping irrelevant node: TypeInvariantNode
+  // Skipping irrelevant node: InitNode
+  // Skipping irrelevant node: BeanValueCountNode
+    abstract start state Pick {}
+
+
+    normal state PickSameColorBlack {
+
+        Can.black--;
+    }
+
+
+    normal state PickSameColorWhite {
+
+        Can.black++;
+        Can.white-=2;
+    }
+    normal state PickDifferentColor {
+
+        Can.black--;
+    }
+
+    abstract final state T{}
+  // Skipping irrelevant node: TerminationStatementNode
+    trans { Pick -> PickSameColorWhite }
+    trans { PickSameColorWhite ->  T where Can.white+Can.black==1;}
+    trans { PickSameColorWhite -> Pick }
+
+    trans { Pick -> PickSameColorBlack }
+    trans { PickSameColorBlack ->  T where Can.white+Can.black==1;}
+    trans { PickSameColorBlack -> Pick }
+
+    trans { Pick -> PickDifferentColor }
+    trans { PickDifferentColor ->  T where Can.white+Can.black==1;}
+    trans { PickDifferentColor -> Pick }
+
+  // Skipping irrelevant node: FormulaDefinitionNode
+  // Skipping irrelevant node: LivenessPropertyNode
+  // Skipping irrelevant node: LoopInvariantNode
+      goal { 
+        assert  !(((initial(Can.white) % 2 == 0) => (Can.black == 1)) ||
+                ((initial(Can.white) % 2 != 0) =>  (Can.white==1)));
+
+        check for 4
+    }
+  // Skipping irrelevant node: ConditionalStatementNode
+  // Skipping irrelevant node: ConditionalStatementNode
+  // Skipping irrelevant node: SpecDefinitionNode
+  // Skipping irrelevant node: TheoremDefinitionNode
+}

@@ -1,84 +1,123 @@
-import tokenization
-import ast_for_tla
-#import tla_to_cyclone
 
-# Read TLA+ code from file or input
-tla_code_1 = """
+
+
+
+
+
+
+
+import tokenizer
+import tla_parser
+import translator
+
+
+# Here we are reading in our TLA+ code
+tla_code = """                           
+---------------------------- MODULE CoffeeCan ----------------------------
+
 
 EXTENDS Naturals
 
-GRAPH
-  NODE node1
-  NODE node2
-  NODE node3
+CONSTANTS MaxBeanCount
 
-  EDGE node1 -> node2
-  EDGE node2 -> node3
+ASSUME MaxBeanCount \in Nat /\ MaxBeanCount >= 1
 
-  LABEL "label1" ON node1 -> node2
-  LABEL "label2" ON node2 -> node3
+VARIABLES can
 
-VARIABLE count
+\* The set of all possible cans
+Can == [black : 0..MaxBeanCount, white : 0..MaxBeanCount]
 
-Init == (* Initial values *)
-        /\ count = 0
+\* Possible values the can variable can take on
+TypeInvariant == can \in Can
 
-Next == (* State transition function *)
-        /\ count' = count + 1
+\* Initialize can so it contains between 1 and MaxBeanCount beans
+Init == can \in {c \in Can : c.black + c.white \in 1..MaxBeanCount}
 
-Spec == Init /\ [][Next]_count
+\* Number of beans currently in the can
+BeanCount == can.black + can.white
 
-Invariant == (* Invariant property *)
-             [](count >= 0)
+\* Pick two black beans; throw both away, put one black bean in
+PickSameColorBlack ==
+    /\ BeanCount > 1
+    /\ can.black >= 2
+    /\ can' = [can EXCEPT !.black = @ - 1]
 
-Goal == (* System properties to check *)
-        /\ count <= 10
+\* Pick two white beans; throw both away, put one black bean in
+PickSameColorWhite ==
+    /\ BeanCount > 1
+    /\ can.white >= 2
+    /\ can' = [can EXCEPT !.black = @ + 1, !.white = @ - 2]
 
-CHECK Goal
+\* Pick one bean of each color; put white back, throw away black
+PickDifferentColor ==
+    /\ BeanCount > 1
+    /\ can.black >= 1
+    /\ can.white >= 1
+    /\ can' = [can EXCEPT !.black = @ - 1]
+
+\* Termination action to avoid triggering deadlock detection
+Termination ==
+    /\ BeanCount = 1
+    /\ UNCHANGED can
+
+\* Next-state relation: what actions can be taken
+Next ==
+    \/ PickSameColorWhite
+    \/ PickSameColorBlack
+    \/ PickDifferentColor
+    \/ Termination
+
+\* Action formula: every step decreases the number of beans in the can
+MonotonicDecrease == [][BeanCount' < BeanCount]_can
+
+\* Liveness property: we eventually end up with one bean left
+EventuallyTerminates == <>(ENABLED Termination)
+
+\* Loop invariant: every step preserves white bean count mod 2
+LoopInvariant == [][can.white % 2 = 0 <=> can'.white % 2 = 0]_can
+
+\* Hypothesis: If we start out with an even number of white beans, we end up
+\* with a single black bean. Otherwise, we end up with a single white bean.
+TerminationHypothesis ==
+    IF can.white % 2 = 0
+    THEN <>(can.black = 1 /\ can.white = 0)
+    ELSE <>(can.black = 0 /\ can.white = 1)
+
+\* Start out in a state defined by the Init operator and every step is one
+\* defined by the Next operator. Assume weak fairness so the system can't
+\* stutter indefinitely: we eventually take some beans out of the can.
+Spec ==
+    /\ Init
+    /\ [][Next]_can
+    /\ WF_can(Next)
+
+\* What we want to show: that if our system follows the rules set out by the
+\* Spec operator, then all our properties and assumptions will be satisfied.
+THEOREM Spec =>
+    /\ TypeInvariant
+    /\ MonotonicDecrease
+    /\ EventuallyTerminates
+    /\ LoopInvariant
+    /\ TerminationHypothesis
+
+=============================================================================
 """
 
-tla_code_2 = """
-EXTENDS Naturals
 
-GRAPH
-  NODE a
-  NODE b
-  NODE c
-  NODE d
+def main(tla_code):
+    #Here we are calling the lexer method in our tokenizer.py file
+    lexer_tokens = tokenizer.tokenizer.input(tla_code)
+    
 
-  EDGE a -> b
-  EDGE a -> c
-  EDGE b -> d
-  EDGE c -> d
 
-VARIABLE visited
+    result = tla_parser.parser.parse(tla_code)
+    print(result)
 
-Init == (* Initial values *)
-        /\ visited = {}
+    cyclone_code = translator.translator.visit(result)
+    print(cyclone_code)
+    
 
-Next == (* State transition function *)
-        /\ visited' = visited \cup {d}
 
-Spec == Init /\ [][Next]_visited
 
-Invariant == (* Invariant property *)
-             visited # {}
-
-Goal == (* System properties to check *)
-        /\ Cardinality(visited) = 1
-
-CHECK Goal
-"""
-
-# Tokenize TLA+ code
-tokens = tokenization.tokenize_tla_code(tla_code_1)
-tokens1 = tokenization.tokenize_tla_code(tla_code_2)
-
-# Construct AST from tokens
-ast_tree = ast_for_tla.construct_ast(tokens)
-ast_tree_1 =ast_for_tla.construct_ast(tokens1)
-
-# Translate AST to Cyclone code
-#cyclone_code = tla_to_cyclone.translate_ast(ast_tree)
-
-# Perform further processing on the AST as needed
+if __name__ == "__main__":
+    main(tla_code)

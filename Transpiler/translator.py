@@ -1,6 +1,11 @@
+#Target output was translated to be in a similar formatting to Hao Wu's CoffeCan cyclone implementation
+
+#This is our translator file from TLA to Cyclone. It takes the output from the tla_parser.py and uses the visit pattern to visit AST Nodes and perform corresponding translations  
+
+
+
+
 from tla_parser import result
-
-
 
 
 class CycloneTranslator: 
@@ -215,9 +220,15 @@ class CycloneTranslator:
         return translation
 
 
-translator = CycloneTranslator()
-cyclone_code = translator.visit(result)
-print(cyclone_code)
+translator = CycloneTranslator()    #creates an instance of our translator
+cyclone_code = translator.visit(result)   #we call the visit method on our parsed AST from our parser
+
+##Here we are saving our completed translated file to our designated filepath, which is CoffeeCan.cyclone in this case, you can change this value to your desired path for testing the output 
+output_path = r"C:\Users\frand\OneDrive\Desktop\FYP\FYP_TLA_To_Cyclone_19450974\Transpiler\CoffeeCan.cyclone"
+with open(output_path, 'w') as output_file:
+    output_file.write(cyclone_code)
+    print(f"The translated Cyclone code has been saved")
+#print(cyclone_code)   #print the translated code
 
 
 
