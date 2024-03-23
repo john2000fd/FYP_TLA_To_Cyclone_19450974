@@ -135,10 +135,7 @@ class CycloneTranslator:
     def visit_MultipleExceptClauseNode(self, node):
         # Handle multiple operations
         updates = []
-        # Assuming you have a way to iterate over operations in MultipleExceptClauseNode
-        # This is an example; adjust according to your actual data structure
-        #operations = [(node.attribute_1, node.operator_1, node.number_1),
-                    #(node.attribute_3, node.operator_2, node.number_2)]
+        
         
         if node.attribute_2 == 'black':
             updates.append(f"    Can.black{node.operator_1}{node.operator_1};\n" + "    "f"    Can.white{node.operator_2}={node.number_2};")
@@ -223,12 +220,12 @@ class CycloneTranslator:
 translator = CycloneTranslator()    #creates an instance of our translator
 cyclone_code = translator.visit(result)   #we call the visit method on our parsed AST from our parser
 
-##Here we are saving our completed translated file to our designated filepath, which is CoffeeCan.cyclone in this case, you can change this value to your desired path for testing the output 
+#Here we are saving our completed translated file to our designated filepath, which is CoffeeCan.cyclone in this case, you can change this value to your desired path for testing the output 
 output_path = r"C:\Users\frand\OneDrive\Desktop\FYP\FYP_TLA_To_Cyclone_19450974\Transpiler\CoffeeCan.cyclone"
 with open(output_path, 'w') as output_file:
     output_file.write(cyclone_code)
-    print(f"The translated Cyclone code has been saved")
-#print(cyclone_code)   #print the translated code
+    print(f"The translated Cyclone code has been saved to the file CoffeeCan.cyclone")
+
 
 
 

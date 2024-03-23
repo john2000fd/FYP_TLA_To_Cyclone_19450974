@@ -115,6 +115,8 @@ def main(tla_code):
 
     cyclone_code = translator.translator.visit(result)
     print(cyclone_code)
+    print(f"The translated Cyclone code has been saved to the file CoffeeCan.cyclone")
+
     
 
 
