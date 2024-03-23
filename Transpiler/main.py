@@ -9,7 +9,7 @@
 import tokenizer
 import tla_parser
 import translator
-
+import time
 
 # Here we are reading in our TLA+ code
 tla_code = """                           
@@ -108,6 +108,7 @@ def main(tla_code):
     #Here we are calling the lexer method in our tokenizer.py file
     lexer_tokens = tokenizer.tokenizer.input(tla_code)
     
+    start_of_runtime = time.time()   #used to get the time currently, this is saved as our start time
 
 
     result = tla_parser.parser.parse(tla_code)
@@ -116,9 +117,12 @@ def main(tla_code):
     cyclone_code = translator.translator.visit(result)
     print(cyclone_code)
     print(f"The translated Cyclone code has been saved to the file CoffeeCan.cyclone")
-
     
+    
+    end_time = time.time()   #gets the time when the program finishes
 
+    runtime = end_time - start_of_runtime   #calculates the difference between the end and start time to get our program duration
+    print(f"Program runtime: {runtime} seconds")
 
 
 if __name__ == "__main__":
