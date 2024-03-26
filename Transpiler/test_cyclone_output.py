@@ -98,3 +98,4 @@ class Unit_TestCycloneTranslator(unittest.TestCase):       #This is our unit tes
         translator = CycloneTranslator()
         result = translator.visit(tested_node)
         expected_result = "      goal { \n        assert  !(((initial(Can.test) % 2 == 0) => (Can.black == 1)) ||\n                ((initial(Can.test) % 2 != 0) =>  (Can.white==1)));\n\n        check for 4\n    }"
+        self.assertEqual(result, expected_result)
