@@ -116,12 +116,14 @@ def main(tla_code):
 
     cyclone_code = translator.translator.visit(result)
     print(cyclone_code)
+    print()
     print(f"The translated Cyclone code has been saved to the file CoffeeCan.cyclone")
     
     
     end_time = time.time()   #gets the time when the program finishes
 
     runtime = end_time - start_of_runtime   #calculates the difference between the end and start time to get our program duration
+    print()
     print(f"Program runtime: {runtime} seconds")
 
 
