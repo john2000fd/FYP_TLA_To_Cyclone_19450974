@@ -1,19 +1,33 @@
+#Final Year Project FYP24WH002 TLA To Cyclone by John Dunne 19450974
+#This is the main hub file of the developed deomonstration TLA to Cyclone transpiler
+#Here we are taking in a TLA file, passing it into various systems such as a lexer, parser and translator, then saving the resulting tranbslation to a file
+
+#Repository located here -> https://github.com/john2000fd/FYP_TLA_To_Cyclone_19450974
 
 
 
 
-
-
-
-
-import tokenizer
+import tokenizer        #Importing the necessary modules
 import tla_parser
 import translator
 import time
 
-# Here we are reading in our TLA+ code
+# Here we are reading in our TLA code, thias is taken from the TLA demonstration repository on GitHub. https://github.com/tlaplus/Examples/tree/master
+#This details the Coffee Can algorithim:
+#A coffee can contains some black beans and white beans. The following   *)
+#(* process is to be repeated as long as possible:             
+#(* throw them out, but put another black bean in. (Enough extra black      *)
+#(* beans are available to do this.) If they are different colors, place    *)
+#(* the white one back into the can and throw the black one away.           *)
+##                                                                         *)
+#(* Execution of this process reduces the number of beans in the can by     *)
+#(* one. Repetition of this process must terminate with exactly one bean in *)
+#(* the can, for then two beans cannot be selected. The question is: what,  *)
+#(* if anything, can be said about the color of the final bean based on the *)
+#(* number of white beans and the number of black beans initially in the    *)
+
 tla_code = """                           
----------------------------- MODULE CoffeeCan ----------------------------
+---------------------------- MODULE CoffeeCan ----------------------------       
 
 
 EXTENDS Naturals
@@ -105,16 +119,16 @@ THEOREM Spec =>
 
 
 def main(tla_code):
-    #Here we are calling the lexer method in our tokenizer.py file
+    #Here we are calling the lexer method in our tokenizer.py file, this returns the stream of tokens and stores it in the lexer_tokens variable
     lexer_tokens = tokenizer.tokenizer.input(tla_code)
     
-    start_of_runtime = time.time()   #used to get the time currently, this is saved as our start time
+    start_of_runtime = time.time()   #uses time module to get the time currently, this is saved as our start time
 
 
-    result = tla_parser.parser.parse(tla_code)
+    result = tla_parser.parser.parse(lexer_tokens)   #pass our stream of lexer tokens into the parser method in tla_parser.py, store generated AST in result variable
     print(result)
 
-    cyclone_code = translator.translator.visit(result)
+    cyclone_code = translator.translator.visit(result)   #pass our AST into the translator method in translator.py, this returns the translated Cyclone code, stored in cyclone_code
     print(cyclone_code)
     print()
     print(f"The translated Cyclone code has been saved to the file CoffeeCan.cyclone")
@@ -124,7 +138,7 @@ def main(tla_code):
 
     runtime = end_time - start_of_runtime   #calculates the difference between the end and start time to get our program duration
     print()
-    print(f"Program runtime: {runtime} seconds")
+    print(f"Program runtime: {runtime} seconds")   #print runtime
 
 
 if __name__ == "__main__":

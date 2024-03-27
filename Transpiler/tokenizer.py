@@ -1,9 +1,12 @@
-#import re
-import ply.lex as lex
+#This is our lexical analyser file. 
+#This file uses the PLY Lex module to create a lexer that generatres a stream of lexer tokens based on the defined grammar rules below
+
+
+import ply.lex as lex    #import the lex module which facilitates PLY lexer capabilities for the file 
 
 
 
-# Define token names for our tokenizer
+# Define token names for our tokenizer,     Code developed with help from PLY Lex Yacc documentation:  https://www.dabeaz.com/ply/ply.html#ply_nn4
 tokens = (
     'EXTENDS',
     'MODULE_WRAPPER',
@@ -28,7 +31,6 @@ tokens = (
     'RIGHT_PAREN',
     'LEFT_BRACE',
     'RIGHT_BRACE',
-    #'COMMENT',
     'EQUALS_EQUALITY',
     'STAR',
     'BACK_SLASH',
@@ -79,12 +81,10 @@ tokens = (
 )
 
 
-# Define reserved words dictionary  
-reserved = {
+# Define reserved words dictionary, this dictionary checks the matched ATTRIBUTE token against this list to determine if it should be classified under a specific reserved keyword or as a general ATTRIBUTE.
+reserved = {   #Code developed with guidance from PLY Lex Yacc documentation:  https://www.dabeaz.com/ply/ply.html#ply_nn4
     'EXTENDS': 'EXTENDS',
     'MODULE': 'MODULE',
-    #'MODULE_NAME': 'MODULE_NAME',
-    #'COMMENT': 'COMMENT',
     'GRAPH': 'GRAPH',
     'NODE': 'NODE',
     'EDGE': 'EDGE',
@@ -92,7 +92,6 @@ reserved = {
     'VARIABLE_NAME': 'VARIABLE_NAME',
     'CONSTANTS' : 'CONSTANTS',
     'Init': 'INIT',
-    #'Next': 'NEXT',
     'Spec': 'SPEC',
     'GOAL': 'GOAL',
     'CHECK': 'CHECK',
@@ -108,14 +107,11 @@ reserved = {
     'LoopInvariant' : 'LoopInvariant',
     'THEOREM' : 'THEOREM',
     'EventuallyTerminates' : 'EventuallyTerminates',
-    
-    
-   
-    
 }
 
 
 # Define tokenization rules, prefix "t_" before the string name indicates that it is a token
+#Each of these functions is responsible for matching a specific pattern in the input text that corresponds to a particular token.
 t_ARROW = r'->'
 t_MODULE_WRAPPER = r'\----------------------------'
 t_SEMICOLON = r';'
@@ -124,7 +120,7 @@ t_RIGHT_PAREN = r'\)'
 t_LEFT_BRACE = r'\{'
 t_RIGHT_BRACE = r'\}'
 t_STAR = r'\*'
-t_OR = r'\\/'   # Correct way to handle OR (logical disjunction)
+t_OR = r'\\/'   
 t_BACK_SLASH = r'\\'
 t_FORWARD_SLASH = r'\/'
 t_EVENTUALLY = r'\<>'
@@ -155,8 +151,8 @@ t_IMPLIES = r'\=>'
 
 
 
-
-def t_WEAK_FAIRNESS(t):
+#These are specific token rules, these handle code that needs more processing then just a regex string
+def t_WEAK_FAIRNESS(t):     
     r'WF'
     return t
 
@@ -216,17 +212,17 @@ def t_END_OF_FILE(t):   # we also don't need the end of file for our tokenizatio
     pass
 
     
-# Define error handling rule
+# error handling rule, 
 def t_error(t):
-    print(f"Illegal character '{t.value[0]}'")
-    t.tokenizer.skip(1)
+    print(f"Illegal character!!!")
+    t.tokenizer.skip(1)    #Skip 
 
-# Build the lexer
+# Build the lexer from the PLY Lex module
 tokenizer = lex.lex()
 
 
 
-#Example TLA Code to test with
+#Example TLA Code, same as in main.py 
 tla_code = """                           
 ---------------------------- MODULE CoffeeCan ----------------------------
 
@@ -318,10 +314,10 @@ THEOREM Spec =>
 =============================================================================
 """
 
-# Test the lexer
+# input out TLA code into the Lexer
 tokenizer.input(tla_code)
 
-# Print tokens
+# Print stream of created tokens to the command line
 for token in tokenizer:
     print(token)
     print()
