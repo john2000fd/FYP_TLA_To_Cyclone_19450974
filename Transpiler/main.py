@@ -1,3 +1,7 @@
+#Transpiler program proposed to convert TLA specifications to an equivalent Cyclone file.
+#J. Dunne
+#Last edit: 28.03.24
+
 #Final Year Project FYP24WH002 TLA To Cyclone by John Dunne 19450974
 #This is the main hub file of the developed deomonstration TLA to Cyclone transpiler
 #Here we are taking in a TLA file, passing it into various systems such as a lexer, parser and translator, then saving the resulting tranbslation to a file
@@ -24,7 +28,7 @@ import time
 #(* one. Repetition of this process must terminate with exactly one bean in *)
 #(* the can, for then two beans cannot be selected. The question is: what,  *)
 #(* if anything, can be said about the color of the final bean based on the *)
-#(* number of white beans and the number of black beans initially in the    *)
+#(* number of white beans and the number of black beans initially in the can   *)
 
 tla_code = """                           
 ---------------------------- MODULE CoffeeCan ----------------------------       
