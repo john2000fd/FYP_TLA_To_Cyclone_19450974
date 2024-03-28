@@ -1,4 +1,4 @@
-#Transpiler program proposed to convert TLA specifications to an equivalent Cyclone file.
+#Transpiler program proposed to convert a TLA specification to an equivalent Cyclone file.
 #J. Dunne
 #Last edit: 28.03.24
 
