@@ -12,7 +12,7 @@ import tla_parser
 import translator
 import time
 
-# Here we are reading in our TLA code, thias is taken from the TLA demonstration repository on GitHub. https://github.com/tlaplus/Examples/tree/master
+# Here we are reading in our TLA code, this is taken from the TLA demonstration repository on GitHub. https://github.com/tlaplus/Examples/tree/master
 #This details the Coffee Can algorithim:
 #A coffee can contains some black beans and white beans. The following   *)
 #(* process is to be repeated as long as possible:             
