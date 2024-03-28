@@ -1,27 +1,36 @@
+#This is our PLY Yacc parser, This parser uses LR-parsing, LR parsing is a bottom up technique that tries to recognize the right-hand-side of various grammar rules. 
+#Whenever a valid right-hand-side is found in the input
+#the appropriate action code is triggered and the grammar symbols are replaced by the grammar symbol on the left-hand-side.
+
+#An AST is generated using the functions in the second half of this file
+
+#importing necessary modules and values from the tokenizer
 import ply.yacc as yacc
 from tokenizer import tokens
 from tokenizer import tla_code
 
 
-#This precedence table determines the precedence of operators in the parser, this will contain the number of shift/reduce conflicts 
+#This precedence table determines the precedence of operators in the parser, this will contain the number of shift/reduce conflicts encountered during AST generation  
+
+
+
+
+#The parsing function code was developed with guidance from PLY Lex Yacc documentation:  https://www.dabeaz.com/ply/ply.html#ply_nn4
 precedence = (
-    #('left', 'OR'),  # Logical OR
     ('left', 'EQUIVALENCE_OPERATOR'),
     ('left', 'AND'),  # Logical AND
     ('nonassoc', 'EQUALS_DEFINITIONS', 'NOT_EQUALS'),  # Equality and inequality
     ('nonassoc', 'LESS_THAN', 'LESS_OR_EQ', 'GREATER_THAN', 'GREATER_OR_EQ'),  # Relational operators
     ('left', 'PLUS', 'MINUS'),  # Addition and subtraction
     ('left', 'STAR', 'DIVIDE', 'MODULUS'),  # Multiplication, division, modulo
-    #('right', 'EXP'),  # Exponentiation
-    #('right', 'UMINUS'),  # Unary minus operator
     ('nonassoc', 'LEFT_PAREN', 'RIGHT_PAREN'),  # Parentheses for grouping
 )
 
 
 
-#FUNCTIONS FOR PARSING
+#FUNCTIONS FOR PARSING SECTION
 
-# Parsing the module with optional extends and body (declarations, assignments, etc.)
+# Parsing the module start with optional extends and body 
 def p_module(p):
     '''module : MODULE_WRAPPER MODULE attribute MODULE_WRAPPER extends statements
               | MODULE_WRAPPER MODULE attribute MODULE_WRAPPER statements'''
@@ -30,40 +39,41 @@ def p_module(p):
     else:
         p[0] = ModuleNode(name=p[3], extends=None, statements=p[5])
 
-
+#function for handling attribute tokens
 def p_attribute(p):
     '''attribute : ATTRIBUTE'''
     p[0] = p[1]  
 
-
+#function that handles dot accesss constructs, such as test.test
 def p_dot_access(p):
     '''dot_access : attribute DOT attribute
                   | NEXT_VALUE_OF_ATTRIBUTE DOT attribute'''
     p[0] = AttributeDotAccessNode(p[1], p[3])
 
+#function for handling the extends declaration in TLA for modules such as Naturals etc
 def p_extends(p):
     '''extends : EXTENDS names'''
     p[0] = p[1]     
 
     
-
+#this function uses recursion to recursively append the end of a previously matched list by a newly matched element each time until there are no further elements to match.
 def p_names(p):
     '''names : names COMMA attribute
              | attribute'''
     if len(p) == 4:
-        p[0] = p[1] + [p[3]]                                    #if-else statement used to handle multiple names seperated by a comma
+        p[0] = p[1] + [p[3]]                                    
          
     else:
         p[0] = [p[1]]
        
         
 
-#This section deals with the parsing of various statements, this includes keywords, variables, constants etc
+#This section deals with the parsing of various statements, this includes keywords, variables, constants etc.
 
 def p_statements(p):
     '''statements : statements statement
                     | statement'''
-    if len(p) == 3:
+    if len(p) == 3:             #recursion to recursively append the end of a previously matched list by a newly matched element each time until there are no further elements to match.
         p[1].append(p[2])
         p[0] = p[1]
     else:
@@ -71,9 +81,9 @@ def p_statements(p):
 
 
    
-# Define rules for `variable_statement`, `constants_statement`, etc.
+# Define rules for various statements, this function handles the path that the functions will take to build AST nodes by passing it through a specific path based on the tokens values
 
-
+#code was developed with guidance from PLY Lex Yacc documentation:  https://www.dabeaz.com/ply/ply.html#ply_nn4
 def p_statement(p):
     '''statement :   constants_statement
                    | variables_statement
@@ -93,24 +103,25 @@ def p_statement(p):
                    | init'''
     p[0] = p[1]
 
-
+#function to handle constant declarations, passes info to a new constantsnode in the AST
 def p_constants_statement(p):
     '''constants_statement : CONSTANTS names'''
     p[0] = ConstantsNode(constants=p[2])
 
-
+#function to handle variable declarations, passes info to a new variablesnode in the AST
 def p_variables_statement(p):
     '''variables_statement : VARIABLES names'''
     p[0] = VariablesNode(variables=p[2])
 
-
+#function to handle assume statements, passes info to a new assumenode in the AST
 def p_assume_statement(p):
     '''assume_statement : ASSUME attribute IN_A_SET Nat AND attribute GREATER_OR_EQ NUMBER_LITERAL'''
     p[0] = AssumeNode(p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8])
 
 
-
-def p_expression(p):                                      #this section of code was made with help from ChatGPT language model
+#function to handle various different types of expressions in TLA,
+#this section handles the path that the functions will take to build AST nodes by passing it through a specific path based on the tokens values
+def p_expression(p):                                      #this section of code was made with help from ChatGPT language model https://chat.openai.com/?model=text-davinci-002-render-sha
     '''expression : expression PLUS expression
                   | expression MINUS expression
                   | expression STAR expression
@@ -122,45 +133,40 @@ def p_expression(p):                                      #this section of code 
                   | NUMBER_LITERAL
                   | STRING_LITERAL'''
     
-    if len(p) == 4:
-        # Handles binary operations
-        p[0] = BinaryOperationNode(p[1], p[2], p[3])
-    elif p.slice[1].type == "ATTRIBUTE":
-        # Handles identifiers
-        p[0] = IdentifierNode(p[1])
-    else:
-        # Handles literals (numbers and strings)
-        p[0] = NumberNode(p[1])
+    
+    p[0] = NumberNode(p[1])
 
-
+#function to handle the type invariant expression of the TLA file, creates a TypeInvariantExpressionNode
 def p_type_invariant_expression(p):
     '''type_invariant_expression : attribute IN_A_SET attribute'''
     p[0] = TypeInvariantExpressionNode(p[1], p[2], p[3])
 
-def p_init_expression(p):
-    '''init_expression : '''
-
+#function to handle comparison operations in TLA, creates a ComparisonNode
 def p_comparison(p):
     '''comparison : attribute comparison_rule NUMBER_LITERAL
                   | attribute comparison_rule attribute'''
     p[0] = ComparisonNode(p[1], p[2], p[3])
     
+#connected function to p_comparison, this determines the comparison operator used eg >
 def p_comparison_rule(p):
     '''comparison_rule :   GREATER_OR_EQ
                     | LESS_OR_EQ
                     | GREATER_THAN                         
                     | LESS_THAN '''
     p[0] = p[1]
-    
+
+#function to handle set membership statements in TLA    
 def p_set_membership(p):
     '''set_membership : attribute IN_A_SET Nat '''
     p[0] = p[1]
 
+#function to determine what type of equality operator is being used, = or ==
 def p_equals(p):
     '''equals : EQUALS_DEFINITIONS
               | EQUALS_EQUALITY'''
     p[0] = p[1]
 
+#function to handle a set definition, creates a SetDefinitionNode, aspects such as equals and set_info are sent to other functions for processing
 def p_set_definition(p):
     '''set_definition : attribute equals LEFT_SQR_BRACKET set_info RIGHT_SQR_BRACKET'''
     p[0] = SetDefinitionNode(p[1], p[2], p[4])
@@ -203,7 +209,6 @@ def p_init_set_statement(p):
 
 def p_order(p):
     '''order : dot_access PLUS dot_access IN_A_SET range_of_values'''
-    #addition_result = PlusNode(p[1], p[3])
     p[0] = SetValueNode(p[1], p[2], p[3], p[4], p[5])
 
 
@@ -211,7 +216,7 @@ def p_range_of_values(p):
     '''range_of_values :  NUMBER_LITERAL DOT DOT attribute RIGHT_BRACE'''
     p[0] = InitSetRangeOfValuesNode(p[1], p[4])
 
-
+#These two node represents the equation of two bean values eg c.black + c.white values  
 
 def p_bean_value_count(p):
     '''bean_value_count : attribute equals bean_equation'''
@@ -220,18 +225,15 @@ def p_bean_value_count(p):
 
 
 def p_bean_equation(p):
-    '''bean_equation : dot_access PLUS dot_access'''          #This node represents the equation of two c.black + c.white values  
+    '''bean_equation : dot_access PLUS dot_access'''          
     p[0] = AdditionResultNode(p[1], p[3])
 
 
 
 
-
-############## simplify or fix this function section, causing issues#######################
-
-
-
+#this section of code was made with help from ChatGPT language model https://chat.openai.com/?model=text-davinci-002-render-sha
 #Rule handling all of our funcions in TLA, for example for this: picking two black beans, removing them, then replacing with one black bean
+
 def p_function_declaration(p):
     '''function_declaration : attribute equals AND function_info AND function_info except_section
                             | attribute equals AND function_info AND function_info AND function_info except_section'''
@@ -240,7 +242,7 @@ def p_function_declaration(p):
     else:
         p[0] = FunctionDeclarationNode_2(p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9])    
 
-
+#handles the high level info of the function
 
 def p_function_info(p):
     '''function_info : attribute DOT attribute comparison_rule NUMBER_LITERAL
@@ -251,7 +253,8 @@ def p_function_info(p):
         p[0] = FunctionInfoNode(attribute_1 = p[1], dot = None, attribute_2 = None, comparison_rule = p[2], number = p[3])   
 
 
-
+#this function handles the specific conditions in these functions
+#recursion is used to call the function recursively to handle all conditions of a function sepersted by logical AND, OR
 def p_function_conditions(p):
     '''function_conditions : function_condition
                            | function_conditions AND function_condition
@@ -262,7 +265,7 @@ def p_function_conditions(p):
         p[0] = p[1] + [p[3]]
         
 
-
+#function to handle different types of conditions that are a part of various functions.
 def p_function_condition(p):
     '''function_condition : attribute comparison_rule NUMBER_LITERAL
                           | attribute equals NUMBER_LITERAL
@@ -285,12 +288,13 @@ def p_function_condition(p):
         p[0] = FunctionConditionDotNode(p[1], p[2], p[3], p[4], p[5])
 
     
-def p_except_section(p):     #This handles our transition function
+#This function handles the except section of our transition function    
+def p_except_section(p):     
     '''except_section : AND NEXT_VALUE_OF_ATTRIBUTE equals except_clause'''
     p[0] = ExceptSectionNode(p[1],p[2], p[3], p[4])
 
-
-def p_except_clause(p):      #This handles our except clause section
+#This handles our except clause in the except section
+def p_except_clause(p):      
     '''except_clause : LEFT_SQR_BRACKET attribute EXCEPT EXCLAMATION_MARK DOT attribute equals AT MINUS NUMBER_LITERAL RIGHT_SQR_BRACKET
                      | LEFT_SQR_BRACKET attribute EXCEPT EXCLAMATION_MARK DOT attribute equals AT PLUS NUMBER_LITERAL COMMA EXCLAMATION_MARK DOT attribute equals AT MINUS NUMBER_LITERAL RIGHT_SQR_BRACKET'''
     if len(p) == 12:
@@ -299,7 +303,7 @@ def p_except_clause(p):      #This handles our except clause section
         p[0] = MultipleExceptClauseNode(p[2], p[4], p[5], p[6], p[8], p[9], p[10], p[12], p[13], p[14], p[16], p[17], p[18])    
 
     
-
+#This function handles our termination section in the TLA file
 def p_termination_statement(p):
     '''termination_statement : attribute equals AND termination_info AND termination_info'''
     p[0] = TerminationStatementNode(p[1], p[2], p[3], p[4], p[5], p[6])
@@ -317,7 +321,7 @@ def p_termination_info(p):
 
 
 
-
+#This handles our next state relation section in the TLA file
 def p_next_state_relation(p):
     '''next_state_relation : attribute equals OR next_state_info OR next_state_info OR next_state_info OR next_state_info'''
     p[0] = NextStateRelationNode(p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10])
@@ -340,7 +344,7 @@ def p_action_formula(p):
 
 
 
-def p_formula_details(p): 
+def p_formula_details(p):  
     '''formula_details : NEXT_VALUE_OF_ATTRIBUTE LESS_THAN attribute
                        | dot_access MODULUS expression equals NUMBER_LITERAL EQUIVALENCE_OPERATOR dot_access MODULUS expression equals NUMBER_LITERAL'''
     if len(p) == 4:
@@ -349,7 +353,7 @@ def p_formula_details(p):
          p[0] = InvariantFormulaDetailsNode(p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11])
 
 
-
+#This function handles our liveness property statement in the TLA file
 def p_liveness_property(p):
     '''liveness_property : EventuallyTerminates equals property_details'''
     p[0] = LivenessPropertyNode(p[1], p[3])
@@ -362,8 +366,8 @@ def p_property_details(p):
 
 
 
-#CURRENT WORKING SECTION~~~~~~~~~~~~~~~~~~~~~~
 
+#Function to handle our loop invariant values
 def p_loop_invariant(p):
     '''loop_invariant : LoopInvariant equals action_formula'''
     p[0] = LoopInvariantNode(p[1], p[3])
@@ -371,9 +375,7 @@ def p_loop_invariant(p):
 
 
 
-
-
-#termination hypothesis section
+#Function to handle the termination hypothesis section
 def p_termination_hypothesis(p):
     '''termination_hypothesis : TerminationHypothesis equals conditional_statements'''
     p[0] = TerminationHypothesisNode(p[1], p[3])
@@ -399,7 +401,7 @@ def p_conditional_statement(p):
 
 
 
-#Spec section
+#These functions handle the Spec section of our TLA input file
         
 def p_spec_definition(p):
     '''spec_definition : SPEC equals AND spec_info AND spec_info AND spec_info'''        
@@ -421,7 +423,7 @@ def p_spec_info(p):
 
 
 
-
+#These functions handle the Theorem section of our TLA input file
 def p_theorem_definition(p):
     '''theorem_definition : THEOREM SPEC IMPLIES AND theorem_info AND theorem_info AND theorem_info AND theorem_info AND theorem_info'''
     p[0] = TheoremDefinitionNode(p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13])
@@ -437,42 +439,48 @@ def p_theorem_info(p):
 
 
 
-
-
-#Grouping expressions
+#Function to handle the grouping of expressions
 def p_expression_group(p):
     'expression : LEFT_PAREN expression RIGHT_PAREN' 
-    p[0] = p[2]  # Grouped expression, no node needed
+    p[0] = p[2]  
 
 
-def p_empty(p):
-    'empty :'
-    pass
 
 # Error handling for syntax errors
-def p_error(p):
+def p_error(p):    #error handling code developed with help from ChatGPT language model https://chat.openai.com/?model=text-davinci-002-render-sha
     if p:
         print(f"Syntax error at token '{p.type}', value: '{p.value}', line: {p.lineno}, position: {p.lexpos}")
-        # Optionally, print a few tokens leading up to the error for context
-        context = max(0, p.lexpos - 50)  # Adjust as needed for context size
-        print("Error context:")
-        print(tla_code[context:p.lexpos + 10])  # Adjust slicing as needed
+        #Prints the tokens leading up to the error to give error context for parsing adjustment
+        context = max(0, p.lexpos - 50)  
+        print(tla_code[context:p.lexpos + 10])  
     else:
         print("Syntax error at EOF")
 
 
 
 
-#THESE ARE OUR NODES FOR THE ABSTRACT SYNTAX TREE
+
+
+
+
+
+
+
+#This section of the code is where the AST nodes are created and filled with the relevant info from the lex tokens 
+#These nodes are populated with info by taking the info from the tokens and setting them to to the self value in the node
+#each class has a __str__ function that outputs the nodes info. This is how the interconnceted AST is visualized in the command line for the user
+#All of these classes have a similar structure
 class ASTNode:     #AST classes 
     pass
 
-class ModuleNode(ASTNode):
+class ModuleNode(ASTNode):                          #Code developed with guidance from PLY Lex Yacc documentation:  https://www.dabeaz.com/ply/ply.html#ply_nn4
     def __init__(self, name, extends, statements):
+        #setting the relevent values to be the values saved in the node
         self.name = name
         self.extends = extends
         self.statements = statements
-
+    
+    #__str__ function that prints out the nodes info using F strings, this allows the insertions of variables into the strings makeup
     def __str__(self):
         extends_string = f", extends={self.extends}" if self.extends else ""
         statements_str = ', '.join(str(statement) for statement in self.statements)
@@ -514,7 +522,7 @@ class ExtendsNode(ASTNode):
 
 class ConstantsNode(ASTNode):
     def __init__(self, constants):
-        self.constants = constants  # List of constant names
+        self.constants = constants  
 
     def __str__(self):
         
@@ -522,7 +530,7 @@ class ConstantsNode(ASTNode):
 
 class VariablesNode(ASTNode):
     def __init__(self, variables):
-        self.variables = variables  # List of variable names
+        self.variables = variables  
 
     def __str__(self):
         return f"VariablesNode = (variables = {str(self.variables)}"
@@ -805,7 +813,7 @@ class ExceptSectionNode(ASTNode):
 class ExceptClauseNode(ASTNode):
     def __init__(self, attribute_1, exclamation_mark, dot, attribute_2, at, operator, number):
         self.attribute_1 = attribute_1
-        self.exclamation_mark = exclamation_mark                                                              #implement dot_access here
+        self.exclamation_mark = exclamation_mark                                                             
         self.dot = dot
         self.attribute_2 = attribute_2
         self.at = at
@@ -1171,15 +1179,11 @@ class NumberNode(ASTNode):
 
 
 
-# Build the parser
+# This builds the PLY Yacc parser
 parser = yacc.yacc(debug=True)
 
-
+#we LR parse the inputted tokens into the parser, which is saved in result
 result = parser.parse(tla_code)
 
-def parse_tla_to_ast(tla_code):
-    result = parser.parse(tla_code)
-    return result
-
-
-#print(result)
+#Prints the resulting connected AST
+print(result)
