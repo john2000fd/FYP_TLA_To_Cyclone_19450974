@@ -10,12 +10,14 @@ from tokenizer import tokens
 from tokenizer import tla_code
 
 
-#This precedence table determines the precedence of operators in the parser, this will contain the number of shift/reduce conflicts encountered during AST generation  
+
 
 
 
 
 #The parsing function code was developed with guidance from PLY Lex Yacc documentation:  https://www.dabeaz.com/ply/ply.html#ply_nn4
+
+#This precedence table determines the precedence of operators in the parser, this will contain the number of shift/reduce conflicts encountered during parsing  
 precedence = (
     ('left', 'EQUIVALENCE_OPERATOR'),
     ('left', 'AND'),  # Logical AND
