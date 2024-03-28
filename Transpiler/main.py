@@ -3,7 +3,7 @@
 #Last edit: 28.03.24
 
 #Final Year Project FYP24WH002 TLA To Cyclone by John Dunne 19450974
-#This is the main hub file of the developed deomonstration TLA to Cyclone transpiler
+#This is the main hub file of the developed demonstration TLA to Cyclone transpiler
 #Here we are taking in a TLA file, passing it into various systems such as a lexer, parser and translator, then saving the resulting tranbslation to a file
 
 #Repository located here -> https://github.com/john2000fd/FYP_TLA_To_Cyclone_19450974
