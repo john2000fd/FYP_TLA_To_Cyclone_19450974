@@ -121,7 +121,8 @@ def p_assume_statement(p):
 
 #function to handle various different types of expressions in TLA,
 #this section handles the path that the functions will take to build AST nodes by passing it through a specific path based on the tokens values
-def p_expression(p):                                      #this section of code was made with help from ChatGPT language model https://chat.openai.com/?model=text-davinci-002-render-sha
+def p_expression(p):                                      #this section of code was made with help from ChatGPT 4 language model https://chat.openai.com/?model=text-davinci-002-render-sha
+                                                          #Prompt: 'Can you provide guidance on handling the expression tokens in my parser?'
     '''expression : expression PLUS expression
                   | expression MINUS expression
                   | expression STAR expression
@@ -231,7 +232,8 @@ def p_bean_equation(p):
 
 
 
-#this section of code was made with help from ChatGPT language model https://chat.openai.com/?model=text-davinci-002-render-sha
+#this section of code was made with help from ChatGPT 4 language model https://chat.openai.com/?model=text-davinci-002-render-sha
+#Prompt: 'Function_declaration function seems to not be handling certain code, can you identify the reasons for this?'
 #Rule handling all of our funcions in TLA, for example for this: picking two black beans, removing them, then replacing with one black bean
 
 def p_function_declaration(p):
@@ -447,8 +449,8 @@ def p_expression_group(p):
 
 
 # Error handling for syntax errors
-def p_error(p):    #error handling code developed with help from ChatGPT language model https://chat.openai.com/?model=text-davinci-002-render-sha
-    if p:
+def p_error(p):    #error handling code developed with help from ChatGPT 4 language model https://chat.openai.com/?model=text-davinci-002-render-sha
+    if p:          #prompt: 'Error function is not working as intended, can you provide guidance on how to improve its capabilities?'
         print(f"Syntax error at token '{p.type}', value: '{p.value}', line: {p.lineno}, position: {p.lexpos}")
         #Prints the tokens leading up to the error to give error context for parsing adjustment
         context = max(0, p.lexpos - 50)  
@@ -1185,5 +1187,3 @@ parser = yacc.yacc(debug=True)
 #we LR parse the inputted tokens into the parser, which is saved in result
 result = parser.parse(tla_code)
 
-#Prints the resulting connected AST
-print(result)

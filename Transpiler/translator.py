@@ -1,4 +1,4 @@
-#Target output was translated to be in a similar formatting to Hao Wu's CoffeCan cyclone implementation
+#Target output was translated to be in a similar formatting to Hao Wu's CoffeCan cyclone implementation in the VSCode extensions for Cyclone
 
 #This is our translator file from TLA to Cyclone. It takes the outputted AST from the tla_parser.py file
 #and uses the visitor pattern algorithm to visit AST Nodes and perform the corresponding translation to cyclone.
@@ -12,7 +12,8 @@ from tla_parser import result
 
 #This is the main class of our translator file, this implements the visitor pattern to visit all the relevant ast nodes
 #and recursively 
-class CycloneTranslator:    #Visitor Pattern code developed with help from ChatGPT language model https://chat.openai.com/?model=text-davinci-002-render-sha
+class CycloneTranslator:    #Visitor Pattern code developed with help from ChatGPT 4 language model https://chat.openai.com/?model=text-davinci-002-render-sha
+                            #Prompt: 'How can I start an approach to implement the visitor method algorithm in my translator?'
     def __init__(self):
         self.start_state_added = False   #our tracker to insert the start state in visit_FunctionDeclarationNode_1
 
@@ -71,7 +72,7 @@ class CycloneTranslator:    #Visitor Pattern code developed with help from ChatG
         # Check if there's an except_section to translate in the node
        if hasattr(node, 'except_section'):
             except_translation = self.visit(node.except_section) #nested node visitation code developed with help from ChatGPT language model https://chat.openai.com/?model=text-davinci-002-render-sha
-            function_info_list += except_translation
+            function_info_list += except_translation             #Prompt: 'I am struggling to access nested nodes using the visitor pattern, can you provide guidance on how to prtoceed?'
       
 
        function_information = f"{start_state_declaration}\n\n{function_start}\n\n    " + "\n    ".join(function_info_list) + "\n    }"           
