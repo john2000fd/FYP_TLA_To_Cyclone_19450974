@@ -1,12 +1,13 @@
-#This is our lexical analyser file. 
-#This file uses the PLY Lex module to create a lexer that generatres a stream of lexer tokens based on the defined grammar rules below
+#This is our lexical analyser file, the first component of the transpiler
+#This file uses the PLY Lex module to create a lexer that generatres a stream of tokens based on the defined grammar rules below
 
 
 import ply.lex as lex    #import the lex module which facilitates PLY lexer capabilities for the file 
 
 
 
-# Define token names for our tokenizer,     Code developed with help from PLY Lex Yacc documentation:  https://www.dabeaz.com/ply/ply.html#ply_nn4
+# Define token names for our tokenizer, this will give names to tokenization rules that match certain patterns
+#Code developed with help from PLY Lex Yacc documentation:  https://www.dabeaz.com/ply/ply.html#ply_nn4
 tokens = (
     'EXTENDS',
     'MODULE_WRAPPER',
@@ -81,7 +82,9 @@ tokens = (
 )
 
 
-# Define reserved words dictionary, this dictionary checks the matched ATTRIBUTE token against this list to determine if it should be classified under a specific reserved keyword or as a general ATTRIBUTE.
+# Define reserved words dictionary, this dictionary checks a matched ATTRIBUTE token against this list
+# to determine if it should be classified under a specific reserved keyword or as a general ATTRIBUTE.
+
 reserved = {   #Code developed with guidance from PLY Lex Yacc documentation:  https://www.dabeaz.com/ply/ply.html#ply_nn4
     'EXTENDS': 'EXTENDS',
     'MODULE': 'MODULE',
@@ -134,7 +137,7 @@ t_MINUS = r'\-'
 t_DIVIDE = r'div'
 t_COMMA = r'\,'
 t_UNDERSCORE = r'\_'
-t_AND = r'/\\'  # Correct way to handle AND (logical conjunction)
+t_AND = r'/\\'  
 t_COLON = r'\:'
 t_MODULUS = r'\%'
 t_EQUALS_DEFINITIONS = r'\=='
@@ -151,7 +154,7 @@ t_IMPLIES = r'\=>'
 
 
 
-#These are specific token rules, these handle code that needs more processing then just a regex string
+#These are specific token rules, these handle code that needs more processing then just a regex string as they would not be identified otherwise
 def t_WEAK_FAIRNESS(t):     
     r'WF'
     return t

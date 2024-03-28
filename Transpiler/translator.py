@@ -1,17 +1,22 @@
 #Target output was translated to be in a similar formatting to Hao Wu's CoffeCan cyclone implementation in the VSCode extensions for Cyclone
 
-#This is our translator file from TLA to Cyclone. It takes the outputted AST from the tla_parser.py file
+
+#this translator takes the outputted AST from the tla_parser.py file
 #and uses the visitor pattern algorithm to visit AST Nodes and perform the corresponding translation to cyclone.
-#This pattern allows us to add new operations to the existing AST nodes without modifying the structures themselves. 
-#the node being visited contains child nodes , the visit method is called recursively on each child.
+#This pattern allows us to add new operations to the existing AST nodes without modifying the AST themselves. 
+
+#The pattern works by using a dynamic dispatch method to get the right visit_ method for a specific node e.g. visit_ModuleNode
+#the method executes the translation in the node then returns the result back to the parent node where it is concatinated to make a full translated file
+
+#if the node being visited contains child nodes , the visit method is called recursively on each child.
 # This ensures that the entire AST is traversed, and each node is translated that needs to be translated.
 
 
 #import the AST from the tla_parser file
 from tla_parser import result
 
-#This is the main class of our translator file, this implements the visitor pattern to visit all the relevant ast nodes
-#and recursively 
+#This is the main class of our translator file, this implements the visitor pattern to visit all the relevant ast nodes and their children
+
 class CycloneTranslator:    #Visitor Pattern code developed with help from ChatGPT 4 language model https://chat.openai.com/?model=text-davinci-002-render-sha
                             #Prompt: 'How can I start an approach to implement the visitor method algorithm in my translator?'
     def __init__(self):

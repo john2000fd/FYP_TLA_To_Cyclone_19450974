@@ -1,6 +1,10 @@
+
+
+
+
 #This is our PLY Yacc parser, This parser uses LR-parsing, LR parsing is a bottom up technique that tries to recognize the right-hand-side of various grammar rules. 
 #Whenever a valid right-hand-side is found in the input
-#the appropriate action code is triggered and the grammar symbols are replaced by the grammar symbol on the left-hand-side.
+#the appropriate action code is triggered and the right side grammar symbols are replaced by the grammar symbol on the left-hand-side.
 
 #An AST is generated using the functions in the second half of this file
 
@@ -15,9 +19,11 @@ from tokenizer import tla_code
 
 
 
-#The parsing function code was developed with guidance from PLY Lex Yacc documentation:  https://www.dabeaz.com/ply/ply.html#ply_nn4
 
-#This precedence table determines the precedence of operators in the parser, this will contain the number of shift/reduce conflicts encountered during parsing  
+
+#This precedence table determines the precedence of operators in the parser, this will contain the number of shift/reduce conflicts encountered during parsing
+#ordered from lowest to highest precedence
+  
 precedence = (
     ('left', 'EQUIVALENCE_OPERATOR'),
     ('left', 'AND'),  # Logical AND
@@ -32,7 +38,13 @@ precedence = (
 
 #FUNCTIONS FOR PARSING SECTION
 
+#Each parsing function recognizes specific TLA syntax, such as module declarations
+#When a particular syntax pattern is recognized, these functions construct an instance of an AST node representing that syntax.
+#The nodes are designed to capture essential details of the language constructs, such as names, attributes, expressions, and relationships to other parts of the code.
+
+
 # Parsing the module start with optional extends and body 
+#The parsing function code was developed with guidance from PLY Lex Yacc documentation:  https://www.dabeaz.com/ply/ply.html#ply_nn4
 def p_module(p):
     '''module : MODULE_WRAPPER MODULE attribute MODULE_WRAPPER extends statements
               | MODULE_WRAPPER MODULE attribute MODULE_WRAPPER statements'''
@@ -470,8 +482,11 @@ def p_error(p):    #error handling code developed with help from ChatGPT 4 langu
 
 
 
-#This section of the code is where the AST nodes are created and filled with the relevant info from the lex tokens 
-#These nodes are populated with info by taking the info from the tokens and setting them to to the self value in the node
+#This section of the code is where the AST nodes are created and filled with the relevant info from the lex tokens that have been parsed by the nodes parsing rule
+        
+#The AST nodes generated e.g. ModuleNode, encapsulate the hierarchical structure of the source code, making it easier to traverse and analyse the code in the translator.
+
+
 #each class has a __str__ function that outputs the nodes info. This is how the interconnceted AST is visualized in the command line for the user
 #All of these classes have a similar structure
 class ASTNode:     #AST classes 
@@ -1186,6 +1201,6 @@ class NumberNode(ASTNode):
 # This builds the PLY Yacc parser
 parser = yacc.yacc(debug=True)
 
-#we LR parse the inputted tokens into the parser, which is saved in result
+#we LR parse the inputted code into the parser, which is saved in result
 result = parser.parse(tla_code)
 
